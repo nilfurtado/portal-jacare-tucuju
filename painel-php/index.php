@@ -75,9 +75,12 @@ $rel = ltrim($path, '/') ?: 'login.html';
 $abs = __DIR__ . '/public/' . $rel;
 if (is_file($abs)) {
   $mimes = [
-    'html' => 'text/html', 'css' => 'text/css', 'js' => 'application/javascript',
-    'json' => 'application/json', 'svg' => 'image/svg+xml',
-    'png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
+    'html' => 'text/html; charset=utf-8',
+    'css'  => 'text/css; charset=utf-8',
+    'js'   => 'application/javascript; charset=utf-8',
+    'json' => 'application/json; charset=utf-8',
+    'svg'  => 'image/svg+xml; charset=utf-8',
+    'png'  => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
     'webp' => 'image/webp', 'ico' => 'image/x-icon',
   ];
   $ext = strtolower(pathinfo($abs, PATHINFO_EXTENSION));
@@ -88,4 +91,5 @@ if (is_file($abs)) {
 
 // Fallback: login
 http_response_code(200);
+header('Content-Type: text/html; charset=utf-8');
 readfile(__DIR__ . '/public/login.html');

@@ -118,6 +118,7 @@
   <script type="module">
     import { mountShell } from './js/shell.js';
     import { staggerChildren } from './js/ui.js';
+    import { apiGet } from './js/api.js';
 
     const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
     const d = new Date();
@@ -127,21 +128,25 @@
     await mountShell({ route: 'inicio' });
     staggerChildren(document.getElementById('bento'));
 
-    // Carrega métricas do portal (lê data/ diretamente)
+    // Carrega métricas reais do banco via API
     try {
-      const [noticias, videos, classificados] = await Promise.all([
-        fetch('/data/noticias.json').then(r => r.json()).catch(() => []),
-        fetch('/data/videos.json').then(r => r.json()).catch(() => []),
-        fetch('/data/classificados.json').then(r => r.json()).catch(() => []),
+      const [acessos, boot] = await Promise.all([
+        apiGet('/acessos').catch(() => null),
+        apiGet('/portal/bootstrap').catch(() => ({})),
       ]);
 
-      document.getElementById('metric-noticias').firstChild.textContent = noticias.length;
+      const noticias      = boot.noticias || [];
+      const videos        = boot.videos || [];
+      const classificados = boot.classificados || [];
+
+      document.getElementById('metric-noticias').firstChild.textContent = acessos?.totalNoticias ?? noticias.length;
       document.getElementById('metric-videos').textContent = videos.length;
       document.getElementById('metric-classificados').textContent = classificados.length;
       document.getElementById('metric-comentarios').textContent = '0';
-      document.getElementById('metric-anuncios').textContent = '0';
+      document.getElementById('metric-anuncios').textContent =
+        (acessos?.publicidade?.slotsAtivos ?? 0);
       document.getElementById('metric-views').textContent =
-        noticias.reduce((s, n) => s + (n.views || 0), 0).toLocaleString('pt-BR');
+        (acessos?.totalViews ?? 0).toLocaleString('pt-BR');
 
       // Últimas 5
       const ultimas = [...noticias].sort((a,b) => new Date(b.data) - new Date(a.data)).slice(0, 5);

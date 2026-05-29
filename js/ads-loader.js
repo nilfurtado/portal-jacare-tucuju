@@ -13,13 +13,29 @@
  * O matching é feito por data-ad-type (mais estável que nome).
  */
 (async function () {
+  // Base da API do painel (mesma meta-tag usada pelo data.js)
+  function apiBase() {
+    const meta = document.querySelector('meta[name="painel-api"]');
+    if (meta?.content) return meta.content.replace(/\/+$/, '');
+    return '/painel-php/api';
+  }
+
   let anuncios = [];
+  // 1) tenta a API (anúncios ativados no painel, do banco)
   try {
-    const res = await fetch('data/anuncios.json', { cache: 'no-cache' });
-    anuncios = await res.json();
-  } catch (err) {
-    console.warn('[ads-loader] Falha ao carregar anuncios.json', err);
-    return;
+    const res = await fetch(`${apiBase()}/anuncios/public`, { cache: 'no-cache' });
+    if (res.ok) anuncios = await res.json();
+  } catch { /* cai pro fallback */ }
+
+  // 2) fallback ao JSON estático
+  if (!anuncios.length) {
+    try {
+      const res = await fetch('data/anuncios.json', { cache: 'no-cache' });
+      anuncios = await res.json();
+    } catch (err) {
+      console.warn('[ads-loader] Sem fonte de anúncios', err);
+      return;
+    }
   }
 
   const agora = Date.now();

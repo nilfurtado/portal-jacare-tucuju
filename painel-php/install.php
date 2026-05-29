@@ -32,10 +32,13 @@ try {
     if (!$sql) throw new RuntimeException('install.sql não pôde ser lido');
 
     $pdo = DB::pdo();
-    // Executa em statements
-    $statements = array_filter(array_map('trim', preg_split('/;\s*[\r\n]/', $sql)));
+    // Remove comentários de linha e divide por ';' no fim da linha
+    $sql = preg_replace('/^--.*$/m', '', $sql);
+    $statements = array_filter(
+      array_map('trim', preg_split('/;\s*$/m', $sql)),
+      fn($s) => $s !== ''
+    );
     foreach ($statements as $stmt) {
-      if ($stmt === '' || str_starts_with($stmt, '--')) continue;
       $pdo->exec($stmt);
     }
     $message = 'Schema MySQL criado com sucesso. Vá para o passo 3.';

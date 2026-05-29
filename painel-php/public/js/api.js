@@ -1,8 +1,23 @@
 /**
  * API helper — fetch wrapper com JWT e tratamento de erro.
+ *
+ * Detecta automaticamente o caminho base do painel.
+ * Suporta instalação na raiz (/) ou em sub-path (/painel-php/).
  */
 const TOKEN_KEY = 'painel-dm:token';
 const USER_KEY  = 'painel-dm:user';
+
+// Diretório base do painel (ex: "/painel-php" ou "" se na raiz)
+export function getBasePath() {
+  // Remove o arquivo final (ex: /painel-php/login.html → /painel-php)
+  const dir = location.pathname.replace(/\/[^/]*$/, '');
+  return dir === '/' ? '' : dir;
+}
+
+// Base URL da API (ex: "/painel-php/api")
+export function getApiBase() {
+  return getBasePath() + '/api';
+}
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -28,7 +43,7 @@ export async function api(path, options = {}) {
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${getApiBase()}${path}`, {
     ...options,
     headers,
     body: options.body && typeof options.body !== 'string'
