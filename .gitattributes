@@ -1,0 +1,29 @@
+# Normalização universal de line endings
+* text=auto eol=lf
+
+# Force LF em todos os arquivos de código (mesmo no Windows)
+*.html       text eol=lf
+*.css        text eol=lf
+*.js         text eol=lf
+*.php        text eol=lf
+*.json       text eol=lf
+*.md         text eol=lf
+*.sql        text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.txt        text eol=lf
+*.htaccess   text eol=lf
+.env.example text eol=lf
+
+# Binários — nunca converter
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.webp       binary
+*.gif        binary
+*.ico        binary
+*.svg        binary
+*.woff       binary
+*.woff2      binary
+*.ttf        binary
+*.eot        binary
