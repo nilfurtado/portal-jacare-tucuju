@@ -15,22 +15,24 @@ AddDefaultCharset UTF-8
   Require all denied
 </FilesMatch>
 
-# Bloqueia listagem das pastas lib/, api/, storage/
 RewriteEngine On
 
-RewriteRule ^lib/      - [F,L]
-RewriteRule ^api/      - [F,L]
-RewriteRule ^storage/  - [F,L]
+# Bloqueia acesso DIRETO a arquivos PHP dentro de lib/ e storage/
+# (sem barrar URLs /api/* que precisam chegar no front-controller)
+RewriteRule ^lib/.*\.php$       - [F,L]
+RewriteRule ^storage/.*$        - [F,L]
 
-# Serve arquivos estáticos existentes de public/ diretamente
+# 1) URLs /api/* sempre vão pro front-controller index.php
+RewriteRule ^api/.*$ index.php [L,QSA]
+
+# 2) Arquivos estáticos existentes em public/ — serve direto
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
-RewriteCond %{REQUEST_URI} !^/api/
 RewriteCond public/%{REQUEST_URI} -f
 RewriteRule ^(.*)$ public/$1 [L]
 
-# Tudo o que sobrou vai para index.php
+# 3) Tudo o que sobrou vai pro index.php (servir login.html como fallback)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [L,QSA]
