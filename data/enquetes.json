@@ -1,0 +1,73 @@
+[
+  {
+    "id": "transporte-macapa-2026",
+    "pergunta": "Como você avalia o transporte público em Macapá em 2026?",
+    "opcoes": [
+      {
+        "id": "otimo",
+        "label": "Ótimo",
+        "votos": 142
+      },
+      {
+        "id": "regular",
+        "label": "Regular",
+        "votos": 387
+      },
+      {
+        "id": "ruim",
+        "label": "Ruim",
+        "votos": 521
+      },
+      {
+        "id": "pessimo",
+        "label": "Péssimo",
+        "votos": 894
+      }
+    ],
+    "ativa": false
+  },
+  {
+    "id": "ponte-binacional-impacto",
+    "pergunta": "Você acha que o aumento de travessias na Ponte do Oiapoque é positivo?",
+    "opcoes": [
+      {
+        "id": "sim-economia",
+        "label": "Sim, é bom para a economia",
+        "votos": 612
+      },
+      {
+        "id": "preocupado",
+        "label": "Preocupado com segurança",
+        "votos": 248
+      },
+      {
+        "id": "indiferente",
+        "label": "Indiferente",
+        "votos": 87
+      }
+    ],
+    "ativa": false
+  },
+  {
+    "id": "voc-apoia-a-obra-do-novo-aeroporto",
+    "pergunta": "Voc� apoia a obra do novo aeroporto?",
+    "opcoes": [
+      {
+        "id": "sim",
+        "label": "Sim",
+        "votos": 0
+      },
+      {
+        "id": "no",
+        "label": "N�o",
+        "votos": 0
+      },
+      {
+        "id": "indeciso",
+        "label": "Indeciso",
+        "votos": 0
+      }
+    ],
+    "ativa": true
+  }
+]

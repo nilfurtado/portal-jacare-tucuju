@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acessos · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    .chart-card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r-3); padding: var(--s-5); }
+    .chart-card__title { font-family: var(--font-display); font-variation-settings: 'opsz' 60, 'SOFT' 30; font-weight: 500; font-size: 1rem; margin-bottom: var(--s-3); }
+    .chart-card__sub { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing:.14em; text-transform:uppercase; color: var(--ink-mute); margin-bottom: var(--s-3); }
+    .chart-host { position: relative; height: 240px; }
+    .chart-host--lg { height: 320px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Acessos</span>
+        </nav>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">14</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Audiência · números</p>
+            <h1>Quem <em style="font-style:italic;color:var(--brand)">leu</em>.</h1>
+          </div>
+        </header>
+
+        <section class="bento stagger" id="bento">
+          <article class="card card--narrow card--dark">
+            <p class="card__eyebrow">— Total views</p>
+            <h2 class="card__metric" id="m-views">—</h2>
+            <p class="card__label">acumulado</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Notícias</p>
+            <h2 class="card__metric" id="m-noticias">—</h2>
+            <p class="card__label">publicadas</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Slots ativos</p>
+            <h2 class="card__metric" id="m-slots">—</h2>
+            <p class="card__label" id="m-slots-sub">— de —</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— CTR publicidade</p>
+            <h2 class="card__metric" id="m-ctr">—<small>%</small></h2>
+            <p class="card__label" id="m-ctr-sub">— impressões</p>
+          </article>
+
+          <article class="card card--wide chart-card">
+            <p class="card__eyebrow">— Views por dia</p>
+            <h3 class="chart-card__title">Últimos 30 dias</h3>
+            <div class="chart-host chart-host--lg"><canvas id="chart-dias"></canvas></div>
+          </article>
+
+          <article class="card chart-card">
+            <p class="card__eyebrow">— Editorias</p>
+            <h3 class="chart-card__title">Views por editoria</h3>
+            <div class="chart-host"><canvas id="chart-editorias"></canvas></div>
+          </article>
+
+          <article class="card card--full chart-card">
+            <p class="card__eyebrow">— Top 10</p>
+            <h3 class="chart-card__title">Notícias mais lidas</h3>
+            <table class="table" style="margin-top:var(--s-2)">
+              <thead><tr><th style="width:50px">#</th><th>Manchete</th><th>Editoria</th><th style="text-align:right">Views</th></tr></thead>
+              <tbody id="top-noticias"></tbody>
+            </table>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet } from './js/api.js';
+    import { staggerChildren } from './js/ui.js';
+    await mountShell({ route: 'acessos' });
+    staggerChildren(document.getElementById('bento'));
+
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    const data = await apiGet('/acessos').catch(() => null);
+    if (!data) { console.error('Falha ao carregar /acessos'); }
+
+    // Métricas top — protegidas individualmente para não cascatear erros
+    function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+    function setFirstText(id, val) { const el = document.getElementById(id); if (el?.firstChild) el.firstChild.textContent = val; else if (el) el.textContent = val; }
+
+    if (data) {
+      setFirstText('m-views', data.totalViews.toLocaleString('pt-BR'));
+      setText('m-noticias', data.totalNoticias);
+      setText('m-slots', data.publicidade.slotsAtivos);
+      setText('m-slots-sub', `de ${data.publicidade.totalSlots}`);
+      setFirstText('m-ctr', String(data.publicidade.ctr).replace('.', ','));
+      setText('m-ctr-sub', `${data.publicidade.impressoes.toLocaleString('pt-BR')} impressões`);
+    }
+
+    // Render dos charts — falhas isoladas
+    if (typeof Chart === 'undefined' || !data) {
+      console.warn('Chart.js não carregou ou sem dados — pulando gráficos');
+    } else try {
+      const css = getComputedStyle(document.documentElement);
+      const brand = css.getPropertyValue('--brand').trim() || '#c9551d';
+      const muted = css.getPropertyValue('--ink-mute').trim() || '#6e6760';
+      const paper = css.getPropertyValue('--paper').trim() || '#fafaf7';
+
+      Chart.defaults.font.family = 'Geist, system-ui, sans-serif';
+      Chart.defaults.font.size = 11;
+      Chart.defaults.color = muted;
+
+      new Chart(document.getElementById('chart-dias'), {
+      type: 'line',
+      data: {
+        labels: data.dias.map(d => d.data.slice(5)),
+        datasets: [{
+          label: 'Views',
+          data: data.dias.map(d => d.views),
+          borderColor: brand,
+          backgroundColor: brand + '20',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+          y: { grid: { color: '#0001' }, beginAtZero: true },
+        },
+      },
+    });
+
+    const palette = ['#c9551d','#2c6e9b','#3e7b3a','#a8881d','#7a2e2e','#5b3a8a','#1d6f7d','#999'];
+    new Chart(document.getElementById('chart-editorias'), {
+      type: 'doughnut',
+      data: {
+        labels: data.editorias.map(e => e.categoria),
+        datasets: [{
+          data: data.editorias.map(e => e.views),
+          backgroundColor: data.editorias.map((_, i) => palette[i % palette.length]),
+          borderWidth: 2,
+          borderColor: paper,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: { boxWidth: 10, padding: 8 },
+          },
+        },
+      },
+    });
+
+    } catch (err) {
+      console.error('Erro ao renderizar gráficos:', err);
+    }
+
+    // Top 10 — sempre renderiza, independente do Chart.js
+    if (data) {
+      document.getElementById('top-noticias').innerHTML = data.topNoticias.map((n, i) => `
+        <tr>
+          <td class="num"><strong style="font-family:var(--font-display);font-size:1.2rem;color:${i < 3 ? 'var(--brand)' : 'var(--ink-faint)'}">${String(i+1).padStart(2,'0')}</strong></td>
+          <td><strong style="font-family:var(--font-display);font-weight:500;font-size:1rem">${esc(n.titulo)}</strong></td>
+          <td><span class="tag tag--brand">${n.categoria}</span></td>
+          <td class="num" style="text-align:right">${n.views.toLocaleString('pt-BR')}</td>
+        </tr>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

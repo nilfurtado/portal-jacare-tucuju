@@ -1,0 +1,456 @@
+/* ===========================================================
+   STATIC PAGE — sobre, contato, privacidade, termos, busca, enquetes, vídeos, classificados
+   =========================================================== */
+
+/* Filtros da página de classificados */
+.classificados-page-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-6);
+  padding-top: var(--sp-6);
+}
+
+.classificados-page-filters .btn.is-active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.classificados-grid--page {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--sp-5);
+}
+.page-hero {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+  color: #fff;
+  padding: var(--sp-12) 0 var(--sp-10);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 30%, rgba(245, 180, 0, 0.12) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.page-hero__content {
+  position: relative;
+  z-index: 1;
+}
+
+.page-hero__label {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--color-accent);
+  margin-bottom: var(--sp-3);
+}
+
+.page-hero__title {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: #fff;
+  margin-bottom: var(--sp-3);
+}
+
+.page-hero__subtitle {
+  font-size: var(--fs-lg);
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 60ch;
+  line-height: 1.5;
+}
+
+.page-content {
+  padding: var(--sp-12) 0 var(--sp-16);
+}
+
+.page-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-8);
+}
+
+@media (min-width: 1024px) {
+  .page-grid {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: var(--sp-10);
+  }
+}
+
+/* ===========================================================
+   STATIC ARTICLE (sobre, privacidade, termos)
+   =========================================================== */
+.static-article {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  max-width: 70ch;
+}
+
+.static-article h2 {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  margin: var(--sp-8) 0 var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--color-border);
+  letter-spacing: -0.01em;
+}
+
+.static-article h2:first-child {
+  margin-top: 0;
+}
+
+.static-article h3 {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  margin: var(--sp-6) 0 var(--sp-2);
+}
+
+.static-article p {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  margin-bottom: var(--sp-4);
+  color: var(--color-text);
+}
+
+.static-article ul {
+  padding-left: var(--sp-5);
+  margin-bottom: var(--sp-4);
+  list-style: disc;
+}
+
+.static-article ul li {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  margin-bottom: var(--sp-2);
+}
+
+.static-article strong {
+  font-weight: 700;
+}
+
+.static-article a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.static-article .updated {
+  display: inline-block;
+  padding: var(--sp-1) var(--sp-3);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  margin-bottom: var(--sp-6);
+}
+
+/* ===========================================================
+   CONTATO — formulário
+   =========================================================== */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-8);
+  margin-top: var(--sp-4);
+}
+
+@media (min-width: 768px) {
+  .contact-grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--sp-10); }
+}
+
+.contact-form {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.contact-form .row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-3);
+}
+
+@media (min-width: 640px) {
+  .contact-form .row { grid-template-columns: 1fr 1fr; }
+}
+
+.contact-form label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--sp-1);
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font-size: var(--fs-sm);
+  font-family: inherit;
+  transition: border-color var(--transition);
+}
+
+[data-theme="dark"] .contact-form input,
+[data-theme="dark"] .contact-form select,
+[data-theme="dark"] .contact-form textarea {
+  background: #1a1f2a;
+  color: var(--color-text);
+  border-color: #252b36;
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.contact-form textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.contact-form button {
+  align-self: flex-start;
+  justify-self: start;
+  padding: var(--sp-3) var(--sp-6);
+}
+
+.contact-info-card {
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-md);
+  padding: var(--sp-5);
+}
+
+[data-theme="dark"] .contact-info-card {
+  background: #1a1f2a;
+}
+
+.contact-info-card h3 {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  margin-bottom: var(--sp-4);
+  padding-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--color-primary);
+  display: inline-block;
+}
+
+.contact-info-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.contact-info-card li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+  font-size: var(--fs-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.contact-info-card li:last-child { border-bottom: none; }
+
+.contact-info-card .icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-info-card .icon svg { width: 16px; height: 16px; fill: currentColor; }
+
+.contact-info-card .label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+.contact-info-card .value {
+  font-weight: 600;
+  display: block;
+}
+
+/* ===========================================================
+   SEARCH RESULTS
+   =========================================================== */
+.search-summary {
+  padding: var(--sp-4) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--sp-6);
+}
+
+.search-summary strong { color: var(--color-text); font-weight: 700; }
+
+.search-empty {
+  text-align: center;
+  padding: var(--sp-16) var(--sp-4);
+  color: var(--color-text-muted);
+}
+
+.search-empty h3 {
+  font-size: var(--fs-xl);
+  color: var(--color-text);
+  margin-bottom: var(--sp-2);
+}
+
+/* ===========================================================
+   ENQUETES — lista
+   =========================================================== */
+.enquete-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  padding: var(--sp-6);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--sp-5);
+  border: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .enquete-card {
+  background: #161b22;
+  border-color: #252b36;
+}
+
+.enquete-card__status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--sp-3);
+}
+
+.enquete-card__status--ativa {
+  background: rgba(27, 94, 32, 0.12);
+  color: var(--cat-esportes);
+}
+
+.enquete-card__status--encerrada {
+  background: var(--color-bg-alt);
+  color: var(--color-text-muted);
+}
+
+.enquete-card__pergunta {
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: var(--fs-xl);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--sp-4);
+}
+
+.enquete-card__opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+
+.enquete-card__opcao {
+  position: relative;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.enquete-card__opcao .bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(200, 16, 46, 0.15);
+  z-index: 0;
+  transition: width 600ms var(--ease-out);
+}
+
+.enquete-card__opcao .label,
+.enquete-card__opcao .perc {
+  position: relative;
+  z-index: 1;
+}
+
+.enquete-card__total {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===========================================================
+   VÍDEOS — galeria
+   =========================================================== */
+.videos-filters {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-6);
+}
+
+.video-filter {
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-alt);
+  color: var(--color-text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all var(--transition);
+}
+
+.video-filter:hover {
+  border-color: var(--color-border-strong);
+}
+
+.video-filter.is-active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.videos-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-5);
+}
+
+@media (min-width: 640px) {
+  .videos-gallery { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .videos-gallery { grid-template-columns: repeat(3, 1fr); }
+}

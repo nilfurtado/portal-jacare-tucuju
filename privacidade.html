@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Política de privacidade — Portal Jacaré Tucujú">
+  <title>Privacidade — Portal Jacaré Tucujú</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f07e13">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css?v=30">
+  <link rel="stylesheet" href="css/reset.css?v=30">
+  <link rel="stylesheet" href="css/base.css?v=30">
+  <link rel="stylesheet" href="css/layout.css?v=30">
+  <link rel="stylesheet" href="css/components.css?v=38">
+  <link rel="stylesheet" href="css/breaking-news.css?v=34">
+  <link rel="stylesheet" href="css/drawer.css?v=30">
+  <link rel="stylesheet" href="css/carousel.css?v=30">
+  <link rel="stylesheet" href="css/audio-reader.css?v=30">
+  <link rel="stylesheet" href="css/home.css?v=31">
+  <link rel="stylesheet" href="css/article.css?v=38">
+  <link rel="stylesheet" href="css/static-page.css?v=30">
+  <link rel="stylesheet" href="css/responsive.css?v=30">
+  <script>
+    (function(){var t=localStorage.getItem('portal-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <!-- URL base do backend administrativo (Painel DM). Mude para o domínio/sub-path do seu painel-php em produção. -->
+  <meta name="painel-api" content="/painel/api">
+</head>
+<body data-page="privacidade">
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <div class="container" style="padding-top:var(--sp-8);padding-bottom:var(--sp-16);">
+      <div class="cat-page-header">
+        <div>
+          <nav class="simple-breadcrumb">
+            <a href="index.html">Início</a> <span>›</span> <span>Privacidade</span>
+          </nav>
+          <h1 class="cat-page-title">Política de privacidade</h1>
+        </div>
+      </div>
+      <div class="page-grid">
+        <article class="static-article">
+          <span class="updated">Última atualização: 1º de maio de 2026</span>
+          <h2>1. Quais dados coletamos</h2>
+          <p>Coletamos apenas os dados estritamente necessários para a operação do portal:</p>
+          <ul>
+            <li><strong>Dados de navegação anônimos</strong> via Google Analytics (páginas visitadas, tempo de permanência, dispositivo, origem do tráfego).</li>
+            <li><strong>Endereço de e-mail</strong>, quando você se cadastra na newsletter ou envia mensagem pelo formulário de contato.</li>
+            <li><strong>Cookies técnicos</strong> — armazenamos sua preferência de tema (claro/escuro) e voto em enquetes apenas no seu navegador (localStorage), sem envio ao servidor.</li>
+          </ul>
+          <h2>2. Como usamos seus dados</h2>
+          <ul>
+            <li>Operar e melhorar o portal (métricas agregadas de uso);</li>
+            <li>Enviar a newsletter (apenas para quem se inscreveu);</li>
+            <li>Responder mensagens enviadas pelo formulário de contato.</li>
+          </ul>
+          <p>Em nenhuma hipótese vendemos, alugamos ou cedemos seus dados a terceiros.</p>
+          <h2>3. Seus direitos (LGPD)</h2>
+          <p>Conforme a Lei Geral de Proteção de Dados (Lei 13.709/2018), você tem direito a acesso, correção, anonimização e eliminação dos seus dados. Contate: <strong>privacidade@portaljacaretucuju.com.br</strong>.</p>
+          <h2>4. Segurança</h2>
+          <p>Adotamos medidas técnicas e administrativas para proteger seus dados contra acessos não autorizados. Em caso de incidente, você será comunicado conforme exige a legislação.</p>
+          <h2>5. Alterações</h2>
+          <p>Esta política pode ser atualizada periodicamente. A data da última atualização sempre aparecerá no topo desta página.</p>
+        </article>
+        <aside class="sidebar" data-include="partials/sidebar.html"></aside>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+  <script type="module" src="js/static-page.js?v=24"></script>
+  <script defer src="js/ads-loader.js?v=1"></script>
+</body>
+</html>

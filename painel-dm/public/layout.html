@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalizar layout · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+
+  <style>
+    /* Tabs em estilo editorial (não-laranja Lenium) */
+    .lay-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 4px;
+      background: var(--surface-2);
+      border-radius: var(--r-3);
+      margin-bottom: var(--s-5);
+    }
+    .lay-tabs button {
+      flex: 1;
+      min-width: 110px;
+      background: transparent;
+      border: none;
+      padding: 11px 14px;
+      border-radius: var(--r-2);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      cursor: pointer;
+      transition: all var(--d-1) var(--ease-out);
+      font-weight: 500;
+    }
+    .lay-tabs button:hover { color: var(--ink); }
+    .lay-tabs button.is-active {
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: var(--sh-2);
+    }
+
+    /* Painel de conteúdo da aba */
+    .lay-panel {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-3);
+      padding: var(--s-6);
+      animation: revealIn var(--d-2) var(--ease-out) both;
+    }
+    .lay-panel__head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: var(--s-5);
+      padding-bottom: var(--s-4);
+      border-bottom: 1px solid var(--rule);
+    }
+    .lay-panel__title {
+      font-family: var(--font-display);
+      font-variation-settings: 'opsz' 80, 'SOFT' 30;
+      font-weight: 500;
+      font-size: 1.4rem;
+      letter-spacing: -0.015em;
+    }
+    .lay-panel__num {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+    .lay-panel[hidden] { display: none; }
+
+    /* Switch encapsulado em "linha" */
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-3);
+      padding: var(--s-3) var(--s-4);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-2);
+      transition: border-color var(--d-1);
+    }
+    .switch-row:hover { border-color: var(--rule-strong); }
+    .switch-row__label { font-size: 0.9rem; color: var(--ink); font-weight: 500; }
+    .switch-row__sub { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mute); margin-top: 2px; }
+
+    /* Color picker grande */
+    .color-pick {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-3);
+      padding: var(--s-3);
+      background: var(--surface-2);
+      border-radius: var(--r-2);
+    }
+    .color-pick input[type=color] {
+      width: 72px; height: 48px;
+      border: 1px solid var(--rule);
+      border-radius: var(--r-2);
+      cursor: pointer;
+      padding: 0;
+      background: none;
+    }
+    .color-pick code {
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+    }
+
+    /* Botão salvar fixo no rodapé do painel */
+    .lay-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--s-3);
+      margin-top: var(--s-5);
+    }
+
+    /* Menu items grid */
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-3);
+    }
+    @media (max-width: 900px) {
+      .menu-items { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .menu-items { grid-template-columns: 1fr; }
+    }
+    .menu-item-row .field__label small {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--r-pill);
+      background: var(--brand-tint);
+      color: var(--brand-deep);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      margin-left: 6px;
+      text-transform: lowercase;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Personalizar layout</span>
+        </nav>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          <div class="page-title__index">17</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Composição · capa</p>
+            <h1>O que <em style="font-style:italic;color:var(--brand)">entra na capa</em>.</h1>
+          </div>
+        </header>
+
+        <!-- TABS -->
+        <nav class="lay-tabs" id="tabs" role="tablist">
+          <button class="is-active" data-tab="cor"       role="tab">Cor padrão</button>
+          <button                    data-tab="topo"     role="tab">Topo</button>
+          <button                    data-tab="widgets"  role="tab">Widgets</button>
+          <button                    data-tab="menu"     role="tab">Menu principal</button>
+          <button                    data-tab="principal"role="tab">Seção principal</button>
+          <button                    data-tab="extras"   role="tab">Seções extras</button>
+          <button                    data-tab="pubs"     role="tab">Publicidades</button>
+          <button                    data-tab="outros"   role="tab">Outros</button>
+        </nav>
+
+        <!-- ============ COR PADRÃO ============ -->
+        <section class="lay-panel" data-panel="cor">
+          <div class="lay-panel__head">
+            <h2 class="lay-panel__title">Cor padrão</h2>
+            <span class="lay-panel__num">— 01</span>
+          </div>
+          <p style="color:var(--ink-soft);font-size:0.9rem;margin-bottom:var(--s-4)">
+            Cor primária do portal. Afeta botões, links e destaques. Para presets completos, use a tela <a href="/temas.html" style="color:var(--brand)">Temas</a>.
+          </p>
+          <div class="color-pick">
+            <input type="color" name="tema.corPrimaria" id="cor-primaria">
+            <div>
+              <code id="cor-hex">#c9551d</code>
+              <div class="switch-row__sub">Cor primária do site</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ TOPO ============ -->
+        <section class="lay-panel" data-panel="topo" hidden>
+          <div class="lay-panel__head">
+            <h2 class="lay-panel__title">Topo</h2>
+            <span class="lay-panel__num">— 02</span>
+          </div>
+
+          <div class="form-grid form-grid--3">
+            <div class="field">
+              <label class="field__label req">Cor do topo</label>
+              <select class="select" name="topo.cor">
+                <option value="padrao">Padrão do site</option>
+                <option value="claro">Claro</option>
+                <option value="escuro">Escuro</option>
+                <option value="brand">Cor da marca</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label req">Tamanho da logomarca</label>
+              <select class="select" name="topo.tamanhoLogo">
+                <option value="30">30%</option>
+                <option value="40">40%</option>
+                <option value="50">50%</option>
+                <option value="60">60%</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label req">Alinhamento da logomarca</label>
+              <select class="select" name="topo.alinhamentoLogo">
+                <option value="esquerda">Esquerda</option>
+                <option value="centro">Centro</option>
+                <option value="direita">Direita</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3);margin-top:var(--s-4)">
+            <div class="switch-row">
+              <span><span class="switch-row__label">Data no topo</span></span>
+              <label class="switch"><input type="checkbox" name="topo.dataNoTopo"><span class="switch__track"></span></label>
+            </div>
+            <div class="switch-row">
+              <span><span class="switch-row__label">Stories (desktop)</span></span>
+              <label class="switch"><input type="checkbox" name="topo.storiesDesktop"><span class="switch__track"></span></label>
+            </div>
+            <div class="switch-row">
+              <span><span class="switch-row__label">Stories (mobile)</span></span>
+              <label class="switch"><input type="checkbox" name="topo.storiesMobile"><span class="switch__track"></span></label>
+            </div>
+          </div>
+
+          <h3 style="font-family:var(--font-display);font-variation-settings:'opsz' 80;font-weight:500;font-size:1rem;margin:var(--s-6) 0 var(--s-3);padding-bottom:6px;border-bottom:1px solid var(--rule)">Links das redes (no topo)</h3>
+          <div class="form-grid form-grid--3">
+            <div class="field"><label class="field__label">Facebook</label><input class="input input--mono" name="redes.facebook" placeholder="https://facebook.com/..."></div>
+            <div class="field"><label class="field__label">X (antigo Twitter)</label><input class="input input--mono" name="redes.twitter" placeholder="https://x.com/..."></div>
+            <div class="field"><label class="field__label">Instagram</label><input class="input input--mono" name="redes.instagram" placeholder="https://instagram.com/..."></div>
+            <div class="field"><label class="field__label">YouTube</label><input class="input input--mono" name="redes.youtube" placeholder="https://youtube.com/@..."></div>
+            <div class="field"><label class="field__label">WhatsApp (número)</label><input class="input input--mono" name="whatsapp.numero" placeholder="5596999999999"></div>
+            <div class="field"><label class="field__label">WhatsApp (grupo)</label><input class="input input--mono" name="whatsapp.grupo" placeholder="https://chat.whatsapp.com/..."></div>
+          </div>
+        </section>
+
+        <!-- ============ WIDGETS ============ -->
+        <section class="lay-panel" data-panel="widgets" hidden>
+          <div class="lay-panel__head">
+            <h2 class="lay-panel__title">Widgets</h2>
+            <span class="lay-panel__num">— 03</span>
+          </div>
+
+          <h3 style="font-family:var(--font-display);font-variation-settings:'opsz' 80;font-weight:500;font-size:1rem;margin-bottom:var(--s-3)">Widgets de informação</h3>
+          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:var(--s-3)">
+            <div class="switch-row">
+              <span><span class="switch-row__label">Tempo no topo</span><div class="switch-row__sub">Mostra clima no header</div></span>
+              <label class="switch"><input type="checkbox" name="widgets.tempoNoTopo"><span class="switch__track"></span></label>
+            </div>
+            <div class="switch-row">
+              <span><span class="switch-row__label">Tempo completo</span><div class="switch-row__sub">Card detalhado na sidebar</div></span>
+              <label class="switch"><input type="checkbox" name="widgets.tempoCompleto"><span class="switch__track"></span></label>
+            </div>
+            <div class="switch-row">
+              <span><span class="switch-row__label">Finanças <i style="font-weight:400;color:var(--ink-mute)">(interna)</i></span><div class="switch-row__sub">Dólar, euro, ibovespa</div></span>
+              <label class="switch"><input type="checkbox" name="widgets.financas"><span class="switch__track"></span></label>
+            </div>
+            <div class="switch-row">
+              <span><span class="switch-row__label">Loteria <i style="font-weight:400;color:var(--ink-mute)">(interna)</i></span><div class="switch-row__sub">Resultados Caixa</div></span>
+              <label class="switch"><input type="checkbox" name="widgets.loteria"><span class="switch__track"></span></label>
+            </div>
+          </div>
+
+          <h3 style="font-family:var(--font-display);font-variation-settings:'opsz' 80;font-weight:500;font-size:1rem;margin:var(--s-6) 0 var(--s-3);padding-bottom:6px;border-bottom:1px solid var(--rule)">Sidebar</h3>
+          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:var(--s-3)">
+            <div class="switch-row"><span class="switch-row__label">Siga nas redes</span><label class="switch"><input type="checkbox" name="widgets.sidebarSocial"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span class="switch-row__label">Mais lidas</span><label class="switch"><input type="checkbox" name="widgets.sidebarMaisLidas"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span class="switch-row__label">Categorias</span><label class="switch"><input type="checkbox" name="widgets.sidebarCategorias"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span class="switch-row__label">Enquete</span><label class="switch"><input type="checkbox" name="widgets.sidebarEnquete"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span class="switch-row__label">Classificados</span><label class="switch"><input type="checkbox" name="widgets.sidebarClassificados"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span class="switch-row__label">Newsletter</span><label class="switch"><input type="checkbox" name="widgets.sidebarNewsletter"><span class="switch__track"></span></label></div>
+          </div>
+        </section>
+
+        <!-- ============ MENU PRINCIPAL ============ -->
+        <section class="lay-panel" data-panel="menu" hidden>
+          <div class="lay-panel__head">
+            <h2 class="lay-panel__title">Menu principal</h2>
+            <span class="lay-panel__num">— 04</span>
+          </div>
+
+          <div class="form-grid form-grid--3" style="margin-bottom:var(--s-5)">
+            <div class="field">
+              <label class="field__label req">Cor de fundo</label>
+              <select class="select" name="menu.corFundo">
+                <option value="branca">Branca</option>
+                <option value="preta">Preta</option>
+                <option value="brand">Cor da marca</option>
+              </select>
+            </div>
+            <div class="switch-row" style="grid-column:span 2">
+              <span><span class="switch-row__label">Exibir menu no mobile</span><div class="switch-row__sub">menu hamburguer abaixo do logo</div></span>
+              <label class="switch"><input type="checkbox" name="menu.exibirMobile"><span class="switch__track"></span></label>
+            </div>
+          </div>
+
+          <h3 style="font-family:var(--font-display);font-variation-settings:'opsz' 80;font-weight:500;font-size:1rem;margin-bottom:var(--s-3)">Slots do menu</h3>
+          <p class="switch-row__sub" style="margin-bottom:var(--s-3)">Atribua uma editoria a cada slot. Slots vazios são ignorados.</p>
+          <div class="menu-items" id="menu-items"></div>
+        </section>
+
+        <!-- ============ SEÇÃO PRINCIPAL ============ -->
+        <section class="lay-panel" data-panel="principal" hidden>
+          <div class="lay-panel__head">
+            <h2 class="lay-panel__title">Seção principal</h2>
+            <span class="lay-panel__num">— 05</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label class="field__label req">Layout do hero</label>
+              <select class="select" name="secaoPrincipal.layoutHero">
+                <option value="editorial">Editorial — manchete + 4 secundárias</option>
+                <option value="magazine">Magazine — carrossel pleno</option>
+                <option value="classico">Clássico — destaque + lista</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label">Qtd. de secundárias</label>
+              <select class="select" name="secaoPrincipal.qtdSecundarias">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:var(--s-3);margin-top:var(--s-4)">
+            <div class="switch-row"><span class="switch-row__label">Mostrar manchete</span><label class="switch"><input type="checkbox" name="secaoPrincipal.mostrarManchete"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span class="switch-row__label">Mostrar carrossel</span><label class="switch"><input type="checkbox" name="secaoPrincipal.mostrarCarrossel"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span class="switch-row__label">Mostrar secundárias</span><label class="switch"><input type="checkbox" name="secaoPrincipal.mostrarSecundarias"><span class="switch__track"></span></label></div>
+          </div>
+        </section>
+
+        <!-- ============ SEÇÕES EXTRAS ============ -->
+        <section class="lay-panel" data-panel="extras" hidden>
+          <div class="lay-panel__head">
+            <h2 class="lay-panel__title">Seções extras</h2>
+            <span class="lay-panel__num">— 06</span>
+          </div>
+          <p style="color:var(--ink-soft);font-size:0.9rem;margin-bottom:var(--s-4)">Outras seções que aparecem na home, abaixo do hero.</p>
+
+          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:var(--s-3)">
+            <div class="switch-row"><span><span class="switch-row__label">Breaking news</span><div class="switch-row__sub">tarja de últimas no topo</div></span><label class="switch"><input type="checkbox" name="secoesExtras.breakingNews"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span><span class="switch-row__label">Seção Municípios</span><div class="switch-row__sub">tabs por cidade</div></span><label class="switch"><input type="checkbox" name="secoesExtras.secaoMunicipios"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span><span class="switch-row__label">Seção Vídeos</span><div class="switch-row__sub">grade de YouTube</div></span><label class="switch"><input type="checkbox" name="secoesExtras.secaoVideos"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span><span class="switch-row__label">Enquete destaque</span><div class="switch-row__sub">enquete grande no corpo</div></span><label class="switch"><input type="checkbox" name="secoesExtras.secaoEnqueteDestaque"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span><span class="switch-row__label">Seção Classificados</span><div class="switch-row__sub">grade de anúncios do leitor</div></span><label class="switch"><input type="checkbox" name="secoesExtras.secaoClassificados"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span><span class="switch-row__label">Colunistas</span><div class="switch-row__sub">grade de colunas</div></span><label class="switch"><input type="checkbox" name="secoesExtras.secaoColunistas"><span class="switch__track"></span></label></div>
+          </div>
+        </section>
+
+        <!-- ============ PUBLICIDADES ============ -->
+        <section class="lay-panel" data-panel="pubs" hidden>
+          <div class="lay-panel__head">
+            <h2 class="lay-panel__title">Publicidades</h2>
+            <span class="lay-panel__num">— 07</span>
+          </div>
+          <p style="color:var(--ink-soft);font-size:0.9rem;margin-bottom:var(--s-4)">Controle global. Para gerenciar criativos individuais use a tela <a href="/anuncios.html" style="color:var(--brand)">Anúncios</a>.</p>
+
+          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:var(--s-3)">
+            <div class="switch-row">
+              <span><span class="switch-row__label">Permitir anúncios no portal</span><div class="switch-row__sub">desliga ad-loader completamente</div></span>
+              <label class="switch"><input type="checkbox" name="publicidades.permitirAds"><span class="switch__track"></span></label>
+            </div>
+            <div class="switch-row">
+              <span><span class="switch-row__label">Pausar todos os slots</span><div class="switch-row__sub">override temporário sem alterar slots</div></span>
+              <label class="switch"><input type="checkbox" name="publicidades.pausarTodos"><span class="switch__track"></span></label>
+            </div>
+          </div>
+
+          <h3 style="font-family:var(--font-display);font-variation-settings:'opsz' 80;font-weight:500;font-size:1rem;margin:var(--s-6) 0 var(--s-3);padding-bottom:6px;border-bottom:1px solid var(--rule)">Status atual dos slots</h3>
+          <div id="slots-status" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:var(--s-3)">
+            <div style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.76rem">Carregando…</div>
+          </div>
+        </section>
+
+        <!-- ============ OUTROS ============ -->
+        <section class="lay-panel" data-panel="outros" hidden>
+          <div class="lay-panel__head">
+            <h2 class="lay-panel__title">Outros</h2>
+            <span class="lay-panel__num">— 08</span>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label class="field__label">Breaking news (ms por ciclo)</label>
+              <input class="input input--mono" type="number" min="20000" max="180000" step="5000" name="outros.breakingNewsMs">
+            </div>
+            <div class="field">
+              <label class="field__label">Carrossel hero (ms por slide)</label>
+              <input class="input input--mono" type="number" min="2000" max="20000" step="500" name="outros.heroCarouselMs">
+            </div>
+            <div class="field">
+              <label class="field__label">Densidade dos cards</label>
+              <select class="select" name="outros.densidade">
+                <option value="compacta">Compacta</option>
+                <option value="confortavel">Confortável</option>
+                <option value="espacosa">Espaçosa</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:var(--s-3);margin-top:var(--s-4)">
+            <div class="switch-row"><span class="switch-row__label">Mostrar copyright no rodapé</span><label class="switch"><input type="checkbox" name="outros.mostrarCopyright"><span class="switch__track"></span></label></div>
+            <div class="switch-row"><span class="switch-row__label">Mostrar selo "Powered by Painel DM"</span><label class="switch"><input type="checkbox" name="outros.mostrarPoweredBy"><span class="switch__track"></span></label></div>
+          </div>
+        </section>
+
+        <!-- Ações -->
+        <div class="lay-actions">
+          <button class="btn btn--ghost" type="button" id="btn-reverter">Reverter</button>
+          <button class="btn btn--primary" type="button" id="btn-salvar">Salvar alterações</button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPut } from './js/api.js';
+    import { toast } from './js/ui.js';
+    await mountShell({ route: 'layout' });
+
+    // Carrega config + anúncios + categorias em paralelo
+    let [cfg, anuncios, cats, configPortal] = await Promise.all([
+      apiGet('/tema').catch(() => ({})),
+      apiGet('/anuncios').catch(() => []),
+      apiGet('/categorias').catch(() => []),
+      apiGet('/config').catch(() => ({})),
+    ]);
+
+    function getNested(obj, path) {
+      return path.split('.').reduce((o, k) => o?.[k], obj);
+    }
+    function setNested(obj, path, val) {
+      const parts = path.split('.');
+      let cur = obj;
+      for (let i = 0; i < parts.length - 1; i++) {
+        cur[parts[i]] = cur[parts[i]] || {};
+        cur = cur[parts[i]];
+      }
+      cur[parts[parts.length - 1]] = val;
+    }
+
+    // Preenche campos de tema.* layout.*
+    function fillFields() {
+      const all = { tema: cfg.tema || {}, layout: cfg.layout || {}, redes: configPortal.redes || {}, whatsapp: configPortal.whatsapp || {} };
+      document.querySelectorAll('[name]').forEach(el => {
+        const key = el.name;
+        const v = getNested(all, key);
+        if (v == null) return;
+        if (el.type === 'checkbox') el.checked = !!v;
+        else el.value = v;
+      });
+      // Cor primária
+      document.getElementById('cor-primaria').value = cfg.tema?.corPrimaria || '#c9551d';
+      document.getElementById('cor-hex').textContent = cfg.tema?.corPrimaria || '#c9551d';
+    }
+
+    // Renderiza slots do menu (11 selects)
+    function renderMenuItems() {
+      const cont = document.getElementById('menu-items');
+      const itens = cfg.layout.menu?.itens || Array(11).fill('');
+      const opts = '<option value="">— vazio —</option>' +
+        cats.map(c => `<option value="${c.slug}">${c.label}</option>`).join('');
+      cont.innerHTML = itens.map((sel, i) => {
+        const cat = cats.find(c => c.slug === sel);
+        const tag = cat ? `<small>${cat.label}</small>` : '';
+        return `
+          <div class="field menu-item-row">
+            <label class="field__label">Slot ${i + 1} ${tag}</label>
+            <select class="select menu-slot" data-slot="${i}">
+              ${opts.replaceAll(`value="${sel}"`, `value="${sel}" selected`)}
+            </select>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Status dos slots (aba Publicidades)
+    function renderSlots() {
+      document.getElementById('slots-status').innerHTML = anuncios.map(a => `
+        <div class="switch-row" style="cursor:default">
+          <span>
+            <span class="switch-row__label">${a.nome}</span>
+            <div class="switch-row__sub">${a.tamanho}</div>
+          </span>
+          <span style="font-family:var(--font-mono);font-size:0.7rem;letter-spacing:.12em;text-transform:uppercase;color:${a.ativo ? 'var(--positive)' : 'var(--ink-faint)'}">
+            ${a.ativo ? '● no ar' : '○ parado'}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    fillFields();
+    renderMenuItems();
+    renderSlots();
+
+    // Cor primária ao vivo
+    const corInp = document.getElementById('cor-primaria');
+    corInp.addEventListener('input', () => {
+      document.getElementById('cor-hex').textContent = corInp.value;
+    });
+
+    // Tabs
+    function ativarTab(tab) {
+      document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('is-active', b.dataset.tab === tab));
+      document.querySelectorAll('.lay-panel').forEach(p => { p.hidden = p.dataset.panel !== tab; });
+    }
+    document.getElementById('tabs').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-tab]'); if (!btn) return;
+      ativarTab(btn.dataset.tab);
+      history.replaceState(null, '', '#' + btn.dataset.tab);
+    });
+    if (location.hash) ativarTab(location.hash.slice(1));
+
+    // Salvar
+    async function salvar() {
+      const btn = document.getElementById('btn-salvar');
+      btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Salvando…';
+
+      // Monta payloads
+      const temaBody = { corPrimaria: corInp.value };
+      const layoutBody = {};
+      const portalRedes = {};
+      const portalWhats = {};
+
+      document.querySelectorAll('[name]').forEach(el => {
+        const name = el.name;
+        const val = el.type === 'checkbox' ? el.checked : el.value;
+        if (name.startsWith('layout.') || name.startsWith('topo.') || name.startsWith('widgets.') ||
+            name.startsWith('menu.') || name.startsWith('secaoPrincipal.') ||
+            name.startsWith('secoesExtras.') || name.startsWith('publicidades.') || name.startsWith('outros.')) {
+          setNested(layoutBody, name, val);
+        } else if (name.startsWith('redes.')) {
+          setNested(portalRedes, name.replace('redes.', ''), val);
+        } else if (name.startsWith('whatsapp.')) {
+          setNested(portalWhats, name.replace('whatsapp.', ''), val);
+        } else if (name.startsWith('tema.')) {
+          setNested(temaBody, name.replace('tema.', ''), val);
+        }
+      });
+
+      // Coleta menu items
+      const itensMenu = [...document.querySelectorAll('.menu-slot')].map(s => s.value);
+      layoutBody.menu = layoutBody.menu || {};
+      layoutBody.menu.itens = itensMenu;
+
+      try {
+        await Promise.all([
+          apiPut('/tema', { tema: temaBody, layout: layoutBody }),
+          (Object.keys(portalRedes).length || Object.keys(portalWhats).length)
+            ? apiPut('/config', { redes: portalRedes, whatsapp: portalWhats })
+            : null,
+        ].filter(Boolean));
+        toast('Layout salvo', 'success');
+        // Re-fetch
+        [cfg, configPortal] = await Promise.all([apiGet('/tema'), apiGet('/config')]);
+        renderMenuItems();
+      } catch (err) {
+        toast(err.message, 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = orig;
+      }
+    }
+
+    document.getElementById('btn-salvar').onclick = salvar;
+    document.getElementById('btn-reverter').onclick = async () => {
+      [cfg, configPortal] = await Promise.all([apiGet('/tema'), apiGet('/config')]);
+      fillFields(); renderMenuItems(); renderSlots();
+      toast('Revertido', 'info');
+    };
+  </script>
+</body>
+</html>

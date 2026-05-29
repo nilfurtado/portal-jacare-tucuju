@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lixeira · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    .filter-tabs { display:flex; gap: 2px; background:var(--surface-2); padding:4px; border-radius:var(--r-pill); width:fit-content; margin-bottom: var(--s-4); }
+    .filter-tabs button { background:transparent; border:none; padding:8px 16px; border-radius:var(--r-pill); font-family:var(--font-mono); font-size:0.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); cursor:pointer; transition:all var(--d-1); }
+    .filter-tabs button.is-active { background:var(--ink); color:var(--paper); }
+    .lixeira-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--s-3); }
+    .lixeira-meta .btn-vazio { font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:.14em; }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Lixeira</span>
+        </nav>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">13</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Recuperação · arquivo</p>
+            <h1>O que foi <em style="font-style:italic;color:var(--brand)">descartado</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Itens removidos</h2>
+            <p>Restaurar devolve ao módulo original. Excluir é definitivo.</p>
+            <div class="section__body">
+
+              <div class="filter-tabs" id="tabs">
+                <button class="is-active" data-tipo="noticias">Notícias</button>
+                <button data-tipo="videos">Vídeos</button>
+                <button data-tipo="anuncios">Anúncios</button>
+                <button data-tipo="comentarios">Comentários</button>
+                <button data-tipo="classificados">Classificados</button>
+              </div>
+
+              <div class="lixeira-meta">
+                <span class="table-meta" style="margin:0"><span id="meta-count">0</span> itens</span>
+                <button class="btn btn--danger btn-vazio" id="btn-vazio">Esvaziar lixeira</button>
+              </div>
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Removido</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="lista">
+                  <tr><td colspan="3" style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.78rem">Carregando…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, api } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+    await mountShell({ route: 'lixeira' });
+
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    let tipo = 'noticias';
+
+    function rotuloItem(item, t) {
+      switch (t) {
+        case 'noticias':    return `<strong style="font-family:var(--font-display);font-weight:500;font-size:1rem">${esc(item.titulo)}</strong>${item.categoria ? `<span class="tag tag--brand" style="margin-left:var(--s-2)">${item.categoria}</span>` : ''}`;
+        case 'videos':      return `<strong style="font-family:var(--font-display);font-weight:500">${esc(item.titulo)}</strong> <span style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.74rem">${item.duracao || ''}</span>`;
+        case 'anuncios':    return `<strong>${esc(item.nome)}</strong> <span style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.74rem">${item.tamanho || ''}</span>`;
+        case 'comentarios': return `<strong>${esc(item.autor)}</strong> <em style="color:var(--ink-mute)">"${esc(item.texto || '').slice(0, 60)}…"</em>`;
+        case 'classificados': return `<strong>${esc(item.titulo)}</strong>`;
+      }
+      return JSON.stringify(item).slice(0, 80);
+    }
+
+    async function carregar() {
+      const tbody = document.getElementById('lista');
+      tbody.innerHTML = `<tr><td colspan="3" style="color:var(--ink-mute)">Carregando…</td></tr>`;
+      const items = await apiGet(`/lixeira/${tipo}`).catch(err => { toast(err.message, 'error'); return []; });
+      document.getElementById('meta-count').textContent = items.length;
+      if (!items.length) {
+        tbody.innerHTML = `<tr><td colspan="3" style="color:var(--ink-mute);text-align:center;padding:var(--s-6);font-family:var(--font-display);font-style:italic">Lixeira vazia.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = items.map(i => `
+        <tr data-id="${i.id}">
+          <td>${rotuloItem(i, tipo)}</td>
+          <td class="num">${i.removidoEm ? new Date(i.removidoEm).toLocaleString('pt-BR') : '—'}</td>
+          <td>
+            <div class="row-actions">
+              <button data-action="restaurar" title="Restaurar">↺</button>
+              <button data-action="excluir" class="danger" title="Excluir definitivamente">×</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('tabs').addEventListener('click', e => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('is-active', b === btn));
+      tipo = btn.dataset.tipo;
+      carregar();
+    });
+
+    document.getElementById('lista').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]'); if (!btn) return;
+      const id = btn.closest('tr').dataset.id;
+      const ac = btn.dataset.action;
+      try {
+        if (ac === 'restaurar') {
+          await api(`/lixeira/${tipo}/${id}/restaurar`, { method: 'POST' });
+          toast('Item restaurado', 'success');
+        } else if (ac === 'excluir') {
+          const ok = await confirmar({ titulo: 'Excluir definitivamente?', mensagem: 'Esta ação não pode ser desfeita.', okText: 'Excluir' });
+          if (!ok) return;
+          await api(`/lixeira/${tipo}/${id}`, { method: 'DELETE' });
+          toast('Item excluído', 'success');
+        }
+        carregar();
+      } catch (err) { toast(err.message, 'error'); }
+    });
+
+    document.getElementById('btn-vazio').addEventListener('click', async () => {
+      const ok = await confirmar({ titulo: 'Esvaziar lixeira?', mensagem: `Todos os itens da lixeira de ${tipo} serão excluídos permanentemente.`, okText: 'Esvaziar' });
+      if (!ok) return;
+      try { await api(`/lixeira/${tipo}`, { method: 'DELETE' }); toast('Lixeira esvaziada', 'success'); carregar(); }
+      catch (err) { toast(err.message, 'error'); }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

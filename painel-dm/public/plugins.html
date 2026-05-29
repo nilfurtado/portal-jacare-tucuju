@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plugins · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+
+  <style>
+    .filter-bar {
+      display: flex;
+      gap: var(--s-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--s-5);
+      align-items: center;
+    }
+    .filter-tabs { display:flex; gap: 2px; background:var(--surface-2); padding:4px; border-radius:var(--r-pill); width:fit-content; }
+    .filter-tabs button { background:transparent; border:none; padding:8px 16px; border-radius:var(--r-pill); font-family:var(--font-mono); font-size:0.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); cursor:pointer; transition:all var(--d-1); }
+    .filter-tabs button.is-active { background:var(--ink); color:var(--paper); }
+    .filter-tabs .count { display:inline-block; margin-left:6px; opacity:.6; font-size:0.66rem; }
+    .filter-search { flex: 1; min-width: 220px; max-width: 380px; }
+
+    .plugin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--s-4);
+    }
+
+    .plugin {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: border-color var(--d-2) var(--ease-out), transform var(--d-2) var(--ease-out);
+    }
+    .plugin:hover { border-color: var(--rule-strong); transform: translateY(-2px); }
+    .plugin.is-installed { border-color: var(--positive); }
+    .plugin.is-installed::before {
+      content:'';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--positive);
+    }
+
+    .plugin__upgrade {
+      background: rgba(184, 128, 30, 0.12);
+      color: var(--warning);
+      padding: 6px var(--s-4);
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      display: flex; align-items: center; gap: 6px;
+      border-bottom: 1px solid rgba(184, 128, 30, 0.18);
+    }
+
+    .plugin__body {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: var(--s-4);
+      padding: var(--s-4) var(--s-5);
+      flex: 1;
+    }
+    .plugin__icon {
+      width: 56px; height: 56px;
+      border-radius: var(--r-3);
+      display: grid; place-items: center;
+      color: #fff;
+      box-shadow: var(--sh-1);
+    }
+    .plugin__icon svg { width: 28px; height: 28px; fill: currentColor; }
+
+    .plugin__info { min-width: 0; }
+    .plugin__name {
+      font-family: var(--font-display);
+      font-variation-settings: 'opsz' 60, 'SOFT' 30;
+      font-weight: 500;
+      font-size: 1.05rem;
+      line-height: 1.18;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .plugin__desc {
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .plugin__foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-3) var(--s-5);
+      border-top: 1px solid var(--rule);
+      gap: var(--s-2);
+    }
+
+    .badge-tipo {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--r-pill);
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .badge-tipo--gratis  { background: rgba(62,107,58,0.08);  color: var(--positive); border: 1px solid rgba(62,107,58,0.2); }
+    .badge-tipo--premium { background: rgba(212,175,55,0.08); color: #8a6b1f; border: 1px solid rgba(212,175,55,0.3); }
+    .badge-tipo--instalado { background: var(--positive); color: var(--paper); border: 1px solid var(--positive); }
+
+    .plugin-action {
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink-soft);
+      padding: 7px 16px;
+      border-radius: var(--r-pill);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all var(--d-1);
+    }
+    .plugin-action:hover { border-color: var(--ink); color: var(--ink); transform: translateY(-1px); }
+    .plugin-action--primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .plugin-action--primary:hover { background: var(--brand); border-color: var(--brand); color: var(--paper); }
+    .plugin-action--danger:hover { border-color: var(--danger); color: var(--danger); }
+    .plugin-action--upgrade { background: var(--warning); color: var(--paper); border-color: var(--warning); }
+    .plugin-action--upgrade:hover { background: #a37018; border-color: #a37018; color: var(--paper); }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Plugins</span>
+        </nav>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          <div class="page-title__index">18</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Extensões · marketplace</p>
+            <h1>O <em style="font-style:italic;color:var(--brand)">arsenal</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Catálogo</h2>
+            <p>Extensões para conectar o portal a redes sociais, automatizar publicações e ampliar funcionalidades.</p>
+
+            <div class="section__body">
+
+              <div class="filter-bar">
+                <div class="filter-tabs" id="tabs">
+                  <button class="is-active" data-filter="">Todos <span class="count" data-c-all></span></button>
+                  <button data-filter="instalado">Instalados <span class="count" data-c-instalado></span></button>
+                  <button data-filter="disponivel">Disponíveis <span class="count" data-c-disponivel></span></button>
+                  <button data-filter="atualizavel">Atualizar <span class="count" data-c-atualizavel></span></button>
+                </div>
+                <input class="input filter-search" type="search" id="busca" placeholder="Buscar plugin…">
+              </div>
+
+              <div class="plugin-grid stagger" id="grid">
+                <div style="grid-column:1/-1;color:var(--ink-mute);text-align:center;padding:var(--s-6);font-family:var(--font-mono);font-size:0.78rem">Carregando…</div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPatch } from './js/api.js';
+    import { toast, confirmar, staggerChildren } from './js/ui.js';
+    await mountShell({ route: 'plugins' });
+
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    // SVGs simbólicos por icone-key
+    const ICONS = {
+      whatsapp:  '<svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1s-.8 1-1 1.2c-.2.2-.3.2-.6.1-2.4-1.2-4-2.1-5.6-4.8-.4-.7.4-.7 1.2-2.3.1-.2.1-.4 0-.5s-.7-1.6-.9-2.2c-.2-.6-.5-.5-.7-.5h-.5c-.2 0-.5.1-.8.4-.3.2-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 1.9.8 2.7.9 3.6.8.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.1-1.4s-.3-.1-.7-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 2 .6 4 1.8 5.7L2 22l4.4-1.6c1.7 1 3.6 1.6 5.6 1.6 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.8 0-3.6-.5-5-1.5l-.4-.2-3 .9.9-3-.3-.4c-1-1.5-1.6-3.4-1.6-5.1 0-4.9 4-8.8 8.8-8.8 4.9 0 8.8 4 8.8 8.8 0 4.9-4 8.3-8.8 8.3z"/></svg>',
+      instagram: '<svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.2.1 4.7 1.7 4.8 4.8.1 1.3.1 1.6.1 4.9 0 3.2 0 3.6-.1 4.8-.1 3.2-1.7 4.7-4.8 4.8-1.3.1-1.6.1-4.8.1-3.2 0-3.6 0-4.8-.1-3.2-.1-4.7-1.7-4.8-4.8C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 4 2.3 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.2 0-3.5 0-4.7.1-2.2.1-3.2 1.1-3.3 3.3C4 8.5 4 8.8 4 12s0 3.5.1 4.7c.1 2.2 1.1 3.2 3.3 3.3 1.2.1 1.5.1 4.7.1s3.5 0 4.7-.1c2.2-.1 3.2-1.1 3.3-3.3.1-1.2.1-1.5.1-4.7s0-3.5-.1-4.7c-.1-2.2-1.1-3.2-3.3-3.3C15.5 4 15.2 4 12 4zm0 3a5 5 0 1 1 0 10A5 5 0 0 1 12 7zm0 1.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4zm5.2-.9a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>',
+      voz:       '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1c2.9.9 5 3.6 5 6.7s-2.1 5.8-5 6.7v2.1c4-1 7-4.6 7-8.8s-3-7.8-7-8.8z"/></svg>',
+      pdf:       '<svg viewBox="0 0 24 24"><path d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/><text x="12" y="18" text-anchor="middle" fill="#fff" font-family="Arial" font-weight="bold" font-size="6">PDF</text></svg>',
+      cadeado:   '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6A5 5 0 0 0 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-9-2a3 3 0 0 1 6 0v2H9V6zm3 12a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>',
+      "auto-post": '<svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 8h6M9 12h8M9 16h5"/><circle cx="6" cy="8" r="1"/><circle cx="6" cy="12" r="1"/><circle cx="6" cy="16" r="1"/></svg>',
+      arte:      '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="9" r="1.5"/><circle cx="16" cy="9" r="1.5"/><circle cx="8" cy="15" r="1.5"/><circle cx="16" cy="15" r="1.5"/></svg>',
+      raio:      '<svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg>',
+      escudo:    '<svg viewBox="0 0 24 24"><path d="M12 2L4 5v6c0 5 3.5 9.4 8 11 4.5-1.6 8-6 8-11V5l-8-3zm-1 14l-4-4 1.4-1.4L11 13.2l5.6-5.6L18 9l-7 7z"/></svg>',
+      facebook:  '<svg viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H8v-2.9h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.7-1.6 1.5v1.8H16l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>',
+      sino:      '<svg viewBox="0 0 24 24"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11c0-3.1-1.6-5.6-4.5-6.3V4a1.5 1.5 0 1 0-3 0v.7C7.6 5.4 6 7.9 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>',
+      ads:       '<svg viewBox="0 0 24 24"><path d="M3 3h18v3H3zM3 9h12v3H3zM3 15h18v3H3zM3 21h10v-1H3z"/></svg>',
+      analytics: '<svg viewBox="0 0 24 24"><path d="M3 21v-7l5 3v4H3zm7 0v-11l5-3v14h-5zm7 0V8l4-3v16h-4z"/></svg>',
+    };
+
+    let todos = [];
+    let filtroAtual = '';
+
+    function atualizarContadores() {
+      const c = (s) => {
+        if (!s) return todos.length;
+        if (s === 'instalado')   return todos.filter(p => p.instalado).length;
+        if (s === 'disponivel')  return todos.filter(p => !p.instalado).length;
+        if (s === 'atualizavel') return todos.filter(p => p.instalado && p.versao !== p.ultimaVersao).length;
+        return 0;
+      };
+      document.querySelector('[data-c-all]').textContent = c('');
+      document.querySelector('[data-c-instalado]').textContent = c('instalado');
+      document.querySelector('[data-c-disponivel]').textContent = c('disponivel');
+      document.querySelector('[data-c-atualizavel]').textContent = c('atualizavel');
+    }
+
+    function render() {
+      let lista = [...todos];
+      if (filtroAtual === 'instalado')   lista = lista.filter(p => p.instalado);
+      if (filtroAtual === 'disponivel')  lista = lista.filter(p => !p.instalado);
+      if (filtroAtual === 'atualizavel') lista = lista.filter(p => p.instalado && p.versao !== p.ultimaVersao);
+
+      const q = document.getElementById('busca').value.trim().toLowerCase();
+      if (q) lista = lista.filter(p => (p.nome||'').toLowerCase().includes(q) || (p.descricao||'').toLowerCase().includes(q));
+
+      const grid = document.getElementById('grid');
+      if (!lista.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;color:var(--ink-mute);text-align:center;padding:var(--s-7);font-family:var(--font-display);font-style:italic;font-size:1.1rem">Nenhum plugin para mostrar.</div>`;
+        return;
+      }
+
+      grid.innerHTML = lista.map(p => {
+        const upgrade = p.instalado && p.versao !== p.ultimaVersao;
+        const icone = ICONS[p.icone] || '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+        return `
+          <article class="plugin ${p.instalado ? 'is-installed' : ''}" data-id="${esc(p.id)}">
+            ${upgrade ? `
+              <div class="plugin__upgrade">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l8 8h-5v8h-6v-8H4z"/></svg>
+                Nova versão ${esc(p.ultimaVersao)} disponível
+              </div>` : ''}
+            <div class="plugin__body">
+              <div class="plugin__icon" style="background:${esc(p.cor)}">${icone}</div>
+              <div class="plugin__info">
+                <h3 class="plugin__name">${esc(p.nome)}</h3>
+                <p class="plugin__desc">${esc(p.descricao)}</p>
+              </div>
+            </div>
+            <footer class="plugin__foot">
+              ${p.instalado
+                ? `<span class="badge-tipo badge-tipo--instalado">● Instalado · v${esc(p.versao)}</span>`
+                : `<span class="badge-tipo badge-tipo--${p.tipo}">${p.tipo === 'premium' ? '★ Premium' : 'Grátis'}</span>`}
+              <div style="display:flex;gap:6px">
+                ${upgrade ? '<button class="plugin-action plugin-action--upgrade" data-action="atualizar">Atualizar</button>' : ''}
+                ${p.instalado
+                  ? '<button class="plugin-action plugin-action--danger" data-action="desinstalar">Desinstalar</button>'
+                  : `<button class="plugin-action plugin-action--primary" data-action="instalar">${p.tipo === 'premium' ? 'Contratar' : 'Instalar'}</button>`}
+              </div>
+            </footer>
+          </article>
+        `;
+      }).join('');
+      staggerChildren(grid);
+    }
+
+    async function carregar() {
+      todos = await apiGet('/plugins').catch(() => []);
+      atualizarContadores();
+      render();
+    }
+
+    document.getElementById('tabs').addEventListener('click', e => {
+      const btn = e.target.closest('button'); if(!btn) return;
+      document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('is-active', b === btn));
+      filtroAtual = btn.dataset.filter;
+      render();
+    });
+
+    document.getElementById('busca').addEventListener('input', render);
+
+    document.getElementById('grid').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]'); if(!btn) return;
+      const art = btn.closest('article.plugin');
+      const id = art.dataset.id;
+      const ac = btn.dataset.action;
+
+      try {
+        if (ac === 'instalar') {
+          const p = todos.find(x => x.id === id);
+          if (p.tipo === 'premium') {
+            toast('Este plugin é Premium — contate o comercial para liberar.', 'warning', 5000);
+            return;
+          }
+          await apiPatch(`/plugins/${id}/instalar`);
+          toast(`${p.nome} instalado`, 'success');
+        } else if (ac === 'desinstalar') {
+          const p = todos.find(x => x.id === id);
+          const ok = await confirmar({ titulo: 'Desinstalar plugin?', mensagem: `${p.nome} será desativado.`, okText: 'Desinstalar' });
+          if (!ok) return;
+          await apiPatch(`/plugins/${id}/desinstalar`);
+          toast(`${p.nome} desinstalado`, 'success');
+        } else if (ac === 'atualizar') {
+          await apiPatch(`/plugins/${id}/atualizar`);
+          toast('Plugin atualizado', 'success');
+        }
+        carregar();
+      } catch (err) { toast(err.message, 'error'); }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

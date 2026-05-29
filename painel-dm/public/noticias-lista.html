@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notícias · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle aria-label="Abrir menu">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <nav class="topbar__crumbs" aria-label="breadcrumb">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Notícias</span>
+        </nav>
+        <div class="topbar__actions">
+          <a class="btn btn--primary" href="/noticias.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            Nova matéria
+          </a>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          <div class="page-title__index">02</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Redação · arquivo</p>
+            <h1>Tudo que <em style="font-style:italic;color:var(--brand)">circulou</em>.</h1>
+          </div>
+        </header>
+
+        <!-- Filtros -->
+        <form class="filters" id="form-filtros">
+          <div class="filters__grid">
+            <div class="field">
+              <label class="field__label" for="q">Buscar</label>
+              <input class="input" type="text" id="q" name="q" placeholder="título, lide, tag…">
+            </div>
+            <div class="field">
+              <label class="field__label" for="categoria">Editoria</label>
+              <select class="select" id="categoria" name="categoria">
+                <option value="">Todas</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="autor">Autor</label>
+              <input class="input" type="text" id="autor" name="autor" placeholder="Nome…">
+            </div>
+            <div class="field">
+              <label class="field__label" for="status">Status</label>
+              <select class="select" id="status" name="status">
+                <option value="">Todos</option>
+                <option value="destaque">Em destaque</option>
+                <option value="normal">Normais</option>
+              </select>
+            </div>
+          </div>
+          <div class="filters__actions">
+            <button class="btn btn--ghost" type="reset">Limpar</button>
+            <button class="btn btn--primary" type="submit">Filtrar</button>
+          </div>
+        </form>
+
+        <div class="table-meta">
+          <span><span id="meta-total">0</span> matérias encontradas</span>
+          <span>Página <span id="meta-page">1</span> de <span id="meta-pages">1</span></span>
+        </div>
+
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 38%">Manchete</th>
+                <th>Editoria</th>
+                <th>Autor</th>
+                <th>Publicada</th>
+                <th style="text-align:right">Views</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="lista">
+              <tr><td colspan="7" style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.78rem">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="pagination" id="pagination" aria-label="Paginação"></nav>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiDelete, apiPatch } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+
+    await mountShell({ route: 'noticias-lista' });
+
+    let estado = { q: '', categoria: '', autor: '', status: '', page: 1, perPage: 20 };
+
+    const cats = await apiGet('/categorias').catch(() => []);
+    const catSel = document.getElementById('categoria');
+    cats.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.slug; opt.textContent = c.label;
+      catSel.appendChild(opt);
+    });
+
+    async function carregar() {
+      const qs = new URLSearchParams(estado).toString();
+      const tbody = document.getElementById('lista');
+      tbody.innerHTML = '<tr><td colspan="7" style="color:var(--ink-mute)">Carregando…</td></tr>';
+      try {
+        const data = await apiGet(`/noticias?${qs}`);
+        document.getElementById('meta-total').textContent = data.total;
+        document.getElementById('meta-page').textContent = data.page;
+        document.getElementById('meta-pages').textContent = data.totalPages || 1;
+
+        if (data.items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="color:var(--ink-mute);text-align:center;padding:var(--s-6)">Nenhuma matéria encontrada com os filtros aplicados.</td></tr>';
+        } else {
+          tbody.innerHTML = data.items.map(n => `
+            <tr data-id="${n.id}">
+              <td>
+                <strong style="font-family:var(--font-display);font-weight:500;font-size:1rem;display:block;line-height:1.25">${escapeHtml(n.titulo)}</strong>
+                ${n.lide ? `<span style="color:var(--ink-mute);font-size:0.8rem">${escapeHtml(n.lide).slice(0, 90)}${n.lide.length > 90 ? '…' : ''}</span>` : ''}
+              </td>
+              <td><span class="tag tag--brand">${n.categoria}</span></td>
+              <td>${escapeHtml(n.autor || '—')}</td>
+              <td class="num">${formatarData(n.data)}</td>
+              <td class="num" style="text-align:right">${(n.views || 0).toLocaleString('pt-BR')}</td>
+              <td>${n.destaque ? '<span class="tag tag--ok">★ destaque</span>' : ''}</td>
+              <td>
+                <div class="row-actions">
+                  <button title="${n.destaque ? 'Remover destaque' : 'Marcar destaque'}" data-action="destaque" data-id="${n.id}">★</button>
+                  <button title="Editar" data-action="editar" data-id="${n.id}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M16.5 3.5l4 4L7 21H3v-4z"/></svg>
+                  </button>
+                  <button title="Remover" data-action="remover" data-id="${n.id}" class="danger">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        renderPag(data.page, data.totalPages);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color:var(--danger)">${err.message}</td></tr>`;
+      }
+    }
+
+    function renderPag(cur, total) {
+      const nav = document.getElementById('pagination');
+      if (!total || total <= 1) { nav.innerHTML = ''; return; }
+      const buttons = [];
+      buttons.push(`<button ${cur === 1 ? 'disabled' : ''} data-page="${cur - 1}">‹ Anterior</button>`);
+      for (let i = 1; i <= total; i++) {
+        if (i === 1 || i === total || (i >= cur - 2 && i <= cur + 2)) {
+          buttons.push(`<button ${i === cur ? 'class="is-active"' : ''} data-page="${i}">${i}</button>`);
+        } else if (i === cur - 3 || i === cur + 3) {
+          buttons.push(`<button disabled>…</button>`);
+        }
+      }
+      buttons.push(`<button ${cur === total ? 'disabled' : ''} data-page="${cur + 1}">Próxima ›</button>`);
+      nav.innerHTML = buttons.join('');
+    }
+
+    document.getElementById('pagination').addEventListener('click', e => {
+      const p = e.target.dataset?.page;
+      if (p) { estado.page = Number(p); carregar(); }
+    });
+
+    document.getElementById('form-filtros').addEventListener('submit', e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      estado = { ...estado, q: fd.get('q') || '', categoria: fd.get('categoria') || '', autor: fd.get('autor') || '', status: fd.get('status') || '', page: 1 };
+      carregar();
+    });
+    document.getElementById('form-filtros').addEventListener('reset', () => {
+      setTimeout(() => {
+        estado = { q: '', categoria: '', autor: '', status: '', page: 1, perPage: 20 };
+        carregar();
+      }, 0);
+    });
+
+    document.getElementById('lista').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const acao = btn.dataset.action;
+
+      if (acao === 'editar') {
+        location.href = `/noticias.html?id=${id}`;
+      } else if (acao === 'destaque') {
+        try {
+          await apiPatch(`/noticias/${id}/destaque`);
+          toast('Destaque alterado', 'success');
+          carregar();
+        } catch (err) { toast(err.message, 'error'); }
+      } else if (acao === 'remover') {
+        const ok = await confirmar({
+          titulo: 'Remover matéria?',
+          mensagem: 'A matéria irá para a lixeira e poderá ser restaurada.',
+          okText: 'Remover',
+        });
+        if (!ok) return;
+        try {
+          await apiDelete(`/noticias/${id}`);
+          toast('Matéria movida para lixeira', 'success');
+          carregar();
+        } catch (err) { toast(err.message, 'error'); }
+      }
+    });
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+    }
+    function formatarData(iso) {
+      try { return new Date(iso).toLocaleDateString('pt-BR'); }
+      catch { return '—'; }
+    }
+
+    carregar();
+  </script>
+</body>
+</html>

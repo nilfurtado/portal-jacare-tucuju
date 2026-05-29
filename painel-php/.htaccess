@@ -1,0 +1,54 @@
+# ============================================================
+# Painel DM — Apache rewrite
+# Compatível com Hostinger Web Hosting (Apache + mod_rewrite)
+# ============================================================
+
+Options -Indexes
+AddDefaultCharset UTF-8
+
+# Bloqueia acesso direto a .env e arquivos sensíveis
+<FilesMatch "^\.(env|env\.example|gitignore|deployignore|htaccess)$">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(sql|md|log|bak)$">
+  Require all denied
+</FilesMatch>
+
+# Bloqueia listagem das pastas lib/, api/, storage/
+RewriteEngine On
+
+RewriteRule ^lib/      - [F,L]
+RewriteRule ^api/      - [F,L]
+RewriteRule ^storage/  - [F,L]
+
+# Serve arquivos estáticos existentes de public/ diretamente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond public/%{REQUEST_URI} -f
+RewriteRule ^(.*)$ public/$1 [L]
+
+# Tudo o que sobrou vai para index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L,QSA]
+
+# Cache para assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                 "access plus 7 days"
+  ExpiresByType application/javascript   "access plus 7 days"
+  ExpiresByType image/svg+xml            "access plus 30 days"
+  ExpiresByType image/png                "access plus 30 days"
+  ExpiresByType image/jpeg               "access plus 30 days"
+  ExpiresByType image/webp               "access plus 30 days"
+  ExpiresByType application/json         "access plus 0 seconds"
+  ExpiresByType text/html                "access plus 0 seconds"
+</IfModule>
+
+# Compressão
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>

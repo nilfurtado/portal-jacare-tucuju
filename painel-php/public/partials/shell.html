@@ -1,0 +1,154 @@
+<!-- Shell template — reaproveitado em todas as páginas internas via fetch() -->
+<aside class="sidebar" aria-label="Menu de navegação">
+  <div class="sidebar__brand">
+    <span class="sidebar__brand-mark">J<em>T</em></span>
+    <span class="sidebar__brand-title">
+      <strong>Painel DM</strong>
+      <span>Jacaré Tucujú</span>
+    </span>
+  </div>
+
+  <div class="sidebar__user">
+    <div class="sidebar__user-avatar" data-user-initial>R</div>
+    <div class="sidebar__user-info">
+      <div class="sidebar__user-name" data-user-name>Redação</div>
+      <div class="sidebar__user-role" data-user-role>Administrador</div>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav">
+    <p class="sidebar__section-title">— Redação</p>
+    <ul>
+      <li><a class="sidebar__link" data-route="inicio" href="/index.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+        Início
+      </a></li>
+
+      <li><details class="sidebar__group">
+        <summary class="sidebar__group-toggle">
+          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+          Notícias
+          <span class="sidebar__group-arrow">›</span>
+        </summary>
+        <ul>
+          <li><a class="sidebar__link" data-route="noticia-nova" href="/noticias.html">Cadastrar</a></li>
+          <li><a class="sidebar__link" data-route="noticias-lista" href="/noticias-lista.html">Listar</a></li>
+          <li><a class="sidebar__link" data-route="categorias" href="/categorias.html">Categorias</a></li>
+        </ul>
+      </details></li>
+
+      <li><a class="sidebar__link" data-route="anuncios" href="/anuncios.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 7h18v10H3zM3 11h18"/></svg>
+        Anúncios
+      </a></li>
+
+      <li><details class="sidebar__group">
+        <summary class="sidebar__group-toggle">
+          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 6l18 0v12H3zM10 9v6l5-3z"/></svg>
+          Vídeos
+          <span class="sidebar__group-arrow">›</span>
+        </summary>
+        <ul>
+          <li><a class="sidebar__link" data-route="video-novo" href="/videos.html">Cadastrar</a></li>
+          <li><a class="sidebar__link" data-route="videos-lista" href="/videos-lista.html">Listar</a></li>
+        </ul>
+      </details></li>
+
+      <li><details class="sidebar__group">
+        <summary class="sidebar__group-toggle">
+          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+          Enquetes
+          <span class="sidebar__group-arrow">›</span>
+        </summary>
+        <ul>
+          <li><a class="sidebar__link" data-route="enquete-nova" href="/enquetes.html">Cadastrar</a></li>
+          <li><a class="sidebar__link" data-route="enquetes-lista" href="/enquetes-lista.html">Listar</a></li>
+        </ul>
+      </details></li>
+
+      <li><a class="sidebar__link" data-route="comentarios" href="/comentarios.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 5h18v11h-7l-4 4v-4H3z"/></svg>
+        Comentários
+      </a></li>
+
+      <li><a class="sidebar__link" data-route="colunas" href="/colunas.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM9 4v16M15 4v16"/></svg>
+        Colunas & blogs
+      </a></li>
+    </ul>
+
+    <p class="sidebar__section-title">— Operação</p>
+    <ul>
+      <li><a class="sidebar__link" data-route="municipios" href="/municipios.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M12 2L4 8v12h16V8zM9 20v-6h6v6"/></svg>
+        Municípios
+      </a></li>
+
+      <li><details class="sidebar__group">
+        <summary class="sidebar__group-toggle">
+          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M4 4h16v6H4zM4 14h16v6H4z"/></svg>
+          Classificados
+          <span class="sidebar__group-arrow">›</span>
+        </summary>
+        <ul>
+          <li><a class="sidebar__link" href="/classificados.html">Anúncios</a></li>
+          <li><a class="sidebar__link" href="/classificados-categorias.html">Categorias</a></li>
+          <li><a class="sidebar__link" href="/classificados-planos.html">Planos</a></li>
+          <li><a class="sidebar__link" href="/classificados-anunciantes.html">Anunciantes</a></li>
+        </ul>
+      </details></li>
+
+      <li><a class="sidebar__link" data-route="paginas" href="/paginas.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6zM15 3v5h5"/></svg>
+        Páginas
+      </a></li>
+
+      <li><a class="sidebar__link" data-route="logomarca" href="/logomarca.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+        Logomarca
+      </a></li>
+    </ul>
+
+    <p class="sidebar__section-title">— Sistema</p>
+    <ul>
+      <li><a class="sidebar__link" data-route="usuarios" href="/usuarios.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 5-6 8-6s7 2 8 6"/></svg>
+        Usuários
+      </a></li>
+
+      <li><a class="sidebar__link" data-route="plugins" href="/plugins.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M22 11h-4V7c0-1.1-.9-2-2-2h-4V3h-2v4H6c-1.1 0-2 .9-2 2v4H2v2h4v4c0 1.1.9 2 2 2h4v2h2v-2h4c1.1 0 2-.9 2-2v-4h2v-2z"/></svg>
+        Plugins
+      </a></li>
+
+      <li><a class="sidebar__link" data-route="acessos" href="/acessos.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/></svg>
+        Acessos
+      </a></li>
+
+      <li><a class="sidebar__link" data-route="configuracoes" href="/configuracoes.html">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8L7 17M17 7l2.8-2.8"/></svg>
+        Configurações
+      </a></li>
+
+      <li><details class="sidebar__group">
+        <summary class="sidebar__group-toggle">
+          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 6h18l-2 14H5zM9 6V3h6v3"/></svg>
+          Lixeira
+          <span class="sidebar__group-arrow">›</span>
+        </summary>
+        <ul>
+          <li><a class="sidebar__link" href="/lixeira-noticias.html">Notícias</a></li>
+          <li><a class="sidebar__link" href="/lixeira-videos.html">Vídeos</a></li>
+          <li><a class="sidebar__link" href="/lixeira-anuncios.html">Anúncios</a></li>
+          <li><a class="sidebar__link" href="/lixeira-comentarios.html">Comentários</a></li>
+        </ul>
+      </details></li>
+
+      <li><a class="sidebar__link" data-action="logout" href="#">
+        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M15 3h4v18h-4M10 17l-5-5 5-5M5 12h12"/></svg>
+        Sair
+      </a></li>
+    </ul>
+  </nav>
+</aside>

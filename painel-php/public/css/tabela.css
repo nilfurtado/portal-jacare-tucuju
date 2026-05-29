@@ -1,0 +1,235 @@
+/* =================================================================
+   TABELA & DASHBOARD CARDS — editorial layout
+   ================================================================= */
+
+/* Filters */
+.filters {
+  background: var(--surface-2);
+  border-radius: var(--r-3);
+  padding: var(--s-4) var(--s-5);
+  margin-bottom: var(--s-5);
+}
+.filters__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+.filters__actions { display: flex; gap: var(--s-2); justify-content: flex-end; }
+
+.table-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-mute);
+  margin-bottom: var(--s-3);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.table thead th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-mute);
+  padding: var(--s-3) var(--s-3);
+  border-bottom: 1px solid var(--ink);
+  font-weight: 500;
+}
+.table tbody tr {
+  border-bottom: 1px solid var(--rule);
+  transition: background var(--d-1) var(--ease-out);
+}
+.table tbody tr:hover { background: var(--brand-tint); }
+.table td {
+  padding: var(--s-3) var(--s-3);
+  vertical-align: middle;
+}
+.table td.num {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+}
+.tag--brand { background: var(--brand-tint); color: var(--brand-deep); border-color: var(--brand-soft); }
+.tag--ok    { background: rgba(62,107,58,0.1); color: var(--positive); border-color: rgba(62,107,58,0.2); }
+.tag--warn  { background: rgba(184,128,30,0.1); color: var(--warning); border-color: rgba(184,128,30,0.2); }
+
+.row-actions {
+  display: inline-flex;
+  gap: 4px;
+}
+.row-actions button {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink-mute);
+  display: grid; place-items: center;
+  transition: all var(--d-1) var(--ease-out);
+}
+.row-actions button:hover { color: var(--ink); border-color: var(--ink); transform: translateY(-1px); }
+.row-actions button.danger:hover { color: var(--danger); border-color: var(--danger); }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: var(--s-5);
+}
+.pagination button {
+  min-width: 32px; height: 32px;
+  border-radius: var(--r-2);
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  padding: 0 10px;
+}
+.pagination button:hover { color: var(--ink); border-color: var(--rule); }
+.pagination button.is-active { background: var(--ink); color: var(--paper); }
+.pagination button[disabled] { opacity: 0.3; cursor: not-allowed; }
+
+/* ---------- Dashboard cards (Bento) ---------- */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--s-4);
+}
+.card {
+  grid-column: span 4;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-3);
+  padding: var(--s-5);
+  position: relative;
+  transition: border-color var(--d-2) var(--ease-out), transform var(--d-2) var(--ease-out);
+}
+.card:hover { border-color: var(--rule-strong); transform: translateY(-2px); }
+
+.card--wide   { grid-column: span 8; }
+.card--narrow { grid-column: span 3; }
+.card--full   { grid-column: span 12; }
+.card--dark   { background: var(--surface-ink); color: var(--paper); border-color: transparent; }
+
+.card__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
+}
+.card--dark .card__eyebrow { color: rgba(250,250,247,0.5); }
+
+.card__metric {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 144;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: var(--s-3) 0 var(--s-2);
+}
+.card__metric small {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  color: var(--ink-mute);
+  font-weight: 400;
+  margin-left: 6px;
+}
+.card__label {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 60;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+}
+.card--dark .card__label { color: rgba(250,250,247,0.7); }
+
+.card__rule {
+  height: 1px;
+  background: var(--rule);
+  margin: var(--s-4) 0;
+}
+.card--dark .card__rule { background: rgba(255,255,255,0.08); }
+
+@media (max-width: 1023px) {
+  .card, .card--wide, .card--narrow { grid-column: span 12; }
+}
+
+/* ---------- Toast & Modal ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--s-5);
+  transform: translate(-50%, 40px);
+  opacity: 0;
+  background: var(--surface-ink);
+  color: var(--paper);
+  padding: 12px 22px;
+  border-radius: var(--r-pill);
+  font-size: 0.86rem;
+  box-shadow: var(--sh-pop);
+  z-index: 200;
+  pointer-events: none;
+  font-family: var(--font-body);
+}
+.toast.is-visible { animation: toastIn var(--d-2) var(--ease-spring) forwards; }
+.toast[data-type="error"] { background: var(--danger); }
+.toast[data-type="success"] { background: var(--positive); }
+.toast[data-type="warning"] { background: var(--warning); }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 300;
+}
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(2px);
+}
+.modal__box {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--r-3);
+  padding: var(--s-6);
+  max-width: 420px;
+  width: calc(100vw - 32px);
+  box-shadow: var(--sh-pop);
+  animation: revealIn var(--d-2) var(--ease-out) both;
+}
+.modal__title {
+  font-family: var(--font-display);
+  font-variation-settings: 'opsz' 80, 'SOFT' 30;
+  font-weight: 500;
+  font-size: 1.3rem;
+  margin-bottom: var(--s-2);
+}
+.modal__msg { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.5; margin-bottom: var(--s-4); }
+.modal__actions { display: flex; justify-content: flex-end; gap: var(--s-2); }

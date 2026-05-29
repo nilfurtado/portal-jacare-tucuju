@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    .perm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-3); }
+    .perm-fieldset {
+      border: 1px solid var(--rule);
+      border-radius: var(--r-2);
+      padding: var(--s-3) var(--s-4);
+    }
+    .perm-fieldset legend { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing:.14em; text-transform:uppercase; color: var(--ink-mute); padding: 0 6px; }
+    .perm-fieldset label { display: block; font-size: 0.84rem; padding: 4px 0; cursor: pointer; }
+    .perm-fieldset input { margin-right: 6px; }
+
+    .require-senha { list-style:none; padding:0; margin: var(--s-2) 0 0; font-family: var(--font-mono); font-size:0.7rem; }
+    .require-senha li { padding-left: 16px; position: relative; color: var(--ink-mute); }
+    .require-senha li::before { content:'○'; position:absolute; left:0; }
+    .require-senha li.ok { color: var(--positive); }
+    .require-senha li.ok::before { content:'●'; }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Usuários</span>
+        </nav>
+        <div class="topbar__actions">
+          <button class="btn btn--primary" id="btn-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            Novo usuário
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">12</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Equipe · permissões</p>
+            <h1>A <em style="font-style:italic;color:var(--brand)">redação</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Usuários cadastrados</h2>
+            <div class="section__body">
+              <table class="table">
+                <thead><tr><th style="width:6%">ID</th><th>Nome</th><th>Email</th><th>Tipo</th><th>Status</th><th></th></tr></thead>
+                <tbody id="lista-users"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPost, apiPut, apiPatch, apiDelete } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+    await mountShell({ route: 'usuarios' });
+
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    const MODULES = ['noticias','categorias','anuncios','videos','enquetes','classificados','municipios','colunas','comentarios','paginas','usuarios','configuracoes'];
+
+    async function carregar(){
+      const users = await apiGet('/usuarios').catch(()=>[]);
+      document.getElementById('lista-users').innerHTML = users.map(u => `
+        <tr data-id="${u.id}">
+          <td class="num">${u.id}</td>
+          <td><strong style="font-family:var(--font-display);font-weight:500;font-size:1rem">${esc(u.nome)}</strong></td>
+          <td><code style="font-family:var(--font-mono);font-size:0.78rem;color:var(--ink-mute)">${esc(u.email)}</code></td>
+          <td><span class="tag tag--brand">${u.tipo}</span></td>
+          <td>${u.status === 'S' ? '<span class="tag tag--ok">Ativo</span>' : '<span class="tag">Inativo</span>'}</td>
+          <td><div class="row-actions">
+            <button data-action="status" title="Alternar status">⏻</button>
+            <button data-action="editar" title="Editar">✎</button>
+            <button data-action="remover" class="danger" title="Remover">×</button>
+          </div></td>
+        </tr>
+      `).join('') || '<tr><td colspan="6" style="color:var(--ink-mute)">Nenhum usuário cadastrado.</td></tr>';
+    }
+
+    function abrirEditor(user) {
+      const isNovo = !user;
+      user = user || { nome:'', email:'', tipo:'colaborador', status:'S', telefone:'', cidade:'', estado:'', sobre:'', permissoes:{ paginas:[] } };
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal__backdrop"></div>
+        <div class="modal__box modal__box--lg" style="max-width:720px;max-height:calc(100vh - 64px);overflow-y:auto">
+          <h3 class="modal__title" style="font-family:var(--font-display);font-style:italic">${isNovo ? 'Novo usuário' : 'Editar — '+esc(user.nome)}</h3>
+          <form id="user-form" style="display:flex;flex-direction:column;gap:var(--s-3);margin-top:var(--s-3)">
+            <div class="form-grid">
+              <div class="field"><label class="field__label req">Nome</label><input class="input" name="nome" required value="${esc(user.nome)}"></div>
+              <div class="field"><label class="field__label">Telefone</label><input class="input input--mono" name="telefone" value="${esc(user.telefone)}"></div>
+            </div>
+            <div class="form-grid">
+              <div class="field"><label class="field__label req">E-mail</label><input class="input input--mono" type="email" name="email" required value="${esc(user.email)}"></div>
+              <div class="field">
+                <label class="field__label ${isNovo ? 'req' : ''}">Senha ${isNovo ? '' : '(deixe em branco para não alterar)'}</label>
+                <input class="input input--mono" type="password" name="senha" id="senha-inp" ${isNovo ? 'required' : ''}>
+                <ul class="require-senha" id="req-senha">
+                  <li data-rule="len">Mínimo 8 caracteres</li>
+                  <li data-rule="upper">1 maiúsculo</li>
+                  <li data-rule="lower">1 minúsculo</li>
+                  <li data-rule="num">1 número</li>
+                  <li data-rule="esp">1 caractere especial</li>
+                </ul>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="field"><label class="field__label">Cidade</label><input class="input" name="cidade" value="${esc(user.cidade)}"></div>
+              <div class="field"><label class="field__label">Estado/UF</label><input class="input input--mono" name="estado" maxlength="2" value="${esc(user.estado)}"></div>
+            </div>
+            <div class="radio-group">
+              <div class="radio-card">
+                <input type="radio" id="tipo-admin" name="tipo" value="admin" ${user.tipo === 'admin' ? 'checked' : ''}>
+                <label for="tipo-admin"><strong>Administrador</strong><span>Acesso total ao painel</span></label>
+              </div>
+              <div class="radio-card">
+                <input type="radio" id="tipo-col" name="tipo" value="colaborador" ${user.tipo === 'colaborador' ? 'checked' : ''}>
+                <label for="tipo-col"><strong>Colaborador</strong><span>Acesso restrito por módulo</span></label>
+              </div>
+            </div>
+
+            <fieldset class="perm-fieldset" id="perm-fs" style="${user.tipo === 'admin' ? 'display:none' : ''}">
+              <legend>Permissões de módulos</legend>
+              <div class="perm-grid">
+                ${MODULES.map(m => `
+                  <label><input type="checkbox" name="perm" value="${m}" ${(user.permissoes?.paginas||[]).includes(m) ? 'checked' : ''}> ${m}</label>
+                `).join('')}
+              </div>
+            </fieldset>
+          </form>
+          <div class="modal__actions" style="margin-top:var(--s-4)">
+            <button class="btn btn--ghost" data-cancel>Cancelar</button>
+            <button class="btn btn--primary" data-save>${isNovo ? 'Criar usuário' : 'Salvar'}</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+
+      const close = () => modal.remove();
+      modal.querySelector('[data-cancel]').onclick = close;
+      modal.querySelector('.modal__backdrop').onclick = close;
+
+      // Toggle perm fieldset
+      modal.querySelectorAll('[name=tipo]').forEach(r => {
+        r.addEventListener('change', e => {
+          modal.querySelector('#perm-fs').style.display = e.target.value === 'admin' ? 'none' : '';
+        });
+      });
+
+      // Validação de senha em tempo real
+      const senhaInp = modal.querySelector('#senha-inp');
+      const reqUl = modal.querySelector('#req-senha');
+      senhaInp.addEventListener('input', () => {
+        const v = senhaInp.value;
+        reqUl.querySelector('[data-rule=len]').classList.toggle('ok', v.length >= 8);
+        reqUl.querySelector('[data-rule=upper]').classList.toggle('ok', /[A-Z]/.test(v));
+        reqUl.querySelector('[data-rule=lower]').classList.toggle('ok', /[a-z]/.test(v));
+        reqUl.querySelector('[data-rule=num]').classList.toggle('ok', /[0-9]/.test(v));
+        reqUl.querySelector('[data-rule=esp]').classList.toggle('ok', /[^A-Za-z0-9]/.test(v));
+      });
+
+      modal.querySelector('[data-save]').onclick = async () => {
+        const fd = new FormData(modal.querySelector('#user-form'));
+        const perms = [...modal.querySelectorAll('[name=perm]:checked')].map(c => c.value);
+        const body = {
+          nome: fd.get('nome'),
+          email: fd.get('email'),
+          telefone: fd.get('telefone'),
+          cidade: fd.get('cidade'),
+          estado: fd.get('estado'),
+          tipo: fd.get('tipo'),
+          permissoes: { ...(user.permissoes || {}), paginas: perms },
+        };
+        const senha = fd.get('senha');
+        if (senha) body.senha = senha;
+
+        try {
+          if (isNovo) await apiPost('/usuarios', body);
+          else        await apiPut(`/usuarios/${user.id}`, body);
+          toast(isNovo ? 'Usuário criado' : 'Usuário atualizado', 'success');
+          close(); carregar();
+        } catch (err) { toast(err.message, 'error'); }
+      };
+    }
+
+    document.getElementById('btn-novo').onclick = () => abrirEditor(null);
+
+    document.getElementById('lista-users').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]'); if(!btn) return;
+      const id = btn.closest('tr').dataset.id;
+      const ac = btn.dataset.action;
+      if (ac === 'editar') {
+        const u = await apiGet(`/usuarios/${id}`);
+        abrirEditor(u);
+      } else if (ac === 'status') {
+        try { await apiPatch(`/usuarios/${id}/status`); carregar(); }
+        catch (err) { toast(err.message, 'error'); }
+      } else if (ac === 'remover') {
+        const ok = await confirmar({ titulo:'Remover usuário?', mensagem:'Esta ação é definitiva.', okText:'Remover' });
+        if (!ok) return;
+        try { await apiDelete(`/usuarios/${id}`); toast('Usuário removido', 'success'); carregar(); }
+        catch (err) { toast(err.message, 'error'); }
+      }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

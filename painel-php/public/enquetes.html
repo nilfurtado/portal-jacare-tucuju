@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enquetes · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    .enq { background: var(--surface); border:1px solid var(--rule); border-radius: var(--r-3); padding: var(--s-5); margin-bottom: var(--s-3); }
+    .enq.is-active { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand) inset; }
+    .enq__head { display:flex; justify-content:space-between; align-items:flex-start; gap:var(--s-4); margin-bottom:var(--s-3); }
+    .enq__q { font-family: var(--font-display); font-variation-settings: 'opsz' 80, 'SOFT' 30; font-weight: 500; font-size: 1.1rem; line-height: 1.25; }
+    .enq__opt { display:grid; grid-template-columns: 1fr auto; gap:var(--s-2); padding: 6px 0; font-size: 0.86rem; }
+    .enq__bar { grid-column:1/-1; background: var(--surface-3); border-radius: var(--r-pill); overflow: hidden; height: 4px; }
+    .enq__bar > div { height: 100%; background: var(--brand); transition: width var(--d-3) var(--ease-out); }
+    .enq__pct { font-family: var(--font-mono); font-size:0.74rem; color: var(--ink-mute); }
+    .opcao-row { display:grid; grid-template-columns: 1fr auto; gap: var(--s-2); margin-bottom: 6px; }
+    .opcao-row button { background:none; border:1px solid var(--rule); border-radius:50%; width:32px; height:32px; color: var(--ink-mute); }
+    .opcao-row button:hover { border-color: var(--danger); color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Enquetes</span>
+        </nav>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">07</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Voz do leitor</p>
+            <h1>A <em style="font-style:italic;color:var(--brand)">pergunta</em> do dia.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Nova enquete</h2>
+            <p>Defina a pergunta e ao menos duas opções. Marque como ativa para exibir na home.</p>
+            <div class="section__body">
+              <form id="form-enq">
+                <div class="field">
+                  <label class="field__label req">Pergunta</label>
+                  <input class="input" type="text" name="pergunta" required placeholder="Ex.: Como você avalia o transporte público em Macapá?">
+                </div>
+                <div class="field">
+                  <label class="field__label req">Opções</label>
+                  <div id="opcoes">
+                    <div class="opcao-row"><input class="input" placeholder="Opção 1" required><button type="button" data-rm>×</button></div>
+                    <div class="opcao-row"><input class="input" placeholder="Opção 2" required><button type="button" data-rm>×</button></div>
+                  </div>
+                  <button class="btn btn--ghost" type="button" id="add-opc" style="margin-top:var(--s-2)">+ Adicionar opção</button>
+                </div>
+                <div class="field">
+                  <label class="switch">
+                    <input type="checkbox" name="ativa" checked>
+                    <span class="switch__track"></span>
+                    <span class="switch__label">Exibir como enquete ativa (desativa as demais)</span>
+                  </label>
+                </div>
+                <div class="form-actions" style="border:none;padding-top:var(--s-3);margin-top:var(--s-3)">
+                  <button class="btn btn--primary" type="submit">Publicar enquete</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">02</div>
+          <div class="section__head">
+            <h2>Enquetes</h2>
+            <p>Resultados em tempo real. Clique em "Ativar" para promover na home.</p>
+            <div class="section__body">
+              <div id="lista-enq"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPost, apiPatch, apiDelete } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+    await mountShell({ route: 'enquete-nova' });
+
+    const opc = document.getElementById('opcoes');
+    document.getElementById('add-opc').onclick = () => {
+      const row = document.createElement('div');
+      row.className = 'opcao-row';
+      row.innerHTML = `<input class="input" placeholder="Nova opção"><button type="button" data-rm>×</button>`;
+      opc.appendChild(row);
+    };
+    opc.addEventListener('click', e => {
+      if (e.target.dataset?.rm != null && opc.children.length > 2) e.target.closest('.opcao-row').remove();
+    });
+
+    function esc(s) { return String(s||'').replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    async function carregar() {
+      const items = await apiGet('/enquetes').catch(() => []);
+      const cont = document.getElementById('lista-enq');
+      if (!items.length) { cont.innerHTML = `<div style="color:var(--ink-mute);text-align:center;padding:var(--s-6)">Nenhuma enquete cadastrada.</div>`; return; }
+      cont.innerHTML = items.map(e => {
+        const total = e.opcoes.reduce((s, o) => s + (o.votos || 0), 0);
+        return `
+          <div class="enq ${e.ativa ? 'is-active' : ''}" data-id="${esc(e.id)}">
+            <div class="enq__head">
+              <div>
+                <p style="font-family:var(--font-mono);font-size:0.66rem;letter-spacing:.14em;text-transform:uppercase;color:${e.ativa ? 'var(--positive)' : 'var(--ink-mute)'}">${e.ativa ? '● no ar' : '○ pausada'}</p>
+                <h3 class="enq__q">${esc(e.pergunta)}</h3>
+              </div>
+              <div class="row-actions">
+                <button data-action="ativar" title="${e.ativa ? 'Pausar' : 'Ativar'}">${e.ativa ? '⏸' : '▶'}</button>
+                <button data-action="remover" class="danger" title="Remover">×</button>
+              </div>
+            </div>
+            ${e.opcoes.map(o => {
+              const pct = total ? Math.round((o.votos || 0) / total * 100) : 0;
+              return `
+                <div class="enq__opt">
+                  <span>${esc(o.label)}</span>
+                  <span class="enq__pct">${(o.votos || 0).toLocaleString('pt-BR')} · ${pct}%</span>
+                  <div class="enq__bar"><div style="width:${pct}%"></div></div>
+                </div>
+              `;
+            }).join('')}
+            <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--ink-mute);margin-top:var(--s-2)">${total.toLocaleString('pt-BR')} votos no total · id: <code>${esc(e.id)}</code></p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('form-enq').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const opcoes = [...opc.querySelectorAll('input')].map(i => ({ label: i.value.trim() })).filter(o => o.label);
+      if (opcoes.length < 2) { toast('Pelo menos 2 opções', 'error'); return; }
+      try {
+        await apiPost('/enquetes', { pergunta: fd.get('pergunta'), opcoes, ativa: !!fd.get('ativa') });
+        toast('Enquete publicada', 'success');
+        e.target.reset();
+        opc.innerHTML = `
+          <div class="opcao-row"><input class="input" placeholder="Opção 1" required><button type="button" data-rm>×</button></div>
+          <div class="opcao-row"><input class="input" placeholder="Opção 2" required><button type="button" data-rm>×</button></div>
+        `;
+        carregar();
+      } catch (err) { toast(err.message, 'error'); }
+    });
+
+    document.getElementById('lista-enq').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]'); if (!btn) return;
+      const id = btn.closest('.enq').dataset.id;
+      const ac = btn.dataset.action;
+      if (ac === 'ativar') {
+        try { await apiPatch(`/enquetes/${id}/ativar`); carregar(); }
+        catch (err) { toast(err.message, 'error'); }
+      } else if (ac === 'remover') {
+        const ok = await confirmar({ titulo: 'Remover enquete?', mensagem: id, okText: 'Remover' });
+        if (!ok) return;
+        try { await apiDelete(`/enquetes/${id}`); toast('Enquete removida', 'success'); carregar(); }
+        catch (err) { toast(err.message, 'error'); }
+      }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

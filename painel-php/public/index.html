@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle aria-label="Abrir menu">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 6h18M3 12h18M3 18h18"/>
+          </svg>
+          Menu
+        </button>
+        <nav class="topbar__crumbs" aria-label="breadcrumb">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Início</span>
+        </nav>
+        <div class="topbar__actions">
+          <a class="topbar__btn" href="../index.html" target="_blank">
+            Ver portal
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 17L17 7M17 7H8M17 7v9"/>
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          <div class="page-title__index">01</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Edição da Redação · <span id="edicao-data">—</span></p>
+            <h1>Mesa de <em style="font-style:italic;color:var(--brand)">fechamento</em>.</h1>
+          </div>
+        </header>
+
+        <section class="bento stagger" id="bento">
+
+          <article class="card card--wide card--dark">
+            <p class="card__eyebrow">— Em destaque agora</p>
+            <h2 class="card__metric" id="metric-noticias">—<small>notícias publicadas</small></h2>
+            <p class="card__label">Conteúdo ativo no portal hoje, somando todas as editorias.</p>
+            <div class="card__rule"></div>
+            <p style="font-family:var(--font-mono);font-size:0.74rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,250,247,0.5)">
+              <span id="metric-views">—</span> views nas últimas 24h
+            </p>
+          </article>
+
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Vídeos</p>
+            <h2 class="card__metric" id="metric-videos">—</h2>
+            <p class="card__label">no ar</p>
+          </article>
+
+          <article class="card">
+            <p class="card__eyebrow">— Comentários</p>
+            <h2 class="card__metric" id="metric-comentarios">—</h2>
+            <p class="card__label">aguardando moderação</p>
+          </article>
+
+          <article class="card">
+            <p class="card__eyebrow">— Classificados</p>
+            <h2 class="card__metric" id="metric-classificados">—</h2>
+            <p class="card__label">anúncios ativos</p>
+          </article>
+
+          <article class="card">
+            <p class="card__eyebrow">— Anúncios programados</p>
+            <h2 class="card__metric" id="metric-anuncios">—</h2>
+            <p class="card__label">slots ativados</p>
+          </article>
+
+          <article class="card card--full">
+            <p class="card__eyebrow">— Últimas notícias publicadas</p>
+            <table class="table" style="margin-top:var(--s-3)">
+              <thead>
+                <tr>
+                  <th style="width:50%">Manchete</th>
+                  <th>Editoria</th>
+                  <th>Autor</th>
+                  <th>Quando</th>
+                  <th style="text-align:right">Views</th>
+                </tr>
+              </thead>
+              <tbody id="ultimas-noticias">
+                <tr><td colspan="5" style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.78rem">Carregando…</td></tr>
+              </tbody>
+            </table>
+          </article>
+
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { staggerChildren } from './js/ui.js';
+
+    const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const d = new Date();
+    document.getElementById('edicao-data').textContent =
+      `${String(d.getDate()).padStart(2,'0')} de ${meses[d.getMonth()]}, ${d.getFullYear()}`;
+
+    await mountShell({ route: 'inicio' });
+    staggerChildren(document.getElementById('bento'));
+
+    // Carrega métricas do portal (lê data/ diretamente)
+    try {
+      const [noticias, videos, classificados] = await Promise.all([
+        fetch('/data/noticias.json').then(r => r.json()).catch(() => []),
+        fetch('/data/videos.json').then(r => r.json()).catch(() => []),
+        fetch('/data/classificados.json').then(r => r.json()).catch(() => []),
+      ]);
+
+      document.getElementById('metric-noticias').firstChild.textContent = noticias.length;
+      document.getElementById('metric-videos').textContent = videos.length;
+      document.getElementById('metric-classificados').textContent = classificados.length;
+      document.getElementById('metric-comentarios').textContent = '0';
+      document.getElementById('metric-anuncios').textContent = '0';
+      document.getElementById('metric-views').textContent =
+        noticias.reduce((s, n) => s + (n.views || 0), 0).toLocaleString('pt-BR');
+
+      // Últimas 5
+      const ultimas = [...noticias].sort((a,b) => new Date(b.data) - new Date(a.data)).slice(0, 5);
+      const tbody = document.getElementById('ultimas-noticias');
+      if (ultimas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--ink-mute)">Nenhuma notícia publicada.</td></tr>';
+      } else {
+        tbody.innerHTML = ultimas.map(n => `
+          <tr>
+            <td><strong style="font-family:var(--font-display);font-weight:500;font-size:0.95rem">${n.titulo}</strong></td>
+            <td><span class="tag tag--brand">${n.categoria}</span></td>
+            <td>${n.autor || '—'}</td>
+            <td class="num">${new Date(n.data).toLocaleDateString('pt-BR')}</td>
+            <td class="num" style="text-align:right">${(n.views || 0).toLocaleString('pt-BR')}</td>
+          </tr>
+        `).join('');
+      }
+    } catch (err) {
+      console.warn('Erro ao carregar métricas:', err);
+    }
+  </script>
+</body>
+</html>

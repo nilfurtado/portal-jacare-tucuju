@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contato — Portal Jacaré Tucujú">
+  <title>Contato — Portal Jacaré Tucujú</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f07e13">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css?v=30">
+  <link rel="stylesheet" href="css/reset.css?v=30">
+  <link rel="stylesheet" href="css/base.css?v=30">
+  <link rel="stylesheet" href="css/layout.css?v=30">
+  <link rel="stylesheet" href="css/components.css?v=38">
+  <link rel="stylesheet" href="css/breaking-news.css?v=34">
+  <link rel="stylesheet" href="css/drawer.css?v=30">
+  <link rel="stylesheet" href="css/carousel.css?v=30">
+  <link rel="stylesheet" href="css/audio-reader.css?v=30">
+  <link rel="stylesheet" href="css/home.css?v=31">
+  <link rel="stylesheet" href="css/article.css?v=38">
+  <link rel="stylesheet" href="css/static-page.css?v=30">
+  <link rel="stylesheet" href="css/responsive.css?v=30">
+  <script>
+    (function(){var t=localStorage.getItem('portal-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <!-- URL base do backend administrativo (Painel DM). Mude para o domínio/sub-path do seu painel-php em produção. -->
+  <meta name="painel-api" content="/painel/api">
+</head>
+<body data-page="contato">
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <div class="container" style="padding-top:var(--sp-8);padding-bottom:var(--sp-16);">
+      <div class="cat-page-header">
+        <div>
+          <nav class="simple-breadcrumb">
+            <a href="index.html">Início</a> <span>›</span> <span>Contato</span>
+          </nav>
+          <h1 class="cat-page-title">Contato</h1>
+        </div>
+      </div>
+      <div class="page-grid">
+        <div>
+          <div class="contact-grid">
+            <form class="contact-form" id="contact-form" onsubmit="event.preventDefault();this.querySelector('button').disabled=true;this.querySelector('button').textContent='Enviando...';setTimeout(()=>{alert('Mensagem enviada (demo).');this.reset();this.querySelector('button').disabled=false;this.querySelector('button').textContent='Enviar mensagem';},700);">
+              <div class="row">
+                <div>
+                  <label for="c-nome">Nome *</label>
+                  <input type="text" id="c-nome" name="nome" required maxlength="80" autocomplete="name">
+                </div>
+                <div>
+                  <label for="c-cidade">Cidade</label>
+                  <input type="text" id="c-cidade" name="cidade" maxlength="60" autocomplete="address-level2">
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <label for="c-email">E-mail *</label>
+                  <input type="email" id="c-email" name="email" required maxlength="120" autocomplete="email">
+                </div>
+                <div>
+                  <label for="c-tel">Telefone</label>
+                  <input type="tel" id="c-tel" name="telefone" maxlength="20" autocomplete="tel">
+                </div>
+              </div>
+              <div>
+                <label for="c-tipo">Assunto *</label>
+                <select id="c-tipo" name="tipo" required>
+                  <option value="">Escolha um assunto...</option>
+                  <option>Sugestão de pauta</option>
+                  <option>Denúncia</option>
+                  <option>Correção de notícia</option>
+                  <option>Direito de resposta</option>
+                  <option>Parcerias e publicidade</option>
+                  <option>Trabalhe conosco</option>
+                  <option>Outros</option>
+                </select>
+              </div>
+              <div>
+                <label for="c-msg">Mensagem *</label>
+                <textarea id="c-msg" name="mensagem" required minlength="20" maxlength="2000" placeholder="Conte detalhes — quanto mais contexto, melhor."></textarea>
+              </div>
+              <button type="submit" class="btn btn--primary">Enviar mensagem</button>
+              <p style="font-size:.75rem;color:var(--color-text-muted);">Ao enviar, você concorda com nossa <a href="privacidade.html" style="color:var(--color-primary);">política de privacidade</a>.</p>
+            </form>
+            <div class="contact-info-card">
+              <h3>Outros canais</h3>
+              <ul>
+                <li>
+                  <span class="icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></span>
+                  <div><span class="label">WhatsApp</span><strong class="value">(96) 99999-0000</strong></div>
+                </li>
+                <li>
+                  <span class="icon"><svg viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16z"/></svg></span>
+                  <div><span class="label">E-mail</span><strong class="value">contato@portaljacaretucuju.com.br</strong></div>
+                </li>
+                <li>
+                  <span class="icon" style="background:#1877f2;"><svg viewBox="0 0 24 24"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.963h-1.514c-1.491 0-1.956.93-1.956 1.885v2.274h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></span>
+                  <div><span class="label">Facebook</span><strong class="value">/portaljacaretucuju</strong></div>
+                </li>
+                <li>
+                  <span class="icon" style="background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg></span>
+                  <div><span class="label">Instagram</span><strong class="value">@portaljacaretucuju</strong></div>
+                </li>
+                <li>
+                  <span class="icon" style="background:var(--color-secondary);"><svg viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-4-3-7-7-7z"/></svg></span>
+                  <div><span class="label">Endereço</span><strong class="value">Av. FAB, 1234 · Centro · Macapá/AP</strong></div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <aside class="sidebar" data-include="partials/sidebar.html"></aside>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+  <script type="module" src="js/static-page.js?v=24"></script>
+  <script defer src="js/ads-loader.js?v=1"></script>
+</body>
+</html>

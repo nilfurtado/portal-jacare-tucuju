@@ -1,0 +1,85 @@
+{
+  "categorias": [
+    {
+      "slug": "politica",
+      "label": "Política",
+      "cor": "#003366"
+    },
+    {
+      "slug": "policia",
+      "label": "Polícia",
+      "cor": "#8b0000"
+    },
+    {
+      "slug": "cultura",
+      "label": "Cultura",
+      "cor": "#6a1b9a"
+    },
+    {
+      "slug": "esportes",
+      "label": "Esportes",
+      "cor": "#1b5e20"
+    },
+    {
+      "slug": "economia",
+      "label": "Economia",
+      "cor": "#00695c"
+    },
+    {
+      "slug": "municipios",
+      "label": "Municípios",
+      "cor": "#e65100"
+    }
+  ],
+  "municipios": [
+    {
+      "slug": "macapa",
+      "label": "Macapá",
+      "populacao": 522357,
+      "descricao": "Capital do Amapá, cortada pela linha do Equador e às margens do Rio Amazonas.",
+      "imagem": "https://picsum.photos/seed/macapa-cidade/1600/600"
+    },
+    {
+      "slug": "santana",
+      "label": "Santana",
+      "populacao": 123096,
+      "descricao": "Segunda maior cidade do estado, importante porto fluvial e polo logístico.",
+      "imagem": "https://picsum.photos/seed/santana-porto/1600/600"
+    },
+    {
+      "slug": "oiapoque",
+      "label": "Oiapoque",
+      "populacao": 27906,
+      "descricao": "Município de fronteira com a Guiana Francesa, ligado pela Ponte Binacional.",
+      "imagem": "https://picsum.photos/seed/oiapoque-fronteira/1600/600"
+    },
+    {
+      "slug": "laranjal-do-jari",
+      "label": "Laranjal do Jari",
+      "populacao": 51141,
+      "descricao": "Sul do Amapá, banhada pelo Rio Jari, com forte presença extrativista.",
+      "imagem": "https://picsum.photos/seed/laranjal-jari/1600/600"
+    },
+    {
+      "slug": "mazagao",
+      "label": "Mazagão",
+      "populacao": 22192,
+      "descricao": "Tradicional festa de São Tiago, patrimônio imaterial do Amapá.",
+      "imagem": "https://picsum.photos/seed/mazagao-festa/1600/600"
+    },
+    {
+      "slug": "porto-grande",
+      "label": "Porto Grande",
+      "populacao": 19956,
+      "descricao": "Interior do estado, próxima à Serra do Navio e ao parque do Tumucumaque.",
+      "imagem": "https://picsum.photos/seed/porto-grande/1600/600"
+    },
+    {
+      "slug": "tartarugalzinho",
+      "label": "Tartarugalzinho",
+      "populacao": 11770,
+      "descricao": "Munic�pio entre Macap� e Amap�, conhecido pela cria��o de b�falos.",
+      "imagem": "https://picsum.photos/seed/tartarugalzinho/1600/600"
+    }
+  ]
+}

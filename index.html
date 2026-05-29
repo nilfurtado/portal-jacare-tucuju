@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portal Jacaré Tucujú — informação regional do Amapá: política, polícia, cultura, esportes, economia, municípios, classificados e mais.">
+  <title>Portal Jacaré Tucujú — Notícias do Amapá e Região</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f07e13">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css?v=30">
+  <link rel="stylesheet" href="css/reset.css?v=30">
+  <link rel="stylesheet" href="css/base.css?v=30">
+  <link rel="stylesheet" href="css/layout.css?v=30">
+  <link rel="stylesheet" href="css/components.css?v=38">
+  <link rel="stylesheet" href="css/breaking-news.css?v=34">
+  <link rel="stylesheet" href="css/drawer.css?v=30">
+  <link rel="stylesheet" href="css/carousel.css?v=30">
+  <link rel="stylesheet" href="css/audio-reader.css?v=30">
+  <link rel="stylesheet" href="css/home.css?v=67">
+  <link rel="stylesheet" href="css/article.css?v=38">
+  <link rel="stylesheet" href="css/responsive.css?v=30">
+  <script>
+    // Aplicar tema antes do render para evitar flash
+    (function(){var t=localStorage.getItem('portal-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <!-- URL base do backend administrativo (Painel DM). Mude para o domínio/sub-path do seu painel-php em produção. -->
+  <meta name="painel-api" content="/painel/api">
+</head>
+<body data-page="home">
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <!-- ═══════════════════════════════════════════════════
+       AD SLOT: Pop-up Intersticial | 580×400
+       Nome: Pop-up Publicitário
+       Posição: Overlay ao carregar a página (delay 3s)
+       ═══════════════════════════════════════════════════ -->
+  <div class="ad-popup" id="ad-popup"
+       data-ad-name="Pop-up Publicitário"
+       data-ad-size="580x400"
+       data-ad-type="interstitial"
+       data-ad-active="false"
+       role="dialog" aria-modal="true" aria-label="Anúncio" hidden>
+    <div class="ad-popup__backdrop" id="ad-popup-backdrop"></div>
+    <div class="ad-popup__box">
+      <button class="ad-popup__close" id="ad-popup-close" aria-label="Fechar anúncio">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z" fill="currentColor"/></svg>
+      </button>
+      <div class="ad-popup__content">
+        <strong>Espaço Publicitário</strong>
+        <span>580 × 400</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BREAKING NEWS animado -->
+
+  <!-- HEADER (topbar + ad + header + nav) -->
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <!-- HERO MOSAIC — manchete com carrossel rotativo + 4 secundárias -->
+    <section class="hero-mosaic" aria-label="Manchetes">
+      <div class="container">
+        <div class="hero-mosaic__grid">
+          <div class="hero-mosaic__featured">
+            <div class="hero-featured-carousel" aria-roledescription="carrossel" aria-label="Últimas notícias em destaque">
+              <div class="hero-featured-carousel__viewport">
+                <div class="hero-featured-carousel__track" id="hero-featured-track"></div>
+              </div>
+              <button type="button" class="hero-featured-carousel__arrow hero-featured-carousel__arrow--prev" data-featured-prev aria-label="Anterior">
+                <svg viewBox="0 0 24 24"><path d="M15.4 16.6L10.8 12l4.6-4.6L14 6l-6 6 6 6z" fill="currentColor"/></svg>
+              </button>
+              <button type="button" class="hero-featured-carousel__arrow hero-featured-carousel__arrow--next" data-featured-next aria-label="Próximo">
+                <svg viewBox="0 0 24 24"><path d="M8.6 16.6L13.2 12 8.6 7.4 10 6l6 6-6 6z" fill="currentColor"/></svg>
+              </button>
+              <div class="hero-featured-carousel__dots" id="hero-featured-dots"></div>
+            </div>
+          </div>
+          <div class="hero-mosaic__secondary" id="hero-secondary"></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════
+         AD SLOT: Super Banner | 970×150
+         Nome: Super Banner
+         Posição: Abaixo do hero / manchete principal
+         ═══════════════════════════════════════════════════ -->
+    <div class="ad-strip ad-strip--inline"
+         data-ad-name="Super Banner"
+         data-ad-size="970x150"
+         data-ad-type="super-banner"
+         data-ad-active="false">
+      <div class="container">
+        <div class="banner-ad banner-ad--970x150">
+          <strong>Espaço Publicitário</strong>
+          <span>Super Banner · 970 × 150</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID: editorias + sidebar -->
+    <div class="container main-grid">
+      <div class="main-grid__primary">
+        <section class="cat-section" id="section-politica"></section>
+        <section class="cat-section" id="section-policia"></section>
+        <section class="cat-section" id="section-economia"></section>
+        <section class="cat-section" id="section-esportes"></section>
+        <section class="colunistas-section" id="section-colunistas"></section>
+      </div>
+
+      <aside class="sidebar" data-include="partials/sidebar.html"></aside>
+    </div>
+
+    <section class="por-municipio" id="por-municipio">
+      <div class="container">
+        <div class="section-header cat-municipios">
+          <div class="bar"></div>
+          <h2>Municípios</h2>
+        </div>
+        <div class="tabs" id="municipios-tabs" role="tablist"></div>
+        <div class="cards-grid cards-grid--3" id="municipios-content"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         AD SLOT: Billboard | 970×90
+         Nome: Billboard
+         Posição: Entre municípios e vídeos
+         ═══════════════════════════════════════════════════ -->
+    <div class="ad-strip ad-strip--inline"
+         data-ad-name="Billboard"
+         data-ad-size="970x90"
+         data-ad-type="billboard"
+         data-ad-active="false">
+      <div class="container">
+        <div class="banner-ad banner-ad--970x90">
+          <strong>Espaço Publicitário</strong>
+          <span>Billboard · 970 × 90</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="videos" id="videos">
+      <div class="container">
+        <div class="section-header" style="border-bottom-color:var(--color-primary);">
+          <div class="bar" style="background:var(--color-primary);"></div>
+          <h2>Vídeos</h2>
+        </div>
+        <div class="videos-grid" id="videos-grid"></div>
+      </div>
+    </section>
+
+    <section class="enquete-destaque" id="enquete-destaque">
+      <div class="container">
+        <div id="enquete-grande"></div>
+      </div>
+    </section>
+
+    <section class="classificados" id="classificados">
+      <div class="container">
+        <div class="section-header" style="border-bottom-color:var(--cat-municipios);">
+          <div class="bar" style="background:var(--cat-municipios);"></div>
+          <h2>Classificados em destaque</h2>
+          <a href="#" class="btn btn--primary btn--sm" style="margin-left:auto;">Anuncie</a>
+        </div>
+        <div class="classificados-grid" id="classificados-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <div data-include="partials/footer.html"></div>
+
+  <script type="module" src="js/main.js?v=39"></script>
+  <script>
+    (function () {
+      const popup   = document.getElementById('ad-popup');
+      const close   = document.getElementById('ad-popup-close');
+      const backdrop= document.getElementById('ad-popup-backdrop');
+      if (!popup) return;
+      const hide = () => { popup.hidden = true; document.body.style.overflow = ''; };
+      // Só exibe se ativado pelo painel admin (data-ad-active="true")
+      if (popup.dataset.adActive === 'true') {
+        setTimeout(() => {
+          popup.hidden = false;
+          document.body.style.overflow = 'hidden';
+        }, 3000);
+      }
+      close.addEventListener('click', hide);
+      backdrop.addEventListener('click', hide);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+    })();
+  </script>
+  <script defer src="js/ads-loader.js?v=1"></script>
+</body>
+</html>
