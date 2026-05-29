@@ -11,6 +11,17 @@ class Request {
     $uri = $_SERVER['REQUEST_URI'] ?? '/';
     $q = strpos($uri, '?');
     if ($q !== false) $uri = substr($uri, 0, $q);
+
+    // Remove o sub-path da instalação (ex: "/painel-php/api/auth/login" → "/api/auth/login").
+    // Calcula olhando onde o index.php está em relação ao DocumentRoot.
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';      // ex: /painel-php/index.php
+    $basePath   = rtrim(dirname($scriptName), '/');   // ex: /painel-php
+    if ($basePath !== '' && $basePath !== '/' && str_starts_with($uri, $basePath . '/')) {
+      $uri = substr($uri, strlen($basePath));
+    } elseif ($basePath !== '' && $basePath !== '/' && $uri === $basePath) {
+      $uri = '/';
+    }
+
     return rtrim($uri, '/') ?: '/';
   }
 
