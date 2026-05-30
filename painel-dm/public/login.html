@@ -4,100 +4,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel DM — Portal Jacaré Tucujú</title>
-  <meta name="description" content="Acesso restrito à redação do Portal Jacaré Tucujú">
+  <meta name="description" content="Acesso ao Painel Administrativo do Portal Jacaré Tucujú">
   <meta name="robots" content="noindex, nofollow">
-    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/motion.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/login.css">
 </head>
-<body>
-  <main class="login">
+<body class="login-page">
+  <!-- Background grid -->
+  <div class="login-bg">
+    <svg class="login-bg__grid" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+      <defs>
+        <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+          <path d="M 100 0 L 0 0 0 100" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.08"/>
+        </pattern>
+      </defs>
+      <rect width="1000" height="1000" fill="url(#grid)" />
+    </svg>
+  </div>
 
-    <!-- HERO: editorial masthead -->
-    <section class="login__hero" aria-hidden="false">
-      <header class="login__masthead">
-        <span class="login__masthead-edition">Painel <span>DM</span> · Edição da Redação</span>
-        <time class="login__masthead-edition" id="edicao-data">—</time>
-      </header>
+  <!-- Top bar with portal branding (logo updated via Painel DM) -->
+  <header class="login-topbar">
+    <div class="login-topbar__left">
+      <!-- Portal logo (dynamically loaded) -->
+      <div class="login-topbar__logo-wrap" id="topbar-logo">
+        <!-- Logo carregada via API do Painel DM -->
+      </div>
+      <div class="login-topbar__text">
+        <strong id="portal-name">JACARÉ TUCUJU</strong>
+        <span id="portal-desc">Portal de Notícias</span>
+      </div>
+    </div>
+    <a href="../" class="login-topbar__link" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <path d="M3 9h18M9 3v18"/>
+      </svg>
+      Acessar Portal
+    </a>
+  </header>
 
-      <div class="login__hero-body">
-        <p class="login__hero-eyebrow">Sistema editorial · Jacaré Tucujú</p>
-        <h1 class="login__hero-title">
-          A redação<br>
-          <em>tem nova mesa.</em>
-        </h1>
-        <p class="login__hero-lede">
-          Onde se pauta, escreve, edita e publica a notícia do Amapá.
-          Bem-vindos à mesa de fechamento — agora digital, contínua, e ao vivo.
-        </p>
+  <!-- Main login area -->
+  <main class="login-container">
+    <!-- Modal card -->
+    <div class="login-modal">
+      <!-- Icon with Portal gradient -->
+      <div class="login-modal__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#portal-grad)" stroke-width="1.5">
+          <defs>
+            <linearGradient id="portal-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#c8102e"/>
+              <stop offset="100%" stop-color="#f5b400"/>
+            </linearGradient>
+          </defs>
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
       </div>
 
-      <footer class="login__hero-footer">
-        <span>Portal Jacaré Tucujú · Macapá/AP</span>
-        <span>v0.1 · Beta</span>
-      </footer>
-    </section>
+      <!-- Header -->
+      <h1 class="login-modal__title">Painel Administrativo</h1>
+      <p class="login-modal__subtitle">
+        Acesse o sistema administrativo do<br>
+        <strong>Portal Jacaré Tucujú</strong> com segurança.
+      </p>
 
-    <!-- FORM: refined login -->
-    <section class="login__form-side">
-      <div class="login__form-wrap">
-        <header class="login__welcome">
-          <p class="login__welcome-num">— 01 · Identificação</p>
-          <h2 class="login__welcome-title">Entre <em>na redação.</em></h2>
-        </header>
+      <!-- Form -->
+      <form class="login-form" id="form-login" novalidate>
+        <div class="login-form__error" id="login-error" role="alert"></div>
 
-        <form class="login__form" id="form-login" novalidate>
-          <div class="login__error" id="login-error" role="alert"></div>
-
-          <div class="field">
-            <label class="field__label req" for="email">E-mail</label>
+        <!-- Email field -->
+        <div class="field">
+          <label class="field__label" for="email">Usuário ou e-mail</label>
+          <div class="field__input-wrap field__input-wrap--with-icon">
+            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
             <input class="input" type="email" id="email" name="email"
-                   autocomplete="username" required placeholder="redacao@portaljt.com.br">
+                   autocomplete="username" required placeholder="Usuário ou e-mail">
           </div>
+        </div>
 
-          <div class="field">
-            <label class="field__label req" for="senha">Senha</label>
+        <!-- Password field -->
+        <div class="field">
+          <label class="field__label" for="senha">Senha</label>
+          <div class="field__input-wrap field__input-wrap--with-icon">
+            <svg class="field__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
             <input class="input" type="password" id="senha" name="senha"
-                   autocomplete="current-password" required placeholder="••••••••">
+                   autocomplete="current-password" required placeholder="Senha">
+            <button class="field__toggle-password" type="button" id="toggle-senha" aria-label="Mostrar/ocultar senha" title="Mostrar/ocultar senha">
+              <svg class="field__icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="field__icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
           </div>
+        </div>
 
-          <button class="btn btn--primary login__submit" type="submit" id="submit-btn">
-            Acessar painel
-          </button>
+        <!-- Remember and forgot password -->
+        <div class="login-form__options">
+          <label class="field__checkbox">
+            <input type="checkbox" name="remember" id="remember">
+            <span>Lembrar acesso</span>
+          </label>
+          <a href="#" id="forgot-link" class="login-form__forgot">Esqueci minha senha</a>
+        </div>
 
-          <footer class="login__meta">
-            <a href="#" id="forgot-link">Esqueci a senha</a>
-            <a href="../index.html" target="_blank">Ver portal ↗</a>
-          </footer>
-        </form>
-      </div>
-    </section>
+        <!-- Submit button -->
+        <button class="btn btn--primary login-form__submit" type="submit" id="submit-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Entrar
+        </button>
 
+        <!-- Divider -->
+        <div class="login-form__divider">ou</div>
+
+        <!-- Support link -->
+        <a href="#" id="support-link" class="login-form__support">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 7l-7 5 7 5V7z"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+          Precisa de ajuda? Fale com o suporte
+        </a>
+      </form>
+    </div>
   </main>
+
+  <!-- Footer -->
+  <footer class="login-footer">
+    <p class="login-footer__text">© 2025 Portal Jacaré Tucuju. Todos os direitos reservados.</p>
+    <div class="login-footer__links">
+      <a href="#" class="login-footer__link">Versão 1.0.0</a>
+      <span class="login-footer__sep">|</span>
+      <a href="#" class="login-footer__link">Suporte Técnico</a>
+    </div>
+  </footer>
 
   <script type="module">
     import { login } from './js/auth.js';
 
-    // Edição: data atual formatada
-    const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-    const d = new Date();
-    document.getElementById('edicao-data').textContent =
-      `${String(d.getDate()).padStart(2,'0')} · ${meses[d.getMonth()]} · ${d.getFullYear()}`;
+    // ═══════════════════════════════════════════════════
+    // Carregar configurações do Portal (logo + nome)
+    // ═══════════════════════════════════════════════════
+    async function loadPortalConfig() {
+      try {
+        const res = await fetch('/api/config');
+        if (!res.ok) throw new Error('Falha ao carregar config');
+        const config = await res.json();
+
+        // Atualizar logo
+        const logoWrap = document.getElementById('topbar-logo');
+        if (config.logomarca) {
+          const img = document.createElement('img');
+          img.src = config.logomarca;
+          img.alt = config.nome_portal || 'Portal';
+          logoWrap.appendChild(img);
+        }
+
+        // Atualizar nome do portal
+        if (config.nome_portal) {
+          document.getElementById('portal-name').textContent = config.nome_portal;
+        }
+
+        // Atualizar descrição
+        if (config.descricao_portal) {
+          document.getElementById('portal-desc').textContent = config.descricao_portal;
+        }
+      } catch (err) {
+        console.warn('Config não carregada:', err);
+        // Fallback para logo padrão
+        const logoWrap = document.getElementById('topbar-logo');
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 40 64');
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', 'Portal Jacaré Tucujú');
+        svg.innerHTML = `
+          <defs>
+            <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#c8102e"/>
+              <stop offset="100%" stop-color="#f5b400"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="8" width="6" height="48" fill="url(#bar)"/>
+        `;
+        logoWrap.appendChild(svg);
+      }
+    }
+
+    // Carregar config ao iniciar
+    loadPortalConfig();
 
     // Redireciona se já estiver autenticado
     if (localStorage.getItem('painel-dm:token')) {
-      location.href = '/index.html';
+      location.href = 'index.html';
     }
 
     const form = document.getElementById('form-login');
     const errBox = document.getElementById('login-error');
     const btn = document.getElementById('submit-btn');
+    const rememberCheckbox = document.getElementById('remember');
+
+    // Carregar preferência de "lembrar"
+    if (localStorage.getItem('painel-dm:remember-me')) {
+      rememberCheckbox.checked = true;
+      const savedEmail = localStorage.getItem('painel-dm:saved-email');
+      if (savedEmail) document.getElementById('email').value = savedEmail;
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -107,13 +236,23 @@
       try {
         const email = form.email.value.trim();
         const senha = form.senha.value;
+
+        // Salvar preferência de "lembrar"
+        if (rememberCheckbox.checked) {
+          localStorage.setItem('painel-dm:remember-me', 'true');
+          localStorage.setItem('painel-dm:saved-email', email);
+        } else {
+          localStorage.removeItem('painel-dm:remember-me');
+          localStorage.removeItem('painel-dm:saved-email');
+        }
+
         await login(email, senha);
-        location.href = '/index.html';
+        location.href = 'index.html';
       } catch (err) {
         errBox.textContent = err.message || 'Falha ao entrar.';
         errBox.classList.add('is-visible');
         btn.classList.remove('is-loading');
-        btn.textContent = 'Acessar painel';
+        btn.textContent = 'Entrar';
       }
     });
 
@@ -121,6 +260,22 @@
       e.preventDefault();
       errBox.textContent = 'Para redefinir sua senha, contate o administrador do portal.';
       errBox.classList.add('is-visible');
+    });
+
+    document.getElementById('support-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      errBox.textContent = 'Suporte técnico: suporte@portaljt.com.br ou (96) 9999-9999';
+      errBox.classList.add('is-visible');
+    });
+
+    // Toggle mostrar/ocultar senha
+    const senhaInput = document.getElementById('senha');
+    const toggleBtn = document.getElementById('toggle-senha');
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isPassword = senhaInput.type === 'password';
+      senhaInput.type = isPassword ? 'text' : 'password';
+      toggleBtn.classList.toggle('is-showing');
     });
   </script>
 </body>
