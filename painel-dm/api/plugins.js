@@ -4,9 +4,18 @@ const { authJwt } = require('../middleware/auth-jwt');
 const { requerePermissao } = require('../middleware/permissoes');
 
 const router = express.Router();
-router.use(authJwt);
-
 const FILE = 'plugins';
+
+// PÚBLICO (sem auth) — portal lê plugins instalados + config.
+// Registrado ANTES do authJwt global.
+router.get('/public', async (_req, res) => {
+  const items = await store.read(FILE, []);
+  res.json(
+    items.filter(p => p.instalado).map(p => ({ id: p.id, config: p.config || {} }))
+  );
+});
+
+router.use(authJwt);
 
 router.get('/', async (req, res) => {
   const { categoria = '', tipo = '', status = '', q = '' } = req.query;
@@ -75,6 +84,23 @@ router.patch('/:id/atualizar', requerePermissao('plugins'), async (req, res) => 
   });
   if (!atualizado) return res.status(404).json({ erro: 'Plugin não encontrado ou não instalado' });
   res.json({ id: atualizado.id, versao: atualizado.versao });
+});
+
+router.put('/:id/config', requerePermissao('plugins'), async (req, res) => {
+  const config = req.body?.config;
+  if (typeof config !== 'object' || config === null) {
+    return res.status(400).json({ erro: 'config deve ser um objeto' });
+  }
+  let atualizado = null;
+  await store.update(FILE, lista => {
+    const i = lista.findIndex(p => p.id === req.params.id);
+    if (i < 0) return lista;
+    lista[i].config = config;
+    atualizado = lista[i];
+    return lista;
+  });
+  if (!atualizado) return res.status(404).json({ erro: 'Plugin não encontrado' });
+  res.json({ id: atualizado.id, config });
 });
 
 module.exports = router;

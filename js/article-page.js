@@ -8,8 +8,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     await initPageShell({ route: null });
 
-    const params = new URLSearchParams(location.search);
-    const slug = params.get('slug');
+    // Lê slug do pathname (URLs amigáveis) ou query string (fallback)
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    let slug = null;
+    if (pathParts[0] === 'noticias' && pathParts[1]) {
+      slug = pathParts[1];
+    } else {
+      const params = new URLSearchParams(location.search);
+      slug = params.get('slug');
+    }
     // Tenta endpoint do painel (incrementa view), cai pro cache se offline
     const noticia = slug ? await fetchNoticiaCompleta(slug) : null;
     const root = document.getElementById('article-root');

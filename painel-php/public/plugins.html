@@ -203,11 +203,74 @@
 
   <script type="module">
     import { mountShell } from './js/shell.js';
-    import { apiGet, apiPatch } from './js/api.js';
+    import { apiGet, apiPatch, apiPut } from './js/api.js';
     import { toast, confirmar, staggerChildren } from './js/ui.js';
     await mountShell({ route: 'plugins' });
 
     function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    // Schema de configuração por plugin. Define os campos do modal "Configurar".
+    // type: text | textarea | url. nota = aviso exibido no topo do modal.
+    const CONFIG_SCHEMA = {
+      'google-analytics': {
+        campos: [{ key:'measurementId', label:'ID de medição (G-XXXXXXX)', type:'text', placeholder:'G-XXXXXXXXXX' }],
+      },
+      'aviso-lgpd': {
+        campos: [
+          { key:'texto', label:'Texto do aviso', type:'textarea', placeholder:'Usamos cookies para melhorar sua experiência…' },
+          { key:'textoBotao', label:'Texto do botão', type:'text', placeholder:'Entendi' },
+        ],
+      },
+      'ads-texto': {
+        campos: [{ key:'html', label:'HTML do anúncio (inserido entre parágrafos)', type:'textarea', placeholder:'<a href="…"><img src="…"></a>' }],
+      },
+      'isocial-whatsapp': {
+        nota: 'Requer integração externa (WhatsApp Business API). As credenciais ficam guardadas para uso futuro.',
+        campos: [
+          { key:'numero', label:'Número/Token da API', type:'text' },
+          { key:'grupo', label:'Link do grupo padrão', type:'url' },
+        ],
+      },
+      'isocial-instagram': {
+        nota: 'Requer integração externa (Instagram Graph API + OAuth).',
+        campos: [
+          { key:'pageId', label:'Instagram Business ID', type:'text' },
+          { key:'token', label:'Access Token', type:'text' },
+        ],
+      },
+      'facebook-auto': {
+        nota: 'Requer integração externa (Facebook Graph API + OAuth).',
+        campos: [
+          { key:'pageId', label:'Page ID', type:'text' },
+          { key:'token', label:'Access Token', type:'text' },
+        ],
+      },
+      'auto-post': {
+        nota: 'Requer servidor de agendamento (cron). Define a janela de publicação.',
+        campos: [
+          { key:'horarios', label:'Horários (ex: 08:00, 12:00, 18:00)', type:'text' },
+        ],
+      },
+      'gera-post': {
+        nota: 'Requer serviço de geração de imagem.',
+        campos: [
+          { key:'template', label:'Template padrão', type:'text' },
+        ],
+      },
+      'notif-push': {
+        nota: 'Requer chaves VAPID + servidor de push.',
+        campos: [
+          { key:'vapidPublic', label:'VAPID Public Key', type:'text' },
+          { key:'vapidPrivate', label:'VAPID Private Key', type:'text' },
+        ],
+      },
+      'google-amp': {
+        nota: 'Gera versão AMP das páginas (requer build separado).',
+        campos: [
+          { key:'analyticsId', label:'ID Analytics AMP (opcional)', type:'text' },
+        ],
+      },
+    };
 
     // SVGs simbólicos por icone-key
     const ICONS = {
@@ -278,12 +341,13 @@
             <footer class="plugin__foot">
               ${p.instalado
                 ? `<span class="badge-tipo badge-tipo--instalado">● Instalado · v${esc(p.versao)}</span>`
-                : `<span class="badge-tipo badge-tipo--${p.tipo}">${p.tipo === 'premium' ? '★ Premium' : 'Grátis'}</span>`}
+                : `<span class="badge-tipo badge-tipo--gratis">Grátis</span>`}
               <div style="display:flex;gap:6px">
                 ${upgrade ? '<button class="plugin-action plugin-action--upgrade" data-action="atualizar">Atualizar</button>' : ''}
+                ${p.instalado && CONFIG_SCHEMA[p.id] ? '<button class="plugin-action" data-action="configurar">Configurar</button>' : ''}
                 ${p.instalado
                   ? '<button class="plugin-action plugin-action--danger" data-action="desinstalar">Desinstalar</button>'
-                  : `<button class="plugin-action plugin-action--primary" data-action="instalar">${p.tipo === 'premium' ? 'Contratar' : 'Instalar'}</button>`}
+                  : '<button class="plugin-action plugin-action--primary" data-action="instalar">Instalar</button>'}
               </div>
             </footer>
           </article>
@@ -296,6 +360,52 @@
       todos = await apiGet('/plugins').catch(() => []);
       atualizarContadores();
       render();
+    }
+
+    // Modal de configuração — monta campos a partir do CONFIG_SCHEMA
+    async function abrirConfig(id) {
+      const schema = CONFIG_SCHEMA[id];
+      if (!schema) { toast('Este plugin não tem configurações.', 'info'); return; }
+      const plugin = await apiGet(`/plugins/${id}`).catch(() => null);
+      if (!plugin) { toast('Plugin não encontrado', 'error'); return; }
+      const cfg = plugin.config || {};
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal__backdrop"></div>
+        <div class="modal__box modal__box--lg">
+          <h3 class="modal__title" style="font-family:var(--font-display);font-style:italic">Configurar — ${esc(plugin.nome)}</h3>
+          ${schema.nota ? `<div class="info-bar" style="margin-bottom:var(--s-4)"><span>${esc(schema.nota)}</span></div>` : ''}
+          <form id="cfg-form" style="display:flex;flex-direction:column;gap:var(--s-3)">
+            ${schema.campos.map(c => `
+              <div class="field">
+                <label class="field__label">${esc(c.label)}</label>
+                ${c.type === 'textarea'
+                  ? `<textarea class="textarea" name="${c.key}" rows="3" placeholder="${esc(c.placeholder||'')}">${esc(cfg[c.key]||'')}</textarea>`
+                  : `<input class="input ${c.type==='text'&&/Token|Key/i.test(c.label)?'input--mono':''}" type="${c.type==='url'?'url':'text'}" name="${c.key}" value="${esc(cfg[c.key]||'')}" placeholder="${esc(c.placeholder||'')}">`}
+              </div>`).join('')}
+          </form>
+          <div class="modal__actions" style="margin-top:var(--s-4)">
+            <button class="btn btn--ghost" data-cancel>Cancelar</button>
+            <button class="btn btn--primary" data-save>Salvar configuração</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+      const close = () => modal.remove();
+      modal.querySelector('[data-cancel]').onclick = close;
+      modal.querySelector('.modal__backdrop').onclick = close;
+      modal.querySelector('[data-save]').onclick = async () => {
+        const fd = new FormData(modal.querySelector('#cfg-form'));
+        const config = {};
+        schema.campos.forEach(c => { config[c.key] = (fd.get(c.key) || '').trim(); });
+        try {
+          await apiPut(`/plugins/${id}/config`, { config });
+          toast('Configuração salva', 'success');
+          close();
+          carregar();
+        } catch (err) { toast(err.message, 'error'); }
+      };
     }
 
     document.getElementById('tabs').addEventListener('click', e => {
@@ -316,12 +426,11 @@
       try {
         if (ac === 'instalar') {
           const p = todos.find(x => x.id === id);
-          if (p.tipo === 'premium') {
-            toast('Este plugin é Premium — contate o comercial para liberar.', 'warning', 5000);
-            return;
-          }
           await apiPatch(`/plugins/${id}/instalar`);
           toast(`${p.nome} instalado`, 'success');
+        } else if (ac === 'configurar') {
+          abrirConfig(id);
+          return;
         } else if (ac === 'desinstalar') {
           const p = todos.find(x => x.id === id);
           const ok = await confirmar({ titulo: 'Desinstalar plugin?', mensagem: `${p.nome} será desativado.`, okText: 'Desinstalar' });

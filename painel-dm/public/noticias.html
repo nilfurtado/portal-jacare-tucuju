@@ -5,25 +5,200 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastrar notícia · Painel DM</title>
   <meta name="robots" content="noindex, nofollow">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
-
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/motion.css">
   <link rel="stylesheet" href="css/painel.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/tabela.css">
   <link rel="stylesheet" href="css/editor.css">
-  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+  <style>
+    /* Layout 2 colunas: editor + sidebar */
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: var(--s-6);
+      align-items: start;
+    }
+    .editor-main { min-width: 0; display: flex; flex-direction: column; gap: var(--s-5); }
+    .editor-sidebar { display: flex; flex-direction: column; gap: var(--s-4); position: sticky; top: calc(var(--topbar-h) + var(--s-5)); }
+
+    /* Card de seção */
+    .editor-card {
+      background: var(--surface);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-3);
+      overflow: hidden;
+    }
+    .editor-card__head {
+      padding: var(--s-3) var(--s-5);
+      border-bottom: 1px solid var(--paper-line);
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+    .editor-card__num {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      background: var(--paper-line);
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+    }
+    .editor-card__title {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .editor-card__body { padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-4); }
+    .editor-card__body--compact { padding: var(--s-4) var(--s-5); gap: var(--s-3); }
+
+    /* Status badge */
+    .status-selector {
+      display: flex;
+      gap: var(--s-2);
+      flex-wrap: wrap;
+    }
+    .status-opt { position: relative; }
+    .status-opt input { position: absolute; opacity: 0; }
+    .status-opt label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-pill);
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--d-1) var(--ease-out);
+      color: var(--ink-mute);
+    }
+    .status-opt label .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--ink-mute);
+    }
+    .status-opt input:checked + label {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: rgba(218,125,27,0.1);
+    }
+    .status-opt input:checked + label .dot { background: var(--brand); }
+    .status-opt.s-publicado input:checked + label { border-color: var(--positive); color: var(--positive); background: rgba(63,185,80,0.1); }
+    .status-opt.s-publicado input:checked + label .dot { background: var(--positive); }
+    .status-opt.s-rascunho input:checked + label { border-color: var(--ink-mute); color: var(--ink-soft); background: rgba(230,237,243,0.06); }
+    .status-opt.s-rascunho input:checked + label .dot { background: var(--ink-mute); }
+
+    /* Char counter */
+    .field-counter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .char-count {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--ink-faint);
+    }
+    .char-count.warn { color: var(--warning); }
+    .char-count.over { color: var(--danger); }
+
+    /* Slug preview */
+    .slug-preview {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--ink-mute);
+      background: var(--surface-2);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-2);
+      padding: 7px 10px;
+      word-break: break-all;
+    }
+    .slug-preview span { color: var(--brand); }
+
+    /* Editor word count bar */
+    .editor-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--paper-line);
+      border-top: none;
+      border-radius: 0 0 var(--r-2) var(--r-2);
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--ink-faint);
+    }
+
+    /* Autosave indicator */
+    .autosave {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--ink-faint);
+      padding: 4px 10px;
+      background: var(--surface);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-pill);
+    }
+    .autosave__dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--ink-faint);
+    }
+    .autosave.saved .autosave__dot { background: var(--positive); }
+    .autosave.saving .autosave__dot { background: var(--warning); animation: pulse 1s infinite; }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* Publish button no sidebar */
+    .btn--publish {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+      width: 100%;
+      justify-content: center;
+      padding: 11px;
+      font-size: 0.88rem;
+      border-radius: var(--r-2);
+    }
+    .btn--publish:hover { background: var(--brand-deep); border-color: var(--brand-deep); transform: none; }
+
+    .btn--draft {
+      background: transparent;
+      color: var(--ink-soft);
+      border-color: var(--paper-line);
+      width: 100%;
+      justify-content: center;
+      border-radius: var(--r-2);
+      font-size: 0.82rem;
+    }
+    .btn--draft:hover { border-color: var(--ink-mute); color: var(--ink); }
+
+    @media (max-width: 960px) {
+      .editor-layout { grid-template-columns: 1fr; }
+      .editor-sidebar { position: static; }
+    }
+  </style>
 </head>
 <body>
   <div class="painel">
     <div data-include="partials/shell.html"></div>
-
     <div class="main">
+
       <header class="topbar">
         <button class="topbar__btn" data-sidebar-toggle aria-label="Abrir menu">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
@@ -37,7 +212,11 @@
           <span id="crumb-acao">Cadastrar</span>
         </nav>
         <div class="topbar__actions">
-          <a class="topbar__btn" href="/noticias-lista.html">← Voltar à lista</a>
+          <div class="autosave" id="autosave-ind">
+            <span class="autosave__dot"></span>
+            <span id="autosave-txt">Não salvo</span>
+          </div>
+          <a class="topbar__btn" href="/noticias-lista.html">← Voltar</a>
         </div>
       </header>
 
@@ -52,29 +231,142 @@
         </header>
 
         <form id="form-noticia" novalidate>
+          <div class="editor-layout">
 
-          <!-- 01. Identidade -->
-          <section class="section">
-            <div class="section__num">01</div>
-            <div class="section__head">
-              <h2>Identidade</h2>
-              <p>Manchete, lide e classificação editorial.</p>
-              <div class="section__body">
+            <!-- COLUNA PRINCIPAL -->
+            <div class="editor-main">
 
-                <div class="field">
-                  <label class="field__label req" for="titulo">Manchete</label>
-                  <input class="input" type="text" id="titulo" name="titulo"
-                         placeholder="Ex.: Governo anuncia novo pacote para saúde" required>
+              <!-- MANCHETE E LIDE -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__num">01</span>
+                  <span class="editor-card__title">Identidade</span>
                 </div>
-
-                <div class="field">
-                  <label class="field__label" for="lide">Lide</label>
-                  <textarea class="textarea" id="lide" name="lide" rows="2"
-                            placeholder="Resumo de uma a duas linhas que aparece sob o título."></textarea>
-                  <span class="field__hint">Boa lide responde quem, o quê, quando, onde — em até 240 caracteres.</span>
+                <div class="editor-card__body">
+                  <div class="field">
+                    <label class="field__label req" for="titulo">Manchete</label>
+                    <input class="input" type="text" id="titulo" name="titulo"
+                           placeholder="Ex.: Governo anuncia novo pacote para saúde" required
+                           style="font-size:1.05rem; font-weight:500;">
+                    <div class="field-counter">
+                      <span class="field__hint">Título principal da matéria</span>
+                      <span class="char-count" id="titulo-count">0</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="lide">Lide / Subtítulo</label>
+                    <textarea class="textarea" id="lide" name="lide" rows="2"
+                              placeholder="Resumo de uma a duas linhas que aparece sob o título."></textarea>
+                    <div class="field-counter">
+                      <span class="field__hint">Quem, o quê, quando, onde — máx. 240 caracteres</span>
+                      <span class="char-count" id="lide-count">0 / 240</span>
+                    </div>
+                  </div>
                 </div>
+              </div>
 
-                <div class="form-grid">
+              <!-- IMAGEM DE CAPA -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__num">02</span>
+                  <span class="editor-card__title">Imagem de capa</span>
+                </div>
+                <div class="editor-card__body">
+                  <div class="image-uploader">
+                    <div class="image-uploader__preview" id="img-preview">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                    </div>
+                    <div style="flex:1">
+                      <input class="image-uploader__url" type="text" id="imagem" name="imagem"
+                             placeholder="https://… cole a URL da imagem">
+                      <p class="image-uploader__hint">Proporção 16:9 recomendada · JPG, PNG, WebP</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- EDITOR DE TEXTO -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__num">03</span>
+                  <span class="editor-card__title">Texto da matéria</span>
+                </div>
+                <div class="editor-card__body" style="padding-bottom:0">
+                  <div class="editor-wrap">
+                    <div id="editor-conteudo"></div>
+                    <input type="hidden" name="conteudo" id="conteudo">
+                  </div>
+                </div>
+                <div class="editor-footer">
+                  <span id="word-count">0 palavras</span>
+                  <span id="read-time">~0 min de leitura</span>
+                </div>
+              </div>
+
+              <!-- TAGS -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__num">04</span>
+                  <span class="editor-card__title">Tags</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
+                  <div class="field">
+                    <div class="tags-input" id="tags-wrap">
+                      <input class="tags-input__field" id="tag-input" placeholder="Digite e pressione Enter…">
+                    </div>
+                    <span class="field__hint">Palavras-chave para indexação interna</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- COLUNA SIDEBAR -->
+            <aside class="editor-sidebar">
+
+              <!-- PUBLICAR -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__title">Publicação</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
+
+                  <div class="status-selector">
+                    <div class="status-opt s-publicado">
+                      <input type="radio" name="status" id="st-pub" value="publicado" checked>
+                      <label for="st-pub"><span class="dot"></span> Publicar agora</label>
+                    </div>
+                    <div class="status-opt s-rascunho">
+                      <input type="radio" name="status" id="st-ras" value="rascunho">
+                      <label for="st-ras"><span class="dot"></span> Rascunho</label>
+                    </div>
+                    <div class="status-opt">
+                      <input type="radio" name="status" id="st-age" value="agendado">
+                      <label for="st-age"><span class="dot"></span> Agendar</label>
+                    </div>
+                  </div>
+
+                  <div class="field" id="field-data">
+                    <label class="field__label" for="data">Data / horário</label>
+                    <input class="input input--mono" type="datetime-local" id="data" name="data">
+                  </div>
+
+                  <div style="display:flex;flex-direction:column;gap:var(--s-2);margin-top:var(--s-1)">
+                    <button class="btn btn--publish" type="submit" id="btn-salvar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+                      Publicar notícia
+                    </button>
+                    <a class="btn btn--draft" href="/noticias-lista.html">Cancelar</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CLASSIFICAÇÃO -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__title">Classificação</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
                   <div class="field">
                     <label class="field__label req" for="categoria">Editoria</label>
                     <select class="select" id="categoria" name="categoria" required></select>
@@ -85,94 +377,42 @@
                       <option value="">— Nenhum —</option>
                     </select>
                   </div>
-                </div>
-
-                <div class="form-grid">
                   <div class="field">
-                    <label class="field__label" for="autor">Autor</label>
+                    <label class="field__label" for="autor">Autor / Repórter</label>
                     <input class="input" type="text" id="autor" name="autor" placeholder="Nome do repórter">
                   </div>
-                  <div class="field">
-                    <label class="field__label" for="data">Data de publicação</label>
-                    <input class="input" type="datetime-local" id="data" name="data">
-                  </div>
                 </div>
-
               </div>
-            </div>
-          </section>
 
-          <!-- 02. Imagem de capa -->
-          <section class="section">
-            <div class="section__num">02</div>
-            <div class="section__head">
-              <h2>Capa</h2>
-              <p>Imagem que ilustra a notícia. Proporção 16:9 recomendada.</p>
-              <div class="section__body">
-
-                <div class="image-uploader">
-                  <div class="image-uploader__preview" id="img-preview">sem imagem</div>
-                  <div>
-                    <input class="image-uploader__url" type="text" id="imagem" name="imagem"
-                           placeholder="https://… (cole URL ou faça upload)">
-                    <p class="image-uploader__hint">Cole a URL pública da imagem. Upload via servidor virá na Fase 3.</p>
-                  </div>
+              <!-- DESTAQUE -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__title">Destaque</span>
                 </div>
-
-              </div>
-            </div>
-          </section>
-
-          <!-- 03. Conteúdo -->
-          <section class="section">
-            <div class="section__num">03</div>
-            <div class="section__head">
-              <h2>Texto da matéria</h2>
-              <p>Use o editor para formatar. Suporta títulos, negrito, citações e listas.</p>
-              <div class="section__body">
-
-                <div class="editor-wrap">
-                  <div id="editor-conteudo"></div>
-                  <input type="hidden" name="conteudo" id="conteudo">
-                </div>
-
-              </div>
-            </div>
-          </section>
-
-          <!-- 04. Tags e destaque -->
-          <section class="section">
-            <div class="section__num">04</div>
-            <div class="section__head">
-              <h2>Tags & destaque</h2>
-              <p>Palavras-chave para indexação interna e flag de manchete.</p>
-              <div class="section__body">
-
-                <div class="field">
-                  <label class="field__label">Tags</label>
-                  <div class="tags-input" id="tags-wrap">
-                    <input class="tags-input__field" id="tag-input" placeholder="digite e pressione Enter…">
-                  </div>
-                </div>
-
-                <div class="field">
-                  <label class="field__label">Destaque na home</label>
+                <div class="editor-card__body editor-card__body--compact">
                   <label class="switch">
                     <input type="checkbox" id="destaque" name="destaque">
                     <span class="switch__track"></span>
                     <span class="switch__label">Aparecer no carrossel da capa</span>
                   </label>
                 </div>
-
               </div>
-            </div>
-          </section>
 
-          <div class="form-actions">
-            <a class="btn btn--ghost" href="/noticias-lista.html">Cancelar</a>
-            <button class="btn btn--primary" type="submit" id="btn-salvar">Publicar notícia</button>
+              <!-- SLUG / SEO PREVIEW -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__title">URL / Slug</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
+                  <div class="slug-preview" id="slug-preview">
+                    portaljt.com.br/<span id="slug-val">—</span>
+                  </div>
+                  <span class="field__hint">Gerado automaticamente pelo título</span>
+                </div>
+              </div>
+
+            </aside>
           </div>
-
         </form>
 
       </main>
@@ -209,6 +449,36 @@
           ['clean'],
         ],
       },
+    });
+
+    // Word count
+    function updateWordCount() {
+      const text = quill.getText().trim();
+      const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+      const mins = Math.max(1, Math.ceil(words / 200));
+      document.getElementById('word-count').textContent = `${words.toLocaleString('pt-BR')} palavras`;
+      document.getElementById('read-time').textContent = `~${mins} min de leitura`;
+    }
+    quill.on('text-change', updateWordCount);
+
+    // Char counters
+    const tituloInp = document.getElementById('titulo');
+    const lideInp = document.getElementById('lide');
+    tituloInp.addEventListener('input', () => {
+      const n = tituloInp.value.length;
+      const el = document.getElementById('titulo-count');
+      el.textContent = n;
+      el.className = 'char-count' + (n > 120 ? ' warn' : '');
+      // Slug
+      document.getElementById('slug-val').textContent = tituloInp.value
+        .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+        .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || '—';
+    });
+    lideInp.addEventListener('input', () => {
+      const n = lideInp.value.length;
+      const el = document.getElementById('lide-count');
+      el.textContent = `${n} / 240`;
+      el.className = 'char-count' + (n > 240 ? ' over' : n > 200 ? ' warn' : '');
     });
 
     // Categorias + municípios
@@ -259,25 +529,37 @@
     imgInput.addEventListener('input', () => {
       const url = imgInput.value.trim();
       if (url) imgPreview.innerHTML = `<img src="${url}" alt="">`;
-      else imgPreview.textContent = 'sem imagem';
+      else imgPreview.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
     });
+
+    // Autosave indicator
+    const autosave = document.getElementById('autosave-ind');
+    const autosaveTxt = document.getElementById('autosave-txt');
+    function setAutosave(state) {
+      autosave.className = 'autosave ' + state;
+      autosaveTxt.textContent = state === 'saved' ? 'Salvo' : state === 'saving' ? 'Salvando…' : 'Não salvo';
+    }
 
     // Pré-preenche se edição
     if (editId) {
       const n = await apiGet(`/noticias/${editId}`).catch(err => { toast(err.message, 'error'); return null; });
       if (n) {
-        document.getElementById('titulo').value    = n.titulo || '';
-        document.getElementById('lide').value      = n.lide || '';
+        document.getElementById('titulo').value = n.titulo || '';
+        tituloInp.dispatchEvent(new Event('input'));
+        document.getElementById('lide').value = n.lide || '';
+        lideInp.dispatchEvent(new Event('input'));
         catSel.value = n.categoria || cats[0]?.slug || '';
         munSel.value = n.municipio || '';
-        document.getElementById('autor').value     = n.autor || '';
-        document.getElementById('imagem').value    = n.imagem || '';
+        document.getElementById('autor').value = n.autor || '';
+        document.getElementById('imagem').value = n.imagem || '';
         imgInput.dispatchEvent(new Event('input'));
         if (n.data) document.getElementById('data').value = n.data.slice(0, 16);
         document.getElementById('destaque').checked = !!n.destaque;
         quill.root.innerHTML = n.conteudo || '';
         (n.tags || []).forEach(t => tags.add(t));
         renderTags();
+        updateWordCount();
+        setAutosave('saved');
       }
     } else {
       const d = new Date();
@@ -292,6 +574,7 @@
       btn.disabled = true;
       const original = btn.textContent;
       btn.textContent = 'Salvando…';
+      setAutosave('saving');
 
       const body = {
         titulo:    document.getElementById('titulo').value.trim(),
@@ -304,6 +587,7 @@
         data:      new Date(document.getElementById('data').value || Date.now()).toISOString(),
         tags:      [...tags],
         destaque:  document.getElementById('destaque').checked,
+        status:    document.querySelector('[name=status]:checked')?.value || 'publicado',
       };
 
       try {
@@ -314,9 +598,11 @@
           await apiPost('/noticias', body);
           toast('Notícia publicada', 'success');
         }
+        setAutosave('saved');
         setTimeout(() => location.href = '/noticias-lista.html', 700);
       } catch (err) {
         toast(err.message || 'Erro ao salvar', 'error');
+        setAutosave('unsaved');
         btn.disabled = false;
         btn.textContent = original;
       }

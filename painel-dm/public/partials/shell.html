@@ -17,138 +17,204 @@
   </div>
 
   <nav class="sidebar__nav">
-    <p class="sidebar__section-title">— Redação</p>
+    <p class="sidebar__section-title">Redação</p>
     <ul>
-      <li><a class="sidebar__link" data-route="inicio" href="/index.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+      <li><a class="sidebar__link" data-route="inicio" href="/painel/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12l9-9 9 9M5 10v10h5v-5h4v5h5V10"/>
+        </svg>
         Início
       </a></li>
 
       <li><details class="sidebar__group">
         <summary class="sidebar__group-toggle">
-          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+          <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5h16M4 12h16M4 19h10"/>
+          </svg>
           Notícias
           <span class="sidebar__group-arrow">›</span>
         </summary>
         <ul>
-          <li><a class="sidebar__link" data-route="noticia-nova" href="/noticias.html">Cadastrar</a></li>
-          <li><a class="sidebar__link" data-route="noticias-lista" href="/noticias-lista.html">Listar</a></li>
-          <li><a class="sidebar__link" data-route="categorias" href="/categorias.html">Categorias</a></li>
+          <li><a class="sidebar__link" data-route="noticia-nova" href="/painel/noticias/nova/">Cadastrar</a></li>
+          <li><a class="sidebar__link" data-route="noticias-lista" href="/painel/noticias/">Listar</a></li>
+          <li><a class="sidebar__link" data-route="categorias" href="/painel/categorias/">Categorias</a></li>
         </ul>
       </details></li>
 
-      <li><a class="sidebar__link" data-route="anuncios" href="/anuncios.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 7h18v10H3zM3 11h18"/></svg>
+      <li><a class="sidebar__link" data-route="anuncios" href="/painel/anuncios/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="7" width="18" height="10" rx="1"/>
+          <path d="M3 11h18"/>
+        </svg>
         Anúncios
       </a></li>
 
       <li><details class="sidebar__group">
         <summary class="sidebar__group-toggle">
-          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 6l18 0v12H3zM10 9v6l5-3z"/></svg>
+          <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="14" rx="1"/>
+            <path d="M10 9l5 3-5 3V9z"/>
+          </svg>
           Vídeos
           <span class="sidebar__group-arrow">›</span>
         </summary>
         <ul>
-          <li><a class="sidebar__link" data-route="video-novo" href="/videos.html">Cadastrar</a></li>
-          <li><a class="sidebar__link" data-route="videos-lista" href="/videos-lista.html">Listar</a></li>
+          <li><a class="sidebar__link" data-route="video-novo" href="/painel/videos/">Cadastrar</a></li>
+          <li><a class="sidebar__link" data-route="videos-lista" href="/painel/videos/">Listar</a></li>
         </ul>
       </details></li>
 
       <li><details class="sidebar__group">
         <summary class="sidebar__group-toggle">
-          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+          <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 8v4l3 3"/>
+          </svg>
           Enquetes
           <span class="sidebar__group-arrow">›</span>
         </summary>
         <ul>
-          <li><a class="sidebar__link" data-route="enquete-nova" href="/enquetes.html">Cadastrar</a></li>
-          <li><a class="sidebar__link" data-route="enquetes-lista" href="/enquetes-lista.html">Listar</a></li>
+          <li><a class="sidebar__link" data-route="enquete-nova" href="/painel/enquetes/">Cadastrar</a></li>
+          <li><a class="sidebar__link" data-route="enquetes-lista" href="/painel/enquetes/">Listar</a></li>
         </ul>
       </details></li>
 
-      <li><a class="sidebar__link" data-route="comentarios" href="/comentarios.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 5h18v11h-7l-4 4v-4H3z"/></svg>
+      <li><a class="sidebar__link" data-route="comentarios" href="/painel/comentarios/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
         Comentários
       </a></li>
 
-      <li><a class="sidebar__link" data-route="colunas" href="/colunas.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM9 4v16M15 4v16"/></svg>
-        Colunas & blogs
+      <li><a class="sidebar__link" data-route="colunas" href="/painel/colunas/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        Colunas &amp; blogs
       </a></li>
     </ul>
 
-    <p class="sidebar__section-title">— Operação</p>
+    <p class="sidebar__section-title">Operação</p>
     <ul>
-      <li><a class="sidebar__link" data-route="municipios" href="/municipios.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M12 2L4 8v12h16V8zM9 20v-6h6v6"/></svg>
+      <li><a class="sidebar__link" data-route="municipios" href="/painel/municipios/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
         Municípios
       </a></li>
 
       <li><details class="sidebar__group">
         <summary class="sidebar__group-toggle">
-          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M4 4h16v6H4zM4 14h16v6H4z"/></svg>
+          <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
           Classificados
           <span class="sidebar__group-arrow">›</span>
         </summary>
         <ul>
-          <li><a class="sidebar__link" href="/classificados.html">Anúncios</a></li>
-          <li><a class="sidebar__link" href="/classificados-categorias.html">Categorias</a></li>
-          <li><a class="sidebar__link" href="/classificados-planos.html">Planos</a></li>
-          <li><a class="sidebar__link" href="/classificados-anunciantes.html">Anunciantes</a></li>
+          <li><a class="sidebar__link" href="/painel/classificados/">Anúncios</a></li>
+          <li><a class="sidebar__link" href="/painel/classificados-categorias/">Categorias</a></li>
+          <li><a class="sidebar__link" href="/painel/classificados/">Planos</a></li>
+          <li><a class="sidebar__link" href="/painel/classificados/">Anunciantes</a></li>
         </ul>
       </details></li>
 
-      <li><a class="sidebar__link" data-route="paginas" href="/paginas.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6zM15 3v5h5"/></svg>
+      <li><a class="sidebar__link" data-route="paginas" href="/painel/paginas/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
         Páginas
       </a></li>
 
-      <li><a class="sidebar__link" data-route="logomarca" href="/logomarca.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+      <li><a class="sidebar__link" data-route="logomarca" href="/painel/logomarca/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/>
+        </svg>
         Logomarca
       </a></li>
     </ul>
 
-    <p class="sidebar__section-title">— Sistema</p>
+    <p class="sidebar__section-title">Sistema</p>
     <ul>
-      <li><a class="sidebar__link" data-route="usuarios" href="/usuarios.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 5-6 8-6s7 2 8 6"/></svg>
+      <li><a class="sidebar__link" data-route="usuarios" href="/painel/usuarios/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
         Usuários
       </a></li>
 
-      <li><a class="sidebar__link" data-route="plugins" href="/plugins.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M22 11h-4V7c0-1.1-.9-2-2-2h-4V3h-2v4H6c-1.1 0-2 .9-2 2v4H2v2h4v4c0 1.1.9 2 2 2h4v2h2v-2h4c1.1 0 2-.9 2-2v-4h2v-2z"/></svg>
+      <li><a class="sidebar__link" data-route="plugins" href="/painel/plugins/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/>
+          <line x1="16" y1="8" x2="2" y2="22"/>
+          <line x1="17.5" y1="15" x2="9" y2="15"/>
+        </svg>
         Plugins
       </a></li>
 
-      <li><a class="sidebar__link" data-route="acessos" href="/acessos.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/></svg>
+      <li><a class="sidebar__link" data-route="acessos" href="/painel/acessos/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
         Acessos
       </a></li>
 
-      <li><a class="sidebar__link" data-route="configuracoes" href="/configuracoes.html">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8L7 17M17 7l2.8-2.8"/></svg>
+      <li><a class="sidebar__link" data-route="configuracoes" href="/painel/configuracoes/">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
         Configurações
       </a></li>
 
       <li><details class="sidebar__group">
         <summary class="sidebar__group-toggle">
-          <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M3 6h18l-2 14H5zM9 6V3h6v3"/></svg>
+          <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14H6L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4h6v2"/>
+          </svg>
           Lixeira
           <span class="sidebar__group-arrow">›</span>
         </summary>
         <ul>
-          <li><a class="sidebar__link" href="/lixeira-noticias.html">Notícias</a></li>
-          <li><a class="sidebar__link" href="/lixeira-videos.html">Vídeos</a></li>
-          <li><a class="sidebar__link" href="/lixeira-anuncios.html">Anúncios</a></li>
-          <li><a class="sidebar__link" href="/lixeira-comentarios.html">Comentários</a></li>
+          <li><a class="sidebar__link" href="/painel/lixeira/">Notícias</a></li>
+          <li><a class="sidebar__link" href="/painel/lixeira/">Vídeos</a></li>
+          <li><a class="sidebar__link" href="/painel/lixeira/">Anúncios</a></li>
+          <li><a class="sidebar__link" href="/painel/lixeira/">Comentários</a></li>
         </ul>
       </details></li>
 
       <li><a class="sidebar__link" data-action="logout" href="#">
-        <svg class="sidebar__icon" viewBox="0 0 24 24"><path d="M15 3h4v18h-4M10 17l-5-5 5-5M5 12h12"/></svg>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
         Sair
       </a></li>
     </ul>
   </nav>
+
+  <!-- Theme toggle no rodapé da sidebar -->
+  <div class="sidebar__footer">
+    <button class="sidebar__theme-btn" id="theme-toggle" title="Mudar tema">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <span id="theme-label">Tema claro</span>
+    </button>
+  </div>
 </aside>

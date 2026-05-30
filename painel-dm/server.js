@@ -38,7 +38,60 @@ app.use('/api/portal', require('./api/portal'));
 app.use('/img', express.static(path.join(PORTAL_DIR, 'img')));
 app.use('/data', express.static(path.join(PORTAL_DIR, 'data')));
 
-// Frontend do painel
+// ═══════════════════════════════════════════════════
+// URL AMIGÁVEIS — MAPEAMENTO DE ROTAS
+// ═══════════════════════════════════════════════════
+
+const ROUTE_MAP = {
+  '/painel/': 'index.html',
+  '/painel/login/': 'login.html',
+  '/painel/noticias/': 'noticias-lista.html',
+  '/painel/noticias/nova/': 'noticias.html',
+  '/painel/categorias/': 'categorias.html',
+  '/painel/anuncios/': 'anuncios.html',
+  '/painel/municipios/': 'municipios.html',
+  '/painel/usuarios/': 'usuarios.html',
+  '/painel/videos/': 'videos.html',
+  '/painel/comentarios/': 'comentarios.html',
+  '/painel/classificados/': 'classificados.html',
+  '/painel/classificados-categorias/': 'classificados-categorias.html',
+  '/painel/enquetes/': 'enquetes.html',
+  '/painel/colunas/': 'colunas.html',
+  '/painel/paginas/': 'paginas.html',
+  '/painel/acessos/': 'acessos.html',
+  '/painel/plugins/': 'plugins.html',
+  '/painel/configuracoes/': 'configuracoes.html',
+  '/painel/temas/': 'temas.html',
+  '/painel/layout/': 'layout.html',
+  '/painel/logomarca/': 'logomarca.html',
+  '/painel/lixeira/': 'lixeira.html'
+};
+
+// Middleware para rotas amigáveis do painel
+app.get(/^\/painel\/.*\/$/, (req, res, next) => {
+  const file = ROUTE_MAP[req.path];
+  if (file) {
+    return res.sendFile(path.join(PUBLIC_DIR, file));
+  }
+  // Se não encontrar, tenta padrão /painel/resource/id/editar/
+  const match = req.path.match(/^\/painel\/(\w+)\/(\w+)\/editar\/?$/);
+  if (match) {
+    const resource = match[1];
+    // Mapeia para a página correspondente (ex: /painel/noticias/123/editar/ → noticias.html)
+    const editFile = {
+      'noticias': 'noticias.html',
+      'videos': 'videos.html',
+      'usuarios': 'usuarios.html',
+      'paginas': 'paginas.html'
+    }[resource];
+    if (editFile) {
+      return res.sendFile(path.join(PUBLIC_DIR, editFile));
+    }
+  }
+  next();
+});
+
+// Frontend do painel — arquivos estáticos
 app.use('/', express.static(PUBLIC_DIR));
 
 // SPA fallback: redireciona rotas desconhecidas para login

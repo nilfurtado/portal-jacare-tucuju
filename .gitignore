@@ -91,3 +91,4 @@ backup-*.zip
 dist/
 build/
 *.zip
+**/_login.html

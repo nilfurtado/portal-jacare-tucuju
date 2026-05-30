@@ -217,6 +217,7 @@ CREATE TABLE IF NOT EXISTS plugins (
   ultima_versao  VARCHAR(20)  DEFAULT '1.0.0',
   icone          VARCHAR(60)  DEFAULT NULL,
   cor            VARCHAR(20)  DEFAULT NULL,
+  config         JSON         DEFAULT NULL,
   instalado_em   DATETIME     DEFAULT NULL,
   atualizado_em  DATETIME     DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -263,12 +264,12 @@ INSERT IGNORE INTO anuncios (id, nome, tipo, tamanho, posicao, paginas, ativo) V
 
 -- Plugins disponíveis
 INSERT IGNORE INTO plugins (id, nome, descricao, categoria, tipo, icone, cor) VALUES
-  ('isocial-whatsapp',  'iSocial Post WhatsApp',          'Compartilhe suas notícias em grupos do WhatsApp automaticamente.', 'redes-sociais',  'premium', 'whatsapp',  '#25d366'),
+  ('isocial-whatsapp',  'iSocial Post WhatsApp',          'Compartilhe suas notícias em grupos do WhatsApp automaticamente.', 'redes-sociais',  'gratis', 'whatsapp',  '#25d366'),
   ('isocial-instagram', 'iSocial Post Instagram',         'Publique suas notícias em suas páginas do Instagram.',             'redes-sociais',  'gratis',  'instagram', '#e1306c'),
-  ('vocaliza',          'Vocaliza',                       'Torne o seu site inclusivo adicionando um player.',                 'acessibilidade', 'premium', 'voz',       '#9b59b6'),
+  ('vocaliza',          'Vocaliza',                       'Torne o seu site inclusivo adicionando um player.',                 'acessibilidade', 'gratis', 'voz',       '#9b59b6'),
   ('pdf-incorporado',   'PDF Incorporado',                'Exiba seus arquivos em PDF direto na notícia.',                     'conteudo',       'gratis',  'pdf',       '#d93025'),
   ('aviso-lgpd',        'Aviso de Política de Privacidade','Insira um aviso sobre a Política de Privacidade do seu site.',     'legal',          'gratis',  'cadeado',   '#5a5a5a'),
-  ('auto-post',         'Auto Post',                      'Publique notícias automaticamente no seu site.',                    'automacao',      'premium', 'auto-post', '#f08c00'),
+  ('auto-post',         'Auto Post',                      'Publique notícias automaticamente no seu site.',                    'automacao',      'gratis', 'auto-post', '#f08c00'),
   ('gera-post',         'Gera Post',                      'Gere artes das notícias para compartilhar nas redes sociais.',      'criativo',       'gratis',  'arte',      '#2185d0'),
   ('google-amp',        'Google AMP Cache',               'Versão AMP (Google) de suas notícias.',                              'performance',    'gratis',  'raio',      '#1a73e8'),
   ('protecao-copia',    'Proteção contra cópia',          'Dificulte a cópia de conteúdos do seu site.',                        'seguranca',      'gratis',  'escudo',    '#27ae60'),

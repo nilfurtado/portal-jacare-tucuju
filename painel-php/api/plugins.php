@@ -3,6 +3,10 @@
 /** @var Router $router */
 
 function plugin_serialize(array $r): array {
+  $config = [];
+  if (array_key_exists('config', $r) && $r['config']) {
+    $config = is_string($r['config']) ? (json_decode($r['config'], true) ?: []) : (array) $r['config'];
+  }
   return [
     'id'           => $r['id'],
     'nome'         => $r['nome'],
@@ -14,6 +18,7 @@ function plugin_serialize(array $r): array {
     'ultimaVersao' => $r['ultima_versao'],
     'icone'        => $r['icone']        ?? '',
     'cor'          => $r['cor']          ?? '',
+    'config'       => $config,
   ];
 }
 
@@ -36,11 +41,35 @@ $router->get('/api/plugins', function (): void {
   Response::ok(array_map('plugin_serialize', DB::fetchAll($sql, $params)));
 });
 
+// PÚBLICO — portal lê plugins instalados + config (sem auth)
+$router->get('/api/plugins/public', function (): void {
+  $rows = DB::fetchAll('SELECT id, config FROM plugins WHERE instalado = 1');
+  $out = array_map(function ($r) {
+    $cfg = $r['config'] ? (is_string($r['config']) ? (json_decode($r['config'], true) ?: []) : (array) $r['config']) : [];
+    return ['id' => $r['id'], 'config' => $cfg];
+  }, $rows);
+  Response::ok($out);
+});
+
 $router->get('/api/plugins/:id', function (array $p): void {
   Auth::required();
   $row = DB::fetch('SELECT * FROM plugins WHERE id = ?', [$p['id']]);
   if (!$row) Response::notFound('Plugin não encontrado');
   Response::ok(plugin_serialize($row));
+});
+
+// Salvar configuração do plugin
+$router->put('/api/plugins/:id/config', function (array $p): void {
+  Auth::requirePermissao('plugins');
+  $body = Request::body();
+  $config = $body['config'] ?? [];
+  if (!is_array($config)) Response::badRequest('config deve ser um objeto');
+  $changed = DB::execute(
+    'UPDATE plugins SET config = ? WHERE id = ?',
+    [json_encode($config, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $p['id']]
+  );
+  if (!$changed) Response::notFound('Plugin não encontrado');
+  Response::ok(['id' => $p['id'], 'config' => $config]);
 });
 
 $router->patch('/api/plugins/:id/instalar', function (array $p): void {

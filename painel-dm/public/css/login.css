@@ -127,6 +127,7 @@
   flex-direction: column;
   justify-content: center;
   background: var(--paper);
+  border-left: 1px solid var(--paper-line);
 }
 .login__form-wrap {
   width: 100%;
@@ -165,7 +166,7 @@
   font-size: 0.82rem;
   color: var(--danger);
   padding: 10px 14px;
-  background: rgba(138,42,42,0.06);
+  background: rgba(248,81,73,0.12);
   border-left: 3px solid var(--danger);
   border-radius: var(--r-2);
   display: none;

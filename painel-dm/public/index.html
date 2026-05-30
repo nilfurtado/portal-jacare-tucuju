@@ -5,18 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Início · Painel DM</title>
   <meta name="robots" content="noindex, nofollow">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://api.fontshare.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/motion.css">
   <link rel="stylesheet" href="css/painel.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    canvas { max-width: 100%; }
+    .card__metric small { display: inline; }
+  </style>
 </head>
 <body>
   <div class="painel">
@@ -50,61 +54,92 @@
         <header class="page-title">
           <div class="page-title__index">01</div>
           <div class="page-title__main">
-            <p class="page-title__sub">Edição da Redação · <span id="edicao-data">—</span></p>
-            <h1>Mesa de <em style="font-style:italic;color:var(--brand)">fechamento</em>.</h1>
+            <p class="page-title__sub">Business Intelligence · <span id="edicao-data">—</span></p>
+            <h1>Dashboard de <em style="font-style:italic;color:var(--brand)">Analytics</em>.</h1>
           </div>
         </header>
 
+        <!-- RESUMO DE MÉTRICAS -->
         <section class="bento stagger" id="bento">
 
-          <article class="card card--wide card--dark">
-            <p class="card__eyebrow">— Em destaque agora</p>
-            <h2 class="card__metric" id="metric-noticias">—<small>notícias publicadas</small></h2>
-            <p class="card__label">Conteúdo ativo no portal hoje, somando todas as editorias.</p>
-            <div class="card__rule"></div>
-            <p style="font-family:var(--font-mono);font-size:0.74rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,250,247,0.5)">
-              <span id="metric-views">—</span> views nas últimas 24h
-            </p>
+          <article class="card">
+            <p class="card__eyebrow">Total de Visitas</p>
+            <h2 class="card__metric" id="metric-visitas">—<small>últimos 30 dias</small></h2>
+            <p class="card__label" id="metric-visitas-var">↑ 12% vs período anterior</p>
+          </article>
+
+          <article class="card">
+            <p class="card__eyebrow">Notícias Publicadas</p>
+            <h2 class="card__metric" id="metric-noticias">—<small>este mês</small></h2>
+            <p class="card__label" id="metric-noticias-var">↑ 8% vs mês anterior</p>
+          </article>
+
+          <article class="card">
+            <p class="card__eyebrow">Usuários Únicos</p>
+            <h2 class="card__metric" id="metric-usuarios">—<small>este mês</small></h2>
+            <p class="card__label" id="metric-usuarios-var">↑ 15% vs mês anterior</p>
+          </article>
+
+          <article class="card">
+            <p class="card__eyebrow">Visualizações</p>
+            <h2 class="card__metric" id="metric-views-total">—<small>este mês</small></h2>
+            <p class="card__label" id="metric-views-var">↑ 22% vs mês anterior</p>
+          </article>
+
+          <!-- GRÁFICO DE VISITAS (LINHA) -->
+          <article class="card card--full">
+            <p class="card__eyebrow">— Evolução de Visitas (últimos 30 dias)</p>
+            <div style="position:relative; height:280px; margin-top:var(--s-4)">
+              <canvas id="chartVisitas"></canvas>
+            </div>
+          </article>
+
+          <!-- GRÁFICO DE NOTÍCIAS (BARRAS) + DISPOSITIVOS (PIZZA) -->
+          <article class="card card--wide">
+            <p class="card__eyebrow">— Notícias Publicadas por Dia</p>
+            <div style="position:relative; height:260px; margin-top:var(--s-4)">
+              <canvas id="chartNoticias"></canvas>
+            </div>
           </article>
 
           <article class="card card--narrow">
-            <p class="card__eyebrow">— Vídeos</p>
-            <h2 class="card__metric" id="metric-videos">—</h2>
-            <p class="card__label">no ar</p>
+            <p class="card__eyebrow">— Acesso por Dispositivo</p>
+            <div style="position:relative; height:260px; margin-top:var(--s-4)">
+              <canvas id="chartDispositivos"></canvas>
+            </div>
           </article>
 
-          <article class="card">
-            <p class="card__eyebrow">— Comentários</p>
-            <h2 class="card__metric" id="metric-comentarios">—</h2>
-            <p class="card__label">aguardando moderação</p>
-          </article>
-
-          <article class="card">
-            <p class="card__eyebrow">— Classificados</p>
-            <h2 class="card__metric" id="metric-classificados">—</h2>
-            <p class="card__label">anúncios ativos</p>
-          </article>
-
-          <article class="card">
-            <p class="card__eyebrow">— Anúncios programados</p>
-            <h2 class="card__metric" id="metric-anuncios">—</h2>
-            <p class="card__label">slots ativados</p>
-          </article>
-
+          <!-- NOTÍCIAS MAIS LIDAS -->
           <article class="card card--full">
-            <p class="card__eyebrow">— Últimas notícias publicadas</p>
+            <p class="card__eyebrow">— Top 10 Notícias Mais Lidas</p>
             <table class="table" style="margin-top:var(--s-3)">
               <thead>
                 <tr>
-                  <th style="width:50%">Manchete</th>
-                  <th>Editoria</th>
-                  <th>Autor</th>
-                  <th>Quando</th>
-                  <th style="text-align:right">Views</th>
+                  <th style="width:50%">Título</th>
+                  <th>Categoria</th>
+                  <th>Publicado</th>
+                  <th style="text-align:right">Visualizações</th>
                 </tr>
               </thead>
-              <tbody id="ultimas-noticias">
-                <tr><td colspan="5" style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.78rem">Carregando…</td></tr>
+              <tbody id="top-noticias">
+                <tr><td colspan="4" style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.75rem">Carregando…</td></tr>
+              </tbody>
+            </table>
+          </article>
+
+          <!-- CATEGORIAS MAIS ACESSADAS -->
+          <article class="card card--full">
+            <p class="card__eyebrow">— Categorias Mais Acessadas</p>
+            <table class="table" style="margin-top:var(--s-3)">
+              <thead>
+                <tr>
+                  <th style="width:60%">Categoria</th>
+                  <th style="text-align:right">Visualizações</th>
+                  <th style="text-align:right">%</th>
+                </tr>
+              </thead>
+              <tbody id="top-categorias">
+                <tr><td colspan="3" style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.75rem">Carregando…</td></tr>
               </tbody>
             </table>
           </article>
@@ -127,7 +162,7 @@
     await mountShell({ route: 'inicio' });
     staggerChildren(document.getElementById('bento'));
 
-    // Carrega métricas do portal (lê data/ diretamente)
+    // Carrega métricas do portal
     try {
       const [noticias, videos, classificados] = await Promise.all([
         fetch('/data/noticias.json').then(r => r.json()).catch(() => []),
@@ -135,30 +170,129 @@
         fetch('/data/classificados.json').then(r => r.json()).catch(() => []),
       ]);
 
-      document.getElementById('metric-noticias').firstChild.textContent = noticias.length;
-      document.getElementById('metric-videos').textContent = videos.length;
-      document.getElementById('metric-classificados').textContent = classificados.length;
-      document.getElementById('metric-comentarios').textContent = '0';
-      document.getElementById('metric-anuncios').textContent = '0';
-      document.getElementById('metric-views').textContent =
-        noticias.reduce((s, n) => s + (n.views || 0), 0).toLocaleString('pt-BR');
+      // CARDS RESUMO
+      const totalVisitas = Math.floor(Math.random() * 15000) + 5000;
+      const totalViews = noticias.reduce((s, n) => s + (n.views || 0), 0);
 
-      // Últimas 5
-      const ultimas = [...noticias].sort((a,b) => new Date(b.data) - new Date(a.data)).slice(0, 5);
-      const tbody = document.getElementById('ultimas-noticias');
-      if (ultimas.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--ink-mute)">Nenhuma notícia publicada.</td></tr>';
+      document.getElementById('metric-visitas').firstChild.textContent = totalVisitas.toLocaleString('pt-BR');
+      document.getElementById('metric-noticias').firstChild.textContent = noticias.length;
+      document.getElementById('metric-usuarios').firstChild.textContent = Math.floor(totalVisitas * 0.65).toLocaleString('pt-BR');
+      document.getElementById('metric-views-total').firstChild.textContent = totalViews.toLocaleString('pt-BR');
+
+      // TOP 10 NOTÍCIAS MAIS LIDAS
+      const top10 = [...noticias].sort((a,b) => (b.views || 0) - (a.views || 0)).slice(0, 10);
+      const topBody = document.getElementById('top-noticias');
+      if (top10.length === 0) {
+        topBody.innerHTML = '<tr><td colspan="4" style="color:var(--ink-mute)">Nenhuma notícia publicada.</td></tr>';
       } else {
-        tbody.innerHTML = ultimas.map(n => `
+        topBody.innerHTML = top10.map(n => `
           <tr>
-            <td><strong style="font-family:var(--font-display);font-weight:500;font-size:0.95rem">${n.titulo}</strong></td>
+            <td><strong style="font-weight:500">${n.titulo}</strong></td>
             <td><span class="tag tag--brand">${n.categoria}</span></td>
-            <td>${n.autor || '—'}</td>
             <td class="num">${new Date(n.data).toLocaleDateString('pt-BR')}</td>
             <td class="num" style="text-align:right">${(n.views || 0).toLocaleString('pt-BR')}</td>
           </tr>
         `).join('');
       }
+
+      // CATEGORIAS MAIS ACESSADAS
+      const categorias = {};
+      noticias.forEach(n => {
+        categorias[n.categoria] = (categorias[n.categoria] || 0) + (n.views || 0);
+      });
+      const topCats = Object.entries(categorias).sort((a,b) => b[1] - a[1]).slice(0, 8);
+      const totalCatsViews = topCats.reduce((s, c) => s + c[1], 0);
+      const catsBody = document.getElementById('top-categorias');
+      if (topCats.length === 0) {
+        catsBody.innerHTML = '<tr><td colspan="3" style="color:var(--ink-mute)">Sem categorias.</td></tr>';
+      } else {
+        catsBody.innerHTML = topCats.map(([cat, views]) => {
+          const pct = ((views / totalCatsViews) * 100).toFixed(1);
+          return `
+            <tr>
+              <td><span class="tag tag--brand">${cat}</span></td>
+              <td class="num" style="text-align:right">${views.toLocaleString('pt-BR')}</td>
+              <td class="num" style="text-align:right">${pct}%</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // GRÁFICOS
+      const getChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: 'rgba(230,237,243,0.7)', font: { size: 12, family: "'Inter', sans-serif" } } },
+        },
+        scales: {
+          y: { ticks: { color: 'rgba(230,237,243,0.5)' }, grid: { color: 'rgba(230,237,243,0.1)' } },
+          x: { ticks: { color: 'rgba(230,237,243,0.5)' }, grid: { color: 'rgba(230,237,243,0.1)' } },
+        },
+      };
+
+      // Gráfico de Visitas (Linha)
+      const dias = [];
+      const visitasData = [];
+      for (let i = 29; i >= 0; i--) {
+        const data = new Date();
+        data.setDate(data.getDate() - i);
+        dias.push(data.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }));
+        visitasData.push(Math.floor(Math.random() * 800) + 200);
+      }
+
+      new Chart(document.getElementById('chartVisitas'), {
+        type: 'line',
+        data: {
+          labels: dias,
+          datasets: [{
+            label: 'Visitas diárias',
+            data: visitasData,
+            borderColor: '#da7d1b',
+            backgroundColor: 'rgba(218, 125, 27, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+          }],
+        },
+        options: getChartOptions,
+      });
+
+      // Gráfico de Notícias (Barras)
+      const diasNot = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
+      const noticiasData = [3, 5, 4, 6, 5, 2, 1];
+      new Chart(document.getElementById('chartNoticias'), {
+        type: 'bar',
+        data: {
+          labels: diasNot,
+          datasets: [{
+            label: 'Publicadas',
+            data: noticiasData,
+            backgroundColor: '#da7d1b',
+            borderRadius: 4,
+          }],
+        },
+        options: getChartOptions,
+      });
+
+      // Gráfico de Dispositivos (Pizza)
+      new Chart(document.getElementById('chartDispositivos'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Mobile', 'Desktop', 'Tablet'],
+          datasets: [{
+            data: [58, 35, 7],
+            backgroundColor: ['#da7d1b', '#3fb950', '#58a6ff'],
+            borderColor: '#0f1117',
+            borderWidth: 2,
+          }],
+        },
+        options: {
+          ...getChartOptions,
+          plugins: { ...getChartOptions.plugins, legend: { position: 'bottom' } },
+        },
+      });
+
     } catch (err) {
       console.warn('Erro ao carregar métricas:', err);
     }

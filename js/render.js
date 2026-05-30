@@ -1,5 +1,27 @@
 import { getCategoria, getMunicipio, tempoRelativo, formatarData } from './data.js';
 
+// ═══════════════════════════════════════════════════
+// URL AMIGÁVEIS — HELPERS
+// ═══════════════════════════════════════════════════
+
+export function urlNoticia(slug) {
+  return `/noticias/${encodeURIComponent(slug)}/`;
+}
+
+export function urlCategoria(slug) {
+  return `/categoria/${encodeURIComponent(slug)}/`;
+}
+
+export function urlMunicipio(slug) {
+  return `/municipio/${encodeURIComponent(slug)}/`;
+}
+
+export function urlBusca(q) {
+  return `/busca/?q=${encodeURIComponent(q)}`;
+}
+
+// ═══════════════════════════════════════════════════
+
 export function esc(str) {
   if (str == null) return '';
   return String(str)
@@ -13,7 +35,7 @@ export function esc(str) {
 export function cardNoticia(n, variant = 'medium') {
   const cat = getCategoria(n.categoria);
   const catLabel = cat ? cat.label : n.categoria;
-  const link = `noticia.html?slug=${encodeURIComponent(n.slug)}`;
+  const link = `urlNoticia(n.slug)`;
   const showLide = variant === 'large' || variant === 'medium';
   const imgClass = variant === 'horizontal' ? 'card--horizontal' : '';
 
@@ -38,7 +60,7 @@ export function cardNoticia(n, variant = 'medium') {
 export function rankedItem(n, idx) {
   const cat = getCategoria(n.categoria);
   const catLabel = cat ? cat.label : n.categoria;
-  const link = `noticia.html?slug=${encodeURIComponent(n.slug)}`;
+  const link = `urlNoticia(n.slug)`;
   const views = n.views ? n.views.toLocaleString('pt-BR') : '0';
   return `
     <a href="${link}" class="ranked-item">

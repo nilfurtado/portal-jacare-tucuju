@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Temas · Painel DM</title>
   <meta name="robots" content="noindex, nofollow">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/motion.css">
   <link rel="stylesheet" href="css/painel.css">
@@ -78,7 +79,7 @@
             <div class="section__body">
               <div class="form-grid">
                 <div class="field"><label class="field__label">Fonte de títulos</label><select class="select" name="fonte-display"><option>Fraunces</option><option>Playfair Display</option><option>Lora</option><option>Cormorant Garamond</option></select></div>
-                <div class="field"><label class="field__label">Fonte de texto</label><select class="select" name="fonte-body"><option>Geist</option><option>Inter</option><option>DM Sans</option><option>Sora</option></select></div>
+                <div class="field"><label class="field__label">Fonte de texto</label><select class="select" name="fonte-body"><option>IBM Plex Sans</option><option>Inter</option><option>IBM Plex Mono</option><option>Sora</option></select></div>
               </div>
             </div>
           </div>
@@ -115,7 +116,7 @@
     }
     renderPresets();
     document.querySelector(`[name="fonte-display"]`).value = cfg.tema.fontes?.display || 'Fraunces';
-    document.querySelector(`[name="fonte-body"]`).value    = cfg.tema.fontes?.body    || 'Geist';
+    document.querySelector(`[name="fonte-body"]`).value    = cfg.tema.fontes?.body    || 'IBM Plex Sans';
     document.querySelector(`#modo-${cfg.tema.modo || 'claro'}`).checked = true;
 
     document.getElementById('presets').addEventListener('click', e => {

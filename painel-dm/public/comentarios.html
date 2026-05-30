@@ -5,33 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Comentários · Painel DM</title>
   <meta name="robots" content="noindex, nofollow">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/motion.css">
   <link rel="stylesheet" href="css/painel.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/tabela.css">
   <style>
-    .filter-tabs { display:flex; gap: 2px; background:var(--surface-2); padding:4px; border-radius:var(--r-pill); width:fit-content; margin-bottom: var(--s-4); }
-    .filter-tabs button { background:transparent; border:none; padding:8px 16px; border-radius:var(--r-pill); font-family:var(--font-mono); font-size:0.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); cursor:pointer; transition:all var(--d-1); }
-    .filter-tabs button.is-active { background:var(--ink); color:var(--paper); }
-    .filter-tabs button .count { display:inline-block; margin-left:6px; opacity:.6; font-size:0.66rem; }
-
-    .comm { background:var(--surface); border:1px solid var(--rule); border-radius:var(--r-3); padding:var(--s-4) var(--s-5); margin-bottom:var(--s-3); }
-    .comm__head { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s-3); margin-bottom:var(--s-2); }
-    .comm__autor { font-family:var(--font-display); font-variation-settings:'opsz' 60,'SOFT' 30; font-weight:500; font-size:0.96rem; }
-    .comm__meta { font-family:var(--font-mono); font-size:0.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); margin-top:2px; }
-    .comm__texto { font-size:0.92rem; line-height:1.55; color:var(--ink-soft); margin-top:var(--s-2); }
-    .comm__noticia { display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:0.7rem; color:var(--ink-mute); margin-top:var(--s-3); }
-    .comm__noticia a { color:var(--brand); }
-
-    .status-badge { display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:0.66rem; letter-spacing:.14em; text-transform:uppercase; padding:3px 10px; border-radius:var(--r-pill); border:1px solid var(--rule); }
-    .status-badge--pendente { color: var(--warning); border-color: rgba(184,128,30,0.3); background: rgba(184,128,30,0.06); }
-    .status-badge--aprovado { color: var(--positive); border-color: rgba(62,107,58,0.3); background: rgba(62,107,58,0.06); }
-    .status-badge--rejeitado { color: var(--danger); border-color: rgba(138,42,42,0.3); background: rgba(138,42,42,0.06); }
+    .comm-text { font-size: 0.87rem; line-height: 1.4; color: var(--ink-soft); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .comm-noticia { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-mute); }
+    .comm-noticia a { color: var(--brand); text-decoration: none; }
   </style>
 </head>
 <body>
@@ -54,26 +41,38 @@
           </div>
         </header>
 
-        <section class="section">
-          <div class="section__num">01</div>
-          <div class="section__head">
-            <h2>Fila de moderação</h2>
-            <p>Aprove, rejeite ou remova comentários enviados pelos leitores.</p>
-            <div class="section__body">
-
-              <div class="filter-tabs" id="tabs">
-                <button class="is-active" data-filter="">Todos <span class="count" data-count-all></span></button>
-                <button data-filter="pendente">Pendentes <span class="count" data-count-pendente></span></button>
-                <button data-filter="aprovado">Aprovados <span class="count" data-count-aprovado></span></button>
-                <button data-filter="rejeitado">Rejeitados <span class="count" data-count-rejeitado></span></button>
-              </div>
-
-              <div id="lista-comm">
-                <div style="color:var(--ink-mute);text-align:center;padding:var(--s-6);font-family:var(--font-mono);font-size:0.78rem">Carregando…</div>
-              </div>
-            </div>
+        <!-- PAGE TOOLBAR -->
+        <div class="page-toolbar">
+          <div class="page-toolbar__search">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="input" type="text" id="search-comm" placeholder="Buscar comentários…" autocomplete="off">
           </div>
-        </section>
+          <div class="page-toolbar__tabs" id="tabs">
+            <button class="tab-btn is-active" data-filter="">Todos <span class="tab-count" data-count-all>0</span></button>
+            <button class="tab-btn" data-filter="pendente">Pendentes <span class="tab-count" data-count-pendente>0</span></button>
+            <button class="tab-btn" data-filter="aprovado">Aprovados <span class="tab-count" data-count-aprovado>0</span></button>
+            <button class="tab-btn" data-filter="rejeitado">Rejeitados <span class="tab-count" data-count-rejeitado>0</span></button>
+          </div>
+        </div>
+
+        <!-- TABELA -->
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Autor</th>
+                <th>Comentário</th>
+                <th>Matéria</th>
+                <th style="text-align:center">Status</th>
+                <th>Data</th>
+                <th style="width:80px"></th>
+              </tr>
+            </thead>
+            <tbody id="lista-comm">
+              <tr><td colspan="6" style="text-align:center;color:var(--ink-mute);padding:var(--s-6);font-family:var(--font-mono);font-size:0.78rem">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
       </main>
     </div>
   </div>
@@ -103,46 +102,46 @@
       document.querySelector('[data-count-rejeitado]').textContent = c('rejeitado');
     }
 
+    function statusTag(status) {
+      const map = { 'pendente': 'tag--warn', 'aprovado': 'tag--ok', 'rejeitado': 'tag--danger' };
+      return `<span class="tag ${map[status] || ''}" style="text-transform:capitalize">${status}</span>`;
+    }
+
     function render(){
       const items = currentFilter ? allComments.filter(c => c.status === currentFilter) : allComments;
       const cont = document.getElementById('lista-comm');
       if(!items.length){
-        cont.innerHTML = `<div style="color:var(--ink-mute);text-align:center;padding:var(--s-7);font-family:var(--font-display);font-style:italic;font-size:1.1rem">Nada a moderar por aqui.</div>`;
+        cont.innerHTML = `<tr><td colspan="6" style="color:var(--ink-mute);text-align:center;padding:var(--s-7);font-family:var(--font-display);font-style:italic;font-size:1rem">Nada a moderar por aqui.</td></tr>`;
         return;
       }
       cont.innerHTML = items.map(c => `
-        <article class="comm" data-id="${c.id}" data-status="${c.status}">
-          <div class="comm__head">
-            <div>
-              <div class="comm__autor">${esc(c.autor)}</div>
-              <div class="comm__meta">${new Date(c.criadoEm).toLocaleString('pt-BR')} ${c.email ? '· '+esc(c.email) : ''}</div>
+        <tr data-id="${c.id}">
+          <td class="num">${esc(c.autor)}</td>
+          <td><div class="comm-text">${esc(c.texto)}</div></td>
+          <td><a class="comm-noticia" href="../noticia.html?slug=${encodeURIComponent(c.noticiaSlug)}" target="_blank">${esc(c.noticiaSlug)}</a></td>
+          <td style="text-align:center">${statusTag(c.status)}</td>
+          <td class="num">${new Date(c.criadoEm).toLocaleDateString('pt-BR')}</td>
+          <td style="text-align:right">
+            <div class="row-actions">
+              ${c.status !== 'aprovado' ? '<button data-action="aprovar" title="Aprovar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></button>' : ''}
+              ${c.status !== 'rejeitado' ? '<button data-action="rejeitar" title="Rejeitar"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' : ''}
+              <button data-action="remover" class="danger" title="Remover"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
             </div>
-            <span class="status-badge status-badge--${c.status}">${c.status}</span>
-          </div>
-          <p class="comm__texto">${esc(c.texto)}</p>
-          <div class="comm__noticia">
-            ↳ em
-            <a href="../noticia.html?slug=${encodeURIComponent(c.noticiaSlug)}" target="_blank">${esc(c.noticiaSlug)}</a>
-          </div>
-          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:var(--s-3)">
-            ${c.status !== 'aprovado' ? '<button class="btn btn--ghost" data-action="aprovar" style="padding:6px 14px;font-size:0.78rem">Aprovar</button>' : ''}
-            ${c.status !== 'rejeitado' ? '<button class="btn btn--ghost" data-action="rejeitar" style="padding:6px 14px;font-size:0.78rem">Rejeitar</button>' : ''}
-            <button class="btn btn--danger" data-action="remover" style="padding:6px 14px;font-size:0.78rem">Remover</button>
-          </div>
-        </article>
+          </td>
+        </tr>
       `).join('');
     }
 
     document.getElementById('tabs').addEventListener('click', e => {
-      const btn = e.target.closest('button'); if(!btn) return;
-      document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('is-active', b === btn));
+      const btn = e.target.closest('.tab-btn'); if(!btn) return;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('is-active', b === btn));
       currentFilter = btn.dataset.filter;
       render();
     });
 
     document.getElementById('lista-comm').addEventListener('click', async e => {
       const btn = e.target.closest('button[data-action]'); if(!btn) return;
-      const id = btn.closest('.comm').dataset.id;
+      const id = btn.closest('tr').dataset.id;
       const ac = btn.dataset.action;
       try {
         if(ac === 'aprovar'){ await apiPatch(`/comentarios/${id}/aprovar`); toast('Aprovado','success'); }

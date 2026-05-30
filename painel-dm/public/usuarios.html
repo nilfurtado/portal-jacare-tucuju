@@ -5,71 +5,188 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Usuários · Painel DM</title>
   <meta name="robots" content="noindex, nofollow">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/motion.css">
   <link rel="stylesheet" href="css/painel.css">
   <link rel="stylesheet" href="css/forms.css">
   <link rel="stylesheet" href="css/tabela.css">
   <style>
-    .perm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-3); }
-    .perm-fieldset {
-      border: 1px solid var(--rule);
-      border-radius: var(--r-2);
-      padding: var(--s-3) var(--s-4);
+    /* Avatar */
+    .user-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--brand);
+      display: grid; place-items: center;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #fff;
+      flex-shrink: 0;
+      text-transform: uppercase;
     }
-    .perm-fieldset legend { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing:.14em; text-transform:uppercase; color: var(--ink-mute); padding: 0 6px; }
-    .perm-fieldset label { display: block; font-size: 0.84rem; padding: 4px 0; cursor: pointer; }
-    .perm-fieldset input { margin-right: 6px; }
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+    .user-cell__name { font-weight: 500; font-size: 0.88rem; color: var(--ink); }
+    .user-cell__city { font-size: 0.73rem; color: var(--ink-mute); margin-top: 2px; font-family: var(--font-mono); }
 
-    .require-senha { list-style:none; padding:0; margin: var(--s-2) 0 0; font-family: var(--font-mono); font-size:0.7rem; }
-    .require-senha li { padding-left: 16px; position: relative; color: var(--ink-mute); }
-    .require-senha li::before { content:'○'; position:absolute; left:0; }
-    .require-senha li.ok { color: var(--positive); }
-    .require-senha li.ok::before { content:'●'; }
+    /* Permissions grid no modal */
+    .perm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: var(--s-2);
+    }
+    .perm-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-2);
+      cursor: pointer;
+      transition: all var(--d-1) var(--ease-out);
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+    }
+    .perm-item:has(input:checked) {
+      border-color: var(--brand);
+      background: rgba(218,125,27,0.08);
+      color: var(--ink);
+    }
+    .perm-item input { width: 14px; height: 14px; accent-color: var(--brand); }
+
+    /* Senha requisitos */
+    .req-senha {
+      list-style: none;
+      padding: 0;
+      margin: var(--s-2) 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .req-senha li {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--paper-line);
+      color: var(--ink-mute);
+      transition: all var(--d-1) var(--ease-out);
+    }
+    .req-senha li.ok { color: var(--positive); border-color: rgba(63,185,80,0.35); background: rgba(63,185,80,0.08); }
+
+    /* Modal maior */
+    .modal__box--lg { max-width: 680px !important; max-height: calc(100vh - 48px); overflow-y: auto; }
+
+    @media (max-width: 768px) {
+      .page-toolbar { flex-direction: column; }
+      .page-toolbar__search { width: 100%; }
+    }
   </style>
 </head>
 <body>
   <div class="painel">
     <div data-include="partials/shell.html"></div>
     <div class="main">
+
       <header class="topbar">
-        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <button class="topbar__btn" data-sidebar-toggle>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
         <nav class="topbar__crumbs">
           <a href="/index.html">Painel</a><span class="sep">/</span><span>Usuários</span>
         </nav>
         <div class="topbar__actions">
           <button class="btn btn--primary" id="btn-novo">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-            Novo usuário
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Novo
           </button>
         </div>
       </header>
 
       <main class="content">
+
         <header class="page-title">
           <div class="page-title__index">12</div>
           <div class="page-title__main">
-            <p class="page-title__sub">Equipe · permissões</p>
+            <p class="page-title__sub">Sistema · equipe e permissões</p>
             <h1>A <em style="font-style:italic;color:var(--brand)">redação</em>.</h1>
           </div>
         </header>
 
-        <section class="section">
-          <div class="section__num">01</div>
-          <div class="section__head">
-            <h2>Usuários cadastrados</h2>
-            <div class="section__body">
-              <table class="table">
-                <thead><tr><th style="width:6%">ID</th><th>Nome</th><th>Email</th><th>Tipo</th><th>Status</th><th></th></tr></thead>
-                <tbody id="lista-users"></tbody>
-              </table>
+        <!-- STATS -->
+        <div class="stats-bar">
+          <div class="stat-card">
+            <div class="stat-card__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-total">—</div>
+              <div class="stat-card__label">Total</div>
             </div>
           </div>
-        </section>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(63,185,80,0.12);color:var(--positive)">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-ativos">—</div>
+              <div class="stat-card__label">Ativos</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(88,166,255,0.12);color:var(--info)">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-admins">—</div>
+              <div class="stat-card__label">Admins</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE TOOLBAR -->
+        <div class="page-toolbar">
+          <div class="page-toolbar__search">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="input" type="text" id="search-users" placeholder="Buscar usuários…" autocomplete="off">
+          </div>
+          <div class="page-toolbar__tabs" id="status-tabs">
+            <button class="tab-btn is-active" data-type="">Todos</button>
+            <button class="tab-btn" data-type="admin">Admins</button>
+            <button class="tab-btn" data-type="ativo">Ativos</button>
+            <button class="tab-btn" data-type="inativo">Inativos</button>
+          </div>
+        </div>
+
+        <!-- TABELA -->
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Tipo</th>
+                <th style="text-align:center">Status</th>
+                <th style="width:80px"></th>
+              </tr>
+            </thead>
+            <tbody id="lista-users">
+              <tr><td colspan="5" style="color:var(--ink-mute);text-align:center;padding:var(--s-6)">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
       </main>
     </div>
   </div>
@@ -80,84 +197,158 @@
     import { toast, confirmar } from './js/ui.js';
     await mountShell({ route: 'usuarios' });
 
-    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+    function esc(s) { return String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
 
-    const MODULES = ['noticias','categorias','anuncios','videos','enquetes','classificados','municipios','colunas','comentarios','paginas','usuarios','configuracoes'];
+    function avatarColor(nome) {
+      const cores = ['#da7d1b','#3fb950','#58a6ff','#d29922','#a371f7','#f78166'];
+      const i = (nome || '').charCodeAt(0) % cores.length;
+      return cores[i];
+    }
 
-    async function carregar(){
-      const users = await apiGet('/usuarios').catch(()=>[]);
-      document.getElementById('lista-users').innerHTML = users.map(u => `
+    const MODULES = [
+      { key: 'noticias', label: 'Notícias' },
+      { key: 'categorias', label: 'Categorias' },
+      { key: 'anuncios', label: 'Anúncios' },
+      { key: 'videos', label: 'Vídeos' },
+      { key: 'enquetes', label: 'Enquetes' },
+      { key: 'classificados', label: 'Classificados' },
+      { key: 'municipios', label: 'Municípios' },
+      { key: 'colunas', label: 'Colunas' },
+      { key: 'comentarios', label: 'Comentários' },
+      { key: 'paginas', label: 'Páginas' },
+      { key: 'usuarios', label: 'Usuários' },
+      { key: 'configuracoes', label: 'Configurações' },
+    ];
+
+    async function carregar() {
+      const users = await apiGet('/usuarios').catch(() => []);
+
+      // Stats
+      document.getElementById('st-total').textContent = users.length;
+      document.getElementById('st-ativos').textContent = users.filter(u => u.status === 'S').length;
+      document.getElementById('st-admins').textContent = users.filter(u => u.tipo === 'admin').length;
+
+      const tbody = document.getElementById('lista-users');
+      tbody.innerHTML = users.map(u => {
+        const inicial = (u.nome || '?')[0].toUpperCase();
+        const cor = avatarColor(u.nome);
+        return `
         <tr data-id="${u.id}">
-          <td class="num">${u.id}</td>
-          <td><strong style="font-family:var(--font-display);font-weight:500;font-size:1rem">${esc(u.nome)}</strong></td>
-          <td><code style="font-family:var(--font-mono);font-size:0.78rem;color:var(--ink-mute)">${esc(u.email)}</code></td>
-          <td><span class="tag tag--brand">${u.tipo}</span></td>
-          <td>${u.status === 'S' ? '<span class="tag tag--ok">Ativo</span>' : '<span class="tag">Inativo</span>'}</td>
-          <td><div class="row-actions">
-            <button data-action="status" title="Alternar status">⏻</button>
-            <button data-action="editar" title="Editar">✎</button>
-            <button data-action="remover" class="danger" title="Remover">×</button>
-          </div></td>
-        </tr>
-      `).join('') || '<tr><td colspan="6" style="color:var(--ink-mute)">Nenhum usuário cadastrado.</td></tr>';
+          <td>
+            <div class="user-cell">
+              <div class="user-avatar" style="background:${cor}">${inicial}</div>
+              <div>
+                <div class="user-cell__name">${esc(u.nome)}</div>
+                ${u.cidade ? `<div class="user-cell__city">${esc(u.cidade)}${u.estado ? ', ' + esc(u.estado) : ''}</div>` : ''}
+              </div>
+            </div>
+          </td>
+          <td class="num">${esc(u.email)}</td>
+          <td><span class="tag ${u.tipo === 'admin' ? 'tag--info' : 'tag--mute'}">${u.tipo === 'admin' ? 'Admin' : 'Colaborador'}</span></td>
+          <td style="text-align:center">
+            <button class="toggle-status ${u.status === 'S' ? 'ativo' : 'inativo'}" data-action="status" title="Alternar status">
+              <span class="dot"></span>
+              ${u.status === 'S' ? 'Ativo' : 'Inativo'}
+            </button>
+          </td>
+          <td style="text-align:right">
+            <div class="row-actions">
+              <button data-action="editar" title="Editar usuário">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16.5 3.5l4 4L7 21H3v-4z"/></svg>
+              </button>
+              <button data-action="remover" class="danger" title="Remover usuário">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('') || '<tr><td colspan="5" style="color:var(--ink-mute);text-align:center;padding:var(--s-6)">Nenhum usuário cadastrado.</td></tr>';
     }
 
     function abrirEditor(user) {
       const isNovo = !user;
-      user = user || { nome:'', email:'', tipo:'colaborador', status:'S', telefone:'', cidade:'', estado:'', sobre:'', permissoes:{ paginas:[] } };
+      user = user || { nome:'', email:'', tipo:'colaborador', status:'S', telefone:'', cidade:'', estado:'AP', sobre:'', permissoes:{ paginas:[] } };
 
       const modal = document.createElement('div');
       modal.className = 'modal';
       modal.innerHTML = `
         <div class="modal__backdrop"></div>
-        <div class="modal__box modal__box--lg" style="max-width:720px;max-height:calc(100vh - 64px);overflow-y:auto">
-          <h3 class="modal__title" style="font-family:var(--font-display);font-style:italic">${isNovo ? 'Novo usuário' : 'Editar — '+esc(user.nome)}</h3>
-          <form id="user-form" style="display:flex;flex-direction:column;gap:var(--s-3);margin-top:var(--s-3)">
+        <div class="modal__box modal__box--lg">
+          <h3 class="modal__title">${isNovo ? 'Novo usuário' : 'Editar — ' + esc(user.nome)}</h3>
+          <form id="user-form" style="display:flex;flex-direction:column;gap:var(--s-4);margin-top:var(--s-4)">
+
             <div class="form-grid">
-              <div class="field"><label class="field__label req">Nome</label><input class="input" name="nome" required value="${esc(user.nome)}"></div>
-              <div class="field"><label class="field__label">Telefone</label><input class="input input--mono" name="telefone" value="${esc(user.telefone)}"></div>
-            </div>
-            <div class="form-grid">
-              <div class="field"><label class="field__label req">E-mail</label><input class="input input--mono" type="email" name="email" required value="${esc(user.email)}"></div>
               <div class="field">
-                <label class="field__label ${isNovo ? 'req' : ''}">Senha ${isNovo ? '' : '(deixe em branco para não alterar)'}</label>
-                <input class="input input--mono" type="password" name="senha" id="senha-inp" ${isNovo ? 'required' : ''}>
-                <ul class="require-senha" id="req-senha">
-                  <li data-rule="len">Mínimo 8 caracteres</li>
-                  <li data-rule="upper">1 maiúsculo</li>
-                  <li data-rule="lower">1 minúsculo</li>
-                  <li data-rule="num">1 número</li>
-                  <li data-rule="esp">1 caractere especial</li>
-                </ul>
+                <label class="field__label req">Nome completo</label>
+                <input class="input" name="nome" required value="${esc(user.nome)}" placeholder="Nome do colaborador">
               </div>
-            </div>
-            <div class="form-grid">
-              <div class="field"><label class="field__label">Cidade</label><input class="input" name="cidade" value="${esc(user.cidade)}"></div>
-              <div class="field"><label class="field__label">Estado/UF</label><input class="input input--mono" name="estado" maxlength="2" value="${esc(user.estado)}"></div>
-            </div>
-            <div class="radio-group">
-              <div class="radio-card">
-                <input type="radio" id="tipo-admin" name="tipo" value="admin" ${user.tipo === 'admin' ? 'checked' : ''}>
-                <label for="tipo-admin"><strong>Administrador</strong><span>Acesso total ao painel</span></label>
-              </div>
-              <div class="radio-card">
-                <input type="radio" id="tipo-col" name="tipo" value="colaborador" ${user.tipo === 'colaborador' ? 'checked' : ''}>
-                <label for="tipo-col"><strong>Colaborador</strong><span>Acesso restrito por módulo</span></label>
+              <div class="field">
+                <label class="field__label">Telefone</label>
+                <input class="input input--mono" name="telefone" value="${esc(user.telefone)}" placeholder="(96) 9 0000-0000">
               </div>
             </div>
 
-            <fieldset class="perm-fieldset" id="perm-fs" style="${user.tipo === 'admin' ? 'display:none' : ''}">
-              <legend>Permissões de módulos</legend>
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label req">E-mail</label>
+                <input class="input input--mono" type="email" name="email" required value="${esc(user.email)}" placeholder="usuario@portaljt.com.br">
+              </div>
+              <div class="field">
+                <label class="field__label ${isNovo ? 'req' : ''}">
+                  Senha ${!isNovo ? '<span style="font-weight:400;color:var(--ink-mute)">(deixe em branco para manter)</span>' : ''}
+                </label>
+                <input class="input input--mono" type="password" name="senha" id="senha-inp" ${isNovo ? 'required' : ''} placeholder="••••••••">
+                <ul class="req-senha" id="req-senha">
+                  <li data-rule="len">8+ chars</li>
+                  <li data-rule="upper">Maiúsculo</li>
+                  <li data-rule="lower">Minúsculo</li>
+                  <li data-rule="num">Número</li>
+                  <li data-rule="esp">Especial</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label">Cidade</label>
+                <input class="input" name="cidade" value="${esc(user.cidade)}" placeholder="Macapá">
+              </div>
+              <div class="field">
+                <label class="field__label">UF</label>
+                <input class="input input--mono" name="estado" maxlength="2" value="${esc(user.estado)}" placeholder="AP" style="text-transform:uppercase">
+              </div>
+            </div>
+
+            <div>
+              <p class="field__label" style="margin-bottom:var(--s-2)">Tipo de acesso</p>
+              <div class="radio-group">
+                <div class="radio-card">
+                  <input type="radio" id="tipo-admin" name="tipo" value="admin" ${user.tipo === 'admin' ? 'checked' : ''}>
+                  <label for="tipo-admin"><strong>Administrador</strong><span>Acesso total ao sistema</span></label>
+                </div>
+                <div class="radio-card">
+                  <input type="radio" id="tipo-col" name="tipo" value="colaborador" ${user.tipo !== 'admin' ? 'checked' : ''}>
+                  <label for="tipo-col"><strong>Colaborador</strong><span>Acesso restrito por módulo</span></label>
+                </div>
+              </div>
+            </div>
+
+            <div id="perm-fs" style="${user.tipo === 'admin' ? 'display:none' : ''}">
+              <p class="field__label" style="margin-bottom:var(--s-2)">Módulos permitidos</p>
               <div class="perm-grid">
                 ${MODULES.map(m => `
-                  <label><input type="checkbox" name="perm" value="${m}" ${(user.permissoes?.paginas||[]).includes(m) ? 'checked' : ''}> ${m}</label>
+                  <label class="perm-item">
+                    <input type="checkbox" name="perm" value="${m.key}" ${(user.permissoes?.paginas || []).includes(m.key) ? 'checked' : ''}>
+                    ${m.label}
+                  </label>
                 `).join('')}
               </div>
-            </fieldset>
+            </div>
+
           </form>
-          <div class="modal__actions" style="margin-top:var(--s-4)">
+          <div class="modal__actions" style="margin-top:var(--s-5)">
             <button class="btn btn--ghost" data-cancel>Cancelar</button>
-            <button class="btn btn--primary" data-save>${isNovo ? 'Criar usuário' : 'Salvar'}</button>
+            <button class="btn btn--primary" data-save>${isNovo ? 'Criar usuário' : 'Salvar alterações'}</button>
           </div>
         </div>`;
       document.body.appendChild(modal);
@@ -166,14 +357,12 @@
       modal.querySelector('[data-cancel]').onclick = close;
       modal.querySelector('.modal__backdrop').onclick = close;
 
-      // Toggle perm fieldset
       modal.querySelectorAll('[name=tipo]').forEach(r => {
         r.addEventListener('change', e => {
           modal.querySelector('#perm-fs').style.display = e.target.value === 'admin' ? 'none' : '';
         });
       });
 
-      // Validação de senha em tempo real
       const senhaInp = modal.querySelector('#senha-inp');
       const reqUl = modal.querySelector('#req-senha');
       senhaInp.addEventListener('input', () => {
@@ -199,10 +388,9 @@
         };
         const senha = fd.get('senha');
         if (senha) body.senha = senha;
-
         try {
           if (isNovo) await apiPost('/usuarios', body);
-          else        await apiPut(`/usuarios/${user.id}`, body);
+          else await apiPut(`/usuarios/${user.id}`, body);
           toast(isNovo ? 'Usuário criado' : 'Usuário atualizado', 'success');
           close(); carregar();
         } catch (err) { toast(err.message, 'error'); }
@@ -212,7 +400,7 @@
     document.getElementById('btn-novo').onclick = () => abrirEditor(null);
 
     document.getElementById('lista-users').addEventListener('click', async e => {
-      const btn = e.target.closest('button[data-action]'); if(!btn) return;
+      const btn = e.target.closest('button[data-action]'); if (!btn) return;
       const id = btn.closest('tr').dataset.id;
       const ac = btn.dataset.action;
       if (ac === 'editar') {
@@ -222,7 +410,7 @@
         try { await apiPatch(`/usuarios/${id}/status`); carregar(); }
         catch (err) { toast(err.message, 'error'); }
       } else if (ac === 'remover') {
-        const ok = await confirmar({ titulo:'Remover usuário?', mensagem:'Esta ação é definitiva.', okText:'Remover' });
+        const ok = await confirmar({ titulo: 'Remover usuário?', mensagem: 'Esta ação é definitiva e não pode ser desfeita.', okText: 'Remover' });
         if (!ok) return;
         try { await apiDelete(`/usuarios/${id}`); toast('Usuário removido', 'success'); carregar(); }
         catch (err) { toast(err.message, 'error'); }

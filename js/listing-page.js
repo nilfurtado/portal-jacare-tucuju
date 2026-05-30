@@ -11,8 +11,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initPageShell({ route: page === 'municipio' ? 'municipios' : null });
 
     const params = new URLSearchParams(location.search);
-    if (page === 'categoria') initCategoriaPage(params);
-    else if (page === 'municipio') initMunicipioPage(params);
+    // Lê slug do pathname (URLs amigáveis) ou query string (fallback)
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    const slugFromPath = pathParts[1] || null;
+
+    if (page === 'categoria') initCategoriaPage(params, slugFromPath);
+    else if (page === 'municipio') initMunicipioPage(params, slugFromPath);
 
     initSortControl();
   } catch (err) {
@@ -22,8 +26,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-function initCategoriaPage(params) {
-  const slug = params.get('cat');
+function initCategoriaPage(params, slugFromPath) {
+  const slug = slugFromPath || params.get('cat');
   const cat = getCategoria(slug);
   if (!cat) {
     showNotFound('Editoria não encontrada');
@@ -54,8 +58,8 @@ function initCategoriaPage(params) {
   applySortAndRender();
 }
 
-function initMunicipioPage(params) {
-  const slug = params.get('cidade');
+function initMunicipioPage(params, slugFromPath) {
+  const slug = slugFromPath || params.get('cidade');
   const mun = getMunicipio(slug);
   if (!mun) {
     showNotFound('Município não encontrado');
