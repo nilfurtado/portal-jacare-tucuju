@@ -18,12 +18,40 @@
     font-size: 0.65rem;
   }
 
-  /* Header mobile */
-  .header__row { min-height: 60px; gap: var(--sp-2); }
+  /* Header mobile: apenas hambúrguer, logo e busca */
+  .header { padding: var(--sp-2) 0; }
+  .header__row {
+    min-height: 60px;
+    gap: var(--sp-2);
+    justify-content: space-between;
+    padding: 0 var(--sp-3);
+  }
+
+  /* Logo no centro */
+  .header__logo {
+    position: static;
+    order: 2;
+  }
   .header__logo img,
   .header__logo svg { height: 38px; }
 
-  /* Mobile: esconde detalhes do clima, mantém ícone + temp */
+  /* Esquerda: apenas hambúrguer */
+  .header__left {
+    order: 1;
+    display: flex;
+    align-items: center;
+  }
+  .header__weather { display: none !important; }
+
+  /* Direita: busca, instalar e tema */
+  .header__right {
+    order: 3;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+  }
+
+  /* Mobile: esconde apenas detalhes do clima (não o clima inteiro que foi escondido acima) */
   .weather__details { display: none; }
   .weather__icon { width: 28px; height: 28px; }
   .header__weather .weather__temp { font-size: 1.1rem; }
