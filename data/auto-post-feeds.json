@@ -1,0 +1,10 @@
+[
+  {
+    "id": 999,
+    "nome": "Test Feed",
+    "url": "https://www.agenciabrasil.com.br/feed/",
+    "categoria": "geral",
+    "intervalo": 1,
+    "ativo": true
+  }
+]

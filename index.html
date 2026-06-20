@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <style>
+    html, body {
+      width: 100%;
+      overflow-x: hidden !important;
+    }
+  </style>
+  <meta name="description" content="Portal Jacaré Tucujú — informação regional do Amapá: política, polícia, cultura, esportes, economia, municípios, classificados e mais.">
+  <title>Portal Jacaré Tucujú — Notícias do Amapá e Região</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f07e13">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/bundle.css?v=3">
+  <link rel="stylesheet" href="css/responsive.css?v=3">
+  <link rel="stylesheet" href="css/mobile-fix-final.css?v=1">
+  <!-- 🎨 Bundle CSS dinâmico — Cores por categoria (gerado pelo Painel DM) -->
+  <link rel="stylesheet" id="dynamic-cat-css" href="http://localhost:3000/api/categorias-export/css?t=2">
+  <!-- 🔴 OVERRIDE DEFINITIVO - Garante cores corretas de categorias.json -->
+  <link rel="stylesheet" href="css/category-colors-override.css?v=1">
+  <!-- 🔄 Mapeamento de classes com acentos para variáveis sem acentos -->
+  <link rel="stylesheet" href="css/accent-mapping.css?v=1">
+  <!-- ✨ Suporte completo para acentos em slugs de categorias -->
+  <link rel="stylesheet" href="css/accent-support.css?v=1">
+  <script>
+    // Cache-busting para CSS dinâmico: atualizar timestamp sempre
+    document.getElementById('dynamic-cat-css').href = 'http://localhost:3000/api/categorias-export/css?t=' + Date.now();
+  </script>
+  <script>
+    // Aplicar tema antes do render para evitar flash
+    (function(){var t=localStorage.getItem('portal-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();
+
+    // 🔴 INJETAR CORES + CRIAR ESTILO INLINE (força funcionar)
+    (function() {
+      const colors = {
+        '--cat-politica': '#1A237E',
+        '--cat-policia': '#B71C1C',
+        '--cat-economia': '#2E7D32',
+        '--cat-educacao': '#1565C0',
+        '--cat-esportes': '#00875A',
+        '--cat-cultura': '#7B1FA2',
+        '--cat-seguranca': '#EF6C00',
+        '--cat-saude': '#00897B',
+        '--cat-tecnologia': '#0277BD',
+        '--cat-meio-ambiente': '#388E3C',
+        '--cat-opiniao': '#455A64',
+        '--cat-geral': '#607D8B'
+      };
+
+      // 1. Injetar como variáveis CSS
+      const root = document.documentElement;
+      Object.entries(colors).forEach(([key, value]) => {
+        root.style.setProperty(key, value, 'important');
+      });
+
+      // 2. Criar estilos inline para forçar cores
+      const style = document.createElement('style');
+      style.innerHTML = `
+        :root {
+          --cat-politica: #1A237E !important;
+          --cat-policia: #B71C1C !important;
+          --cat-economia: #2E7D32 !important;
+          --cat-educacao: #1565C0 !important;
+          --cat-esportes: #00875A !important;
+          --cat-cultura: #7B1FA2 !important;
+          --cat-seguranca: #EF6C00 !important;
+          --cat-saude: #00897B !important;
+          --cat-tecnologia: #0277BD !important;
+          --cat-meio-ambiente: #388E3C !important;
+          --cat-opiniao: #455A64 !important;
+          --cat-geral: #607D8B !important;
+        }
+      `;
+      document.head.appendChild(style);
+      console.log('[colors-injector] ✅ Cores injetadas 2x (variáveis + estilos)');
+    })();
+  </script>
+  <!-- URL base do backend administrativo (Painel DM). Mude para o domínio/sub-path do seu painel-php em produção. -->
+  <meta name="painel-api" content="http://localhost:3000/api">
+</head>
+<body data-page="home">
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <!-- ═══════════════════════════════════════════════════
+       AD SLOT: Pop-up Intersticial | 580×400
+       Nome: Pop-up Publicitário
+       Posição: Overlay ao carregar a página (delay 3s)
+       ═══════════════════════════════════════════════════ -->
+  <div class="ad-popup" id="ad-popup"
+       data-ad-name="Pop-up Publicitário"
+       data-ad-size="580x400"
+       data-ad-type="interstitial"
+       data-ad-active="false"
+       role="dialog" aria-modal="true" aria-label="Anúncio" hidden>
+    <div class="ad-popup__backdrop" id="ad-popup-backdrop"></div>
+    <div class="ad-popup__box">
+      <button class="ad-popup__close" id="ad-popup-close" aria-label="Fechar anúncio">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z" fill="currentColor"/></svg>
+      </button>
+      <div class="ad-popup__content">
+        <strong>Espaço Publicitário</strong>
+        <span>580 × 400</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD SLOT: Topbar Banner | 1018×150 -->
+  <div class="ad-strip ad-strip--inline"
+       data-ad-name="Topbar Banner"
+       data-ad-size="1018x150"
+       data-ad-type="topbar-banner"
+       data-ad-active="false">
+    <div class="container">
+      <div class="banner-ad banner-ad--1018x150">
+        <strong>Espaço Publicitário</strong>
+        <span>Topbar Banner · 1018 × 150</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BREAKING NEWS animado -->
+
+  <!-- HEADER (topbar + ad + header + nav) -->
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <!-- HERO MOSAIC — manchete com carrossel rotativo + 4 secundárias -->
+    <section class="hero-mosaic" aria-label="Manchetes">
+      <div class="container">
+        <div class="hero-mosaic__grid">
+          <div class="hero-mosaic__featured">
+            <div class="hero-featured-carousel" aria-roledescription="carrossel" aria-label="Últimas notícias em destaque">
+              <div class="hero-featured-carousel__viewport">
+                <div class="hero-featured-carousel__track" id="hero-featured-track"></div>
+              </div>
+              <button type="button" class="hero-featured-carousel__arrow hero-featured-carousel__arrow--prev" data-featured-prev aria-label="Anterior">
+                <svg viewBox="0 0 24 24"><path d="M15.4 16.6L10.8 12l4.6-4.6L14 6l-6 6 6 6z" fill="currentColor"/></svg>
+              </button>
+              <button type="button" class="hero-featured-carousel__arrow hero-featured-carousel__arrow--next" data-featured-next aria-label="Próximo">
+                <svg viewBox="0 0 24 24"><path d="M8.6 16.6L13.2 12 8.6 7.4 10 6l6 6-6 6z" fill="currentColor"/></svg>
+              </button>
+              <div class="hero-featured-carousel__dots" id="hero-featured-dots"></div>
+            </div>
+          </div>
+          <div class="hero-mosaic__secondary" id="hero-secondary"></div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- ═══════════════════════════════════════════════════
+         AD SLOT: Anúncio 280×196
+         Nome: Anúncio Topo (Entre Super Banner e Política)
+         Posição: Antes da seção de Política
+         ═══════════════════════════════════════════════════ -->
+    <div class="ad-strip ad-strip--inline"
+         data-ad-name="Anúncio Topo"
+         data-ad-size="280x196"
+         data-ad-type="rectangle-medium"
+         data-ad-active="false">
+      <div class="container">
+        <div class="banner-ad banner-ad--280x196">
+          <strong>Espaço Publicitário</strong>
+          <span>280 × 196</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID: editorias + sidebar -->
+    <div class="container main-grid">
+      <div class="main-grid__primary">
+        <section class="cat-section" id="section-política"></section>
+        <section class="cat-section" id="section-policia"></section>
+        <section class="cat-section" id="section-economia"></section>
+        <section class="cat-section" id="section-educação"></section>
+        <section class="cat-section" id="section-esportes"></section>
+        <section class="cat-section" id="section-cultura"></section>
+        <section class="cat-section" id="section-segurança"></section>
+        <section class="cat-section" id="section-saúde"></section>
+        <section class="cat-section" id="section-tecnologia"></section>
+        <section class="cat-section" id="section-meio-ambiente"></section>
+        <section class="cat-section" id="section-opinião"></section>
+        <section class="cat-section" id="section-geral"></section>
+        <section class="colunistas-section" id="section-colunistas"></section>
+      </div>
+
+      <aside class="sidebar" data-include="partials/sidebar.html"></aside>
+    </div>
+
+    <section class="por-municipio" id="por-municipio">
+      <div class="container">
+        <div class="section-header cat-municipios">
+          <div class="bar"></div>
+          <h2>Municípios</h2>
+        </div>
+        <div class="tabs" id="municipios-tabs" role="tablist"></div>
+        <div class="cards-grid cards-grid--3" id="municipios-content"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         AD SLOT: Billboard | 970×90
+         Nome: Billboard
+         Posição: Entre municípios e vídeos
+         ═══════════════════════════════════════════════════ -->
+    <div class="ad-strip ad-strip--inline"
+         data-ad-name="Billboard"
+         data-ad-size="970x90"
+         data-ad-type="billboard"
+         data-ad-active="false">
+      <div class="container">
+        <div class="banner-ad banner-ad--970x90">
+          <strong>Espaço Publicitário</strong>
+          <span>Billboard · 970 × 90</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="videos" id="videos">
+      <div class="container">
+        <div class="section-header" style="border-bottom-color:var(--color-primary);">
+          <div class="bar" style="background:var(--color-primary);"></div>
+          <h2>Vídeos</h2>
+        </div>
+        <div class="videos-grid" id="videos-grid"></div>
+      </div>
+    </section>
+
+    <section class="enquete-destaque" id="enquete-destaque">
+      <div class="container">
+        <div id="enquete-grande"></div>
+      </div>
+    </section>
+
+    <section class="classificados" id="classificados">
+      <div class="container">
+        <div class="section-header" style="border-bottom-color:var(--cat-municipios);">
+          <div class="bar" style="background:var(--cat-municipios);"></div>
+          <h2>Classificados em destaque</h2>
+          <a href="#" class="btn btn--primary btn--sm" style="margin-left:auto;">Anuncie</a>
+        </div>
+        <div class="classificados-grid" id="classificados-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <div data-include="partials/footer.html"></div>
+
+  <script type="module" src="js/main.js?v=99"></script>
+  <script>
+    (function () {
+      const popup   = document.getElementById('ad-popup');
+      const close   = document.getElementById('ad-popup-close');
+      const backdrop= document.getElementById('ad-popup-backdrop');
+      if (!popup) return;
+      const hide = () => { popup.hidden = true; document.body.style.overflow = ''; };
+      // Só exibe se ativado pelo painel admin (data-ad-active="true")
+      if (popup.dataset.adActive === 'true') {
+        setTimeout(() => {
+          popup.hidden = false;
+          document.body.style.overflow = 'hidden';
+        }, 3000);
+      }
+      close.addEventListener('click', hide);
+      backdrop.addEventListener('click', hide);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+    })();
+  </script>
+  <script type="module" defer src="js/ads-rotator.js?t=1781054900"></script>
+  <script defer src="js/ads-loader.js?v=99"></script>
+  <script defer src="js/plugins-loader.js?v=99"></script>
+  <!-- 🔄 Sincronização em tempo real: Portal ← Painel-DM -->
+  <script defer src="js/sync-categories-realtime.js?v=1"></script>
+  <!-- 🔍 Debug CSS dinâmico (remover em produção) -->
+  <script defer src="js/debug-css.js?v=1"></script>
+
+  <!-- 🔴 MOBILE RESPONSIVE FIX - INLINE STYLES + JS - VINDO ÚLTIMO -->
+  <style>
+    @media (max-width: 768px) {
+      .container {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+      }
+
+      .main-grid {
+        padding: 16px 8px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .main-grid__primary {
+        display: block !important;
+      }
+
+      .cat-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+      }
+
+      .cards-grid {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .card {
+        width: 100% !important;
+        margin-bottom: 20px !important;
+        display: block !important;
+      }
+
+      .card__image {
+        width: 100% !important;
+      }
+    }
+  </style>
+
+  <script>
+    // Forçar layout responsivo em mobile via JavaScript
+    function fixMobileLayout() {
+      if (window.innerWidth <= 768) {
+        document.querySelectorAll('.cat-section').forEach(el => {
+          el.style.width = '100%';
+          el.style.maxWidth = '100%';
+          el.style.overflow = 'hidden';
+        });
+
+        document.querySelectorAll('.cards-grid').forEach(el => {
+          el.style.width = '100%';
+          el.style.maxWidth = '100%';
+          el.style.display = 'block';
+        });
+
+        document.querySelectorAll('.card').forEach(el => {
+          el.style.width = '100%';
+          el.style.display = 'block';
+          el.style.marginBottom = '20px';
+        });
+      }
+    }
+
+    // Rodar ao carregar
+    document.addEventListener('DOMContentLoaded', fixMobileLayout);
+    window.addEventListener('resize', fixMobileLayout);
+    fixMobileLayout();
+  </script>
+</body>
+</html>

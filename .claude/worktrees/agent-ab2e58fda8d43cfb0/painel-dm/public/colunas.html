@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colunas · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    .col-card { display:grid; grid-template-columns: 64px 1fr auto; gap:var(--s-4); align-items:center; background:var(--surface); border:1px solid var(--rule); border-radius:var(--r-3); padding:var(--s-3) var(--s-4); margin-bottom:var(--s-3); transition: border-color var(--d-1) var(--ease-out); }
+    .col-card:hover { border-color: var(--rule-strong); }
+    .col-avatar { width:56px; height:56px; border-radius:50%; background:var(--surface-3); overflow:hidden; }
+    .col-avatar img { width:100%; height:100%; object-fit:cover; }
+    .col-info h3 { font-family:var(--font-display); font-variation-settings:'opsz' 60,'SOFT' 30; font-weight:500; font-size:1.05rem; line-height:1.2; }
+    .col-info span { font-family:var(--font-mono); font-size:0.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); }
+    .col-info p { font-size:0.84rem; color:var(--ink-soft); margin-top:4px; }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Colunas & blogs</span>
+        </nav>
+      </header>
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">09</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Opinião · análise</p>
+            <h1>As <em style="font-style:italic;color:var(--brand)">vozes</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Nova coluna</h2>
+            <p>Texto autoral assinado por um colunista do portal.</p>
+            <div class="section__body">
+              <form id="form-col">
+                <div class="form-grid">
+                  <div class="field"><label class="field__label req">Colunista</label><input class="input" name="colunista" required></div>
+                  <div class="field"><label class="field__label">Avatar (URL)</label><input class="input input--mono" name="avatar" placeholder="https://..."></div>
+                </div>
+                <div class="field"><label class="field__label req">Título da coluna</label><input class="input" name="titulo" required></div>
+                <div class="field"><label class="field__label">Data de publicação</label><input class="input" type="datetime-local" name="data"></div>
+                <div class="form-actions" style="border:none;padding-top:var(--s-3);margin-top:var(--s-3)">
+                  <button class="btn btn--ghost" type="reset">Limpar</button>
+                  <button class="btn btn--primary" type="submit">Publicar coluna</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">02</div>
+          <div class="section__head">
+            <h2>Colunas publicadas</h2>
+            <div class="section__body">
+              <div id="lista-colunas"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPost, apiDelete } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+    await mountShell({ route: 'colunas' });
+
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    async function carregar(){
+      const items = await apiGet('/colunas').catch(()=>[]);
+      const cont = document.getElementById('lista-colunas');
+      if(!items.length){ cont.innerHTML = `<div style="color:var(--ink-mute);text-align:center;padding:var(--s-6)">Nenhuma coluna publicada.</div>`; return; }
+      cont.innerHTML = items.map(c => `
+        <article class="col-card" data-id="${c.id}">
+          <div class="col-avatar">${c.avatar ? `<img src="${esc(c.avatar)}" alt="">` : ''}</div>
+          <div class="col-info">
+            <h3>${esc(c.titulo)}</h3>
+            <span>${esc(c.colunista)} · ${new Date(c.data).toLocaleDateString('pt-BR')}</span>
+          </div>
+          <div class="row-actions">
+            <button data-action="remover" class="danger" title="Remover">×</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    document.getElementById('form-col').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = Object.fromEntries(fd);
+      if (body.data) body.data = new Date(body.data).toISOString();
+      try { await apiPost('/colunas', body); toast('Coluna publicada','success'); e.target.reset(); carregar(); }
+      catch(err){ toast(err.message,'error'); }
+    });
+
+    document.getElementById('lista-colunas').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action="remover"]'); if(!btn) return;
+      const id = btn.closest('.col-card').dataset.id;
+      const ok = await confirmar({ titulo:'Remover coluna?', mensagem:'Esta ação é definitiva.', okText:'Remover' });
+      if(!ok) return;
+      try { await apiDelete(`/colunas/${id}`); toast('Coluna removida','success'); carregar(); }
+      catch(err){ toast(err.message,'error'); }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

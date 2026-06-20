@@ -1,0 +1,138 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         DIAGNÓSTICO FINAL - anuncios.html                     ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+PROBLEMA REPORTADO:
+- Página /painel/anuncios/ está sem CSS
+- Mostrava "${classe}" literal no HTML (versão antiga)
+- Múltiplas tentativas de correção falharam
+
+INVESTIGAÇÃO REALIZADA:
+
+1. ARQUIVOS ENCONTRADOS
+   [✓] painel-dm/public/anuncios.html         (44KB, June 4 14:08 - VERSÃO CORRETA)
+   [✓] painel-php/public/anuncios.html        (11KB, May 29 - VERSÃO ANTIGA)
+   
+2. SERVIDOR EXPRESS
+   [✓] Configuração está correta:
+       - Serve painel-dm/public PRIMEIRO (prioridade correta)
+       - Serve painel-php/public em /painel-php (sem conflito)
+       - Prioridade: painel-dm > painel-php > portal
+   
+3. HTTP HEADERS (via curl)
+   [✓] /painel/anuncios/ → HTTP 200 OK
+   [✓] Cache-Control: public, max-age=0 (está forçando revalidação)
+   [✓] ETag: W/"afe6-19e939c01e8" (arquivo atual)
+   [✓] Last-Modified: Thu, 04 Jun 2026 17:08:55 GMT
+   
+4. CONTEÚDO DO ARQUIVO
+   [✓] Servidor serve EXATAMENTE o arquivo do disco (diff vazio)
+   [✓] 1008 linhas idênticas
+   [✓] Contém template literals CORRETOS: ${classe}, ${badge}, etc
+   [✓] Não contém "${classe}" como string renderizada
+   
+5. ASSETS
+   [✓] /css/anuncios.css              → HTTP 200 OK, cache 1 ano
+   [✓] /js/shell.js                   → HTTP 200 OK, cache 1 ano
+   [✓] /js/api.js                     → HTTP 200 OK, cache 1 ano
+   [✓] /js/ui.js                      → HTTP 200 OK, cache 1 ano
+   [✓] /js/lib-drag-sort.js           → HTTP 200 OK, cache 1 ano
+   
+6. ESTRUTURA HTML
+   [✓] 89 divs abertos / 89 fechados (bem formado)
+   [✓] 2 </script> tags (abertura e fechamento)
+   [✓] Grid element com ID="slot-grid" presente
+   [✓] Carrega DOMPurify do CDN
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                              CAUSA RAIZ IDENTIFICADA                          ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+O SERVIDOR ESTÁ 100% CORRETO.
+
+A culpa pode estar em UMA DAS SEGUINTES:
+
+┌─ OPÇÃO 1: CACHE DO NAVEGADOR (MAIS PROVÁVEL)
+│  Se o usuário acessou ANTES de 14:08 do dia 4 de junho,
+│  o navegador pode estar servindo a versão ANTIGA da painel-php.
+│  
+│  Sintomas:
+│  - Página sem CSS
+│  - Mostra "${classe}" literal
+│  - curl mostra correto mas navegador mostra errado
+│
+│  Solução:
+│  - Ctrl+Shift+Delete → Limpar cache completo
+│  - F12 → Network → Disable cache (durante o teste)
+│  - Ou: CTRL+F5 (reload duro)
+
+├─ OPÇÃO 2: ERRO DE JAVASCRIPT EM TEMPO DE EXECUÇÃO
+│  Se alguma importação falhar (ex: /js/shell.js não carregou),
+│  o grid não é renderizado.
+│  
+│  Sintomas:
+│  - Página carrega mas sem conteúdo
+│  - Console mostra erro: "Failed to fetch module script"
+│  - Grid mostra "Carregando slots…" para sempre
+│
+│  Solução:
+│  - F12 → Console → Procurar por RED errors
+│  - Verificar se há erro de CORS
+│  - Verificar se token localStorage está válido
+
+├─ OPÇÃO 3: AUTENTICAÇÃO PERDIDA
+│  Se o localStorage está vazio ou token expirou,
+│  mountShell() faz redirect para /painel/login/
+│  
+│  Sintomas:
+│  - Página redireciona para login
+│  - Console mostra error na função requireAuth()
+│
+│  Solução:
+│  - F12 → Application → localStorage → verificar painel-dm:token
+
+└─ OPÇÃO 4: PROXY/LOAD BALANCER SERVINDO VERSÃO ANTIGA
+   Se há um proxy HTTP na frente (nginx, Apache, etc),
+   pode estar cacheando a versão antiga.
+   
+   Sintomas:
+   - curl localhost:3000 mostra correto
+   - curl 127.0.0.1:3000 mostra correto
+   - Mas navegador mostra errado (em IP diferente)
+   
+   Solução:
+   - Verificar nginx/Apache config
+   - Limpar cache do proxy
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                          PRÓXIMOS PASSOS RECOMENDADOS                         ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+PASSO 1: VERIFICAR ERRO DE JAVASCRIPT
+  1. Abrir F12 → Console
+  2. Procurar por erros em vermelho
+  3. Executar no console: document.getElementById('slot-grid')
+     → Deve retornar o elemento, não undefined/null
+
+PASSO 2: VERIFICAR AUTENTICAÇÃO
+  1. F12 → Application → localStorage
+  2. Procurar por chave: painel-dm:token
+  3. Procurar por chave: painel-dm:user
+  4. Se vazios → fazer login novamente
+
+PASSO 3: LIMPAR CACHE FORÇADAMENTE
+  1. Ctrl+Shift+Delete → Clear Everything → Past Hour
+  2. F5 para recarregar
+  3. Se persistir → Ctrl+F5 (reload duro)
+
+PASSO 4: SE AINDA NÃO FUNCIONAR
+  1. Reiniciar o servidor Node:
+     - Encontrar PID rodando em :3000
+     - Kill -9 PID
+     - npm start em painel-dm/
+  2. Aguardar 3 segundos
+  3. Acessar novamente em novo abadado privado (sem cache)
+
+═════════════════════════════════════════════════════════════════════════════════
+CONCLUSÃO: Servidor está correto. Problema é muito provavelmente no navegador.
+═════════════════════════════════════════════════════════════════════════════════

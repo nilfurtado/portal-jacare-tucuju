@@ -1,0 +1,117 @@
+# ============================================================
+# Portal Jacaré Tucujú — raiz
+# Força charset UTF-8 em todos os assets para evitar caracteres
+# corrompidos (Voc� em vez de Você) no navegador.
+# ============================================================
+
+AddDefaultCharset UTF-8
+
+<IfModule mod_mime.c>
+  # Sobrescreve Content-Type incluindo charset
+  AddType "application/json; charset=utf-8"        .json
+  AddType "text/html; charset=utf-8"               .html .htm
+  AddType "text/css; charset=utf-8"                .css
+  AddType "application/javascript; charset=utf-8"  .js
+  AddType "image/svg+xml; charset=utf-8"           .svg
+  AddType "text/plain; charset=utf-8"              .txt
+  AddType "application/xml; charset=utf-8"         .xml
+
+  # Para versões antigas do Apache
+  AddCharset utf-8 .json .html .htm .css .js .svg .txt .xml
+</IfModule>
+
+# Cabeçalhos extras pra ter certeza absoluta
+<IfModule mod_headers.c>
+  <FilesMatch "\.(json|html|css|js|svg)$">
+    Header set X-Content-Type-Options "nosniff"
+  </FilesMatch>
+</IfModule>
+
+# Cache para assets estáticos
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                 "access plus 7 days"
+  ExpiresByType application/javascript   "access plus 7 days"
+  ExpiresByType image/svg+xml            "access plus 30 days"
+  ExpiresByType image/png                "access plus 30 days"
+  ExpiresByType image/jpeg               "access plus 30 days"
+  ExpiresByType image/webp               "access plus 30 days"
+  ExpiresByType application/json         "access plus 0 seconds"
+  ExpiresByType text/html                "access plus 0 seconds"
+</IfModule>
+
+# Compressão GZIP
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml text/xml
+</IfModule>
+
+# ============================================================
+# URL AMIGÁVEIS — REWRITE RULES
+# ============================================================
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Não reescreve arquivos e pastas físicas
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Portal — notícia: /noticias/slug/ → noticia.html
+  RewriteRule ^noticias/([^/]+)/?$ noticia.html [QSA,L]
+
+  # Portal — categoria: /categoria/politica/ → categoria.html
+  RewriteRule ^categoria/([^/]+)/?$ categoria.html [QSA,L]
+
+  # Portal — município: /municipio/macapa/ → municipio.html
+  RewriteRule ^municipio/([^/]+)/?$ municipio.html [QSA,L]
+
+  # Portal — páginas estáticas
+  RewriteRule ^videos/?$ videos.html [L]
+  RewriteRule ^classificados/?$ classificados.html [L]
+  RewriteRule ^enquetes/?$ enquetes.html [L]
+  RewriteRule ^busca/?$ busca.html [QSA,L]
+  RewriteRule ^contato/?$ contato.html [L]
+  RewriteRule ^sobre/?$ sobre.html [L]
+  RewriteRule ^privacidade/?$ privacidade.html [L]
+  RewriteRule ^termos/?$ termos.html [L]
+
+  # Painel DM — raiz
+  RewriteRule ^painel/?$ painel-dm/public/index.html [L]
+
+  # Painel DM — login
+  RewriteRule ^painel/login/?$ painel-dm/public/login.html [L]
+
+  # Painel DM — noticias
+  RewriteRule ^painel/noticias/?$ painel-dm/public/noticias-lista.html [L]
+  RewriteRule ^painel/noticias/nova/?$ painel-dm/public/noticias.html [L]
+  RewriteRule ^painel/noticias/([^/]+)/editar/?$ painel-dm/public/noticias.html [QSA,L]
+
+  # Painel DM — seções
+  RewriteRule ^painel/categorias/?$ painel-dm/public/categorias.html [L]
+  RewriteRule ^painel/anuncios/?$ painel-dm/public/anuncios.html [L]
+  RewriteRule ^painel/municipios/?$ painel-dm/public/municipios.html [L]
+  RewriteRule ^painel/usuarios/?$ painel-dm/public/usuarios.html [L]
+  RewriteRule ^painel/videos/?$ painel-dm/public/videos.html [L]
+  RewriteRule ^painel/comentarios/?$ painel-dm/public/comentarios.html [L]
+  RewriteRule ^painel/classificados/?$ painel-dm/public/classificados.html [L]
+  RewriteRule ^painel/enquetes/?$ painel-dm/public/enquetes.html [L]
+  RewriteRule ^painel/colunas/?$ painel-dm/public/colunas.html [L]
+  RewriteRule ^painel/paginas/?$ painel-dm/public/paginas.html [L]
+  RewriteRule ^painel/acessos/?$ painel-dm/public/acessos.html [L]
+  RewriteRule ^painel/plugins/?$ painel-dm/public/plugins.html [L]
+  RewriteRule ^painel/configuracoes/?$ painel-dm/public/configuracoes.html [L]
+  RewriteRule ^painel/temas/?$ painel-dm/public/temas.html [L]
+  RewriteRule ^painel/layout/?$ painel-dm/public/layout.html [L]
+  RewriteRule ^painel/logomarca/?$ painel-dm/public/logomarca.html [L]
+  RewriteRule ^painel/lixeira/?$ painel-dm/public/lixeira.html [L]
+</IfModule>
+
+# Página de erro customizada
+ErrorDocument 404 /404.html
+
+# Bloqueia acesso a arquivos sensíveis
+<FilesMatch "^\.(env|env\.example|gitignore|deployignore|htaccess|gitattributes)$">
+  Require all denied
+</FilesMatch>

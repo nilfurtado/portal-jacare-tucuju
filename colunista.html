@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Colunas do colunista — Portal Jacaré Tucujú">
+  <title>Colunista — Portal Jacaré Tucujú</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f07e13">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/bundle.css?v=1">
+  <script>
+    (function(){var t=localStorage.getItem('portal-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <style>
+    .colunista-hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: var(--sp-8) 0;
+      margin-bottom: var(--sp-6);
+    }
+    .colunista-header {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: var(--sp-4);
+      align-items: center;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 var(--sp-4);
+    }
+    .colunista-avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--surface-2);
+    }
+    .colunista-info h1 {
+      font-size: 2.2rem;
+      margin-bottom: var(--sp-2);
+      font-family: var(--font-display);
+      font-weight: 700;
+    }
+    .colunista-info p {
+      font-size: 1.05rem;
+      color: var(--text-mute);
+      line-height: 1.5;
+    }
+    .colunas-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 var(--sp-4);
+    }
+    .colunas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--sp-4);
+      margin-top: var(--sp-6);
+    }
+    .coluna-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-3);
+      padding: var(--sp-4);
+      transition: all var(--d-1) ease;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      cursor: pointer;
+    }
+    .coluna-card:hover {
+      border-color: var(--brand);
+      background: var(--surface-2);
+      transform: translateY(-2px);
+    }
+    .coluna-data {
+      font-size: 0.8rem;
+      color: var(--text-mute);
+    }
+    .coluna-titulo {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .empty-state {
+      text-align: center;
+      padding: var(--sp-8) var(--sp-4);
+      color: var(--text-mute);
+    }
+  </style>
+</head>
+<body>
+  <div class="colunista-hero">
+    <div class="colunista-header">
+      <img id="colunista-avatar" src="" alt="" class="colunista-avatar">
+      <div class="colunista-info">
+        <h1 id="colunista-nome"></h1>
+        <p id="colunista-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="colunas-container">
+    <h2>Colunas Publicadas</h2>
+    <div id="colunas-list" class="colunas-grid"></div>
+  </div>
+
+  <script>
+    async function init() {
+      // Obter slug da URL
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('slug');
+
+      if (!slug) {
+        document.querySelector('.colunas-container').innerHTML = '<p class="empty-state">Colunista não encontrado</p>';
+        return;
+      }
+
+      try {
+        // Buscar dados do painel (API)
+        const res = await fetch('http://localhost:3000/api/portal/bootstrap');
+        const data = await res.json();
+        const noticias = data.noticias || [];
+        const categoriasColunas = data.categoriasColunas || [];
+
+        console.log('[DEBUG] Noticias carregadas:', noticias.length);
+        console.log('[DEBUG] Primeira notícia:', noticias[0]);
+
+        // Encontrar colunista pelo slug - buscar entre os disponíveis
+        const colunistasUnicos = [...new Set(noticias.map(n => n.colunista).filter(Boolean))];
+        console.log('[DEBUG] Colunistas únicos encontrados:', colunistasUnicos);
+
+        // Se só tem um colunista, usa aquele!
+        let colunistaNome = colunistasUnicos.length === 1 ? colunistasUnicos[0] : null;
+
+        if (!colunistaNome) {
+          // Se tem mais de um, tenta match com slug
+          const slugToName = (s) => s.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+          const expectedName = slugToName(slug);
+          colunistaNome = colunistasUnicos.find(c => c.toLowerCase().includes(expectedName.toLowerCase()));
+        }
+
+        console.log('[DEBUG] Colunista encontrado:', colunistaNome);
+
+        console.log('[DEBUG] Colunista encontrado:', colunistaNome);
+        console.log('[DEBUG] Procurando por:', colunistaNome);
+
+        // Filtrar colunas deste colunista
+        const colunas = noticias.filter(n => n.colunista === colunistaNome);
+        console.log('[DEBUG] Colunas encontradas:', colunas.length);
+        console.log('[DEBUG] Colunas:', colunas.map(c => ({ titulo: c.titulo, colunista: c.colunista })));
+
+        if (colunas.length === 0) {
+          // Mostrar colunistas disponíveis para debug
+          const colunistasDisponiveis = [...new Set(noticias.map(n => n.colunista).filter(Boolean))];
+          console.log('[DEBUG] Colunistas disponíveis:', colunistasDisponiveis);
+          document.querySelector('.colunas-container').innerHTML = '<p class="empty-state">Nenhuma coluna publicada por ' + colunistaNome + '</p>';
+          return;
+        }
+
+        // Obter info do colunista (usuários do painel)
+        let user = null;
+        try {
+          const usuariosRes = await fetch('http://localhost:3000/api/usuarios');
+          if (usuariosRes.ok) {
+            const usuarios = await usuariosRes.json();
+            user = usuarios.find(u => u.nome === colunistaNome);
+          }
+        } catch (err) {
+          console.warn('[DEBUG] Não conseguiu carregar usuários:', err.message);
+        }
+
+        // Preencher header
+        document.getElementById('colunista-nome').textContent = colunistaNome;
+        document.getElementById('colunista-avatar').src = user?.foto || 'https://via.placeholder.com/140';
+        document.getElementById('colunista-desc').textContent = user?.sobre || `Colunista do Portal Jacaré Tucujú`;
+
+        // Preencher colunas
+        const list = document.getElementById('colunas-list');
+        list.innerHTML = '';
+        colunas.sort((a, b) => new Date(b.data) - new Date(a.data)).forEach(col => {
+          const card = document.createElement('a');
+          card.href = `noticia.html?id=${col.id}`;
+          card.className = 'coluna-card';
+
+          // Encontrar categoria da coluna
+          const categoria = categoriasColunas.find(cat => cat.slug === col.categoriaColuna);
+          const categoriaBadge = categoria ? `<div style="font-size: 0.8rem; color: var(--brand); font-weight: 500;">${categoria.nome}</div>` : '';
+
+          card.innerHTML = `
+            <div class="coluna-data">${new Date(col.data).toLocaleDateString('pt-BR')}</div>
+            ${categoriaBadge}
+            <div class="coluna-titulo">${col.titulo}</div>
+          `;
+          list.appendChild(card);
+        });
+      } catch (err) {
+        console.error('[ERRO]', err);
+        document.querySelector('.colunas-container').innerHTML = '<p class="empty-state">Erro: ' + err.message + '</p>';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

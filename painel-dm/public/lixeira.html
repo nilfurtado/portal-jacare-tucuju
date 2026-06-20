@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lixeira · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <script src="/painel/js/include.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <link rel="stylesheet" href="/painel/css/tabela.css">
+  <style>
+    .filter-tabs { display:flex; gap: 2px; background:var(--surface-2); padding:4px; border-radius:var(--r-pill); width:fit-content; margin-bottom: var(--s-4); }
+    .filter-tabs button { background:transparent; border:none; padding:8px 16px; border-radius:var(--r-pill); font-family:var(--font-mono); font-size:0.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); cursor:pointer; transition:all var(--d-1); }
+    .filter-tabs button.is-active { background:var(--ink); color:var(--paper); }
+    .lixeira-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--s-3); }
+    .lixeira-meta .btn-vazio { font-family:var(--font-mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:.14em; }
+
+    /* Tabela - Responsiva e Compacta */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+      font-size: 0.9rem;
+      background: var(--surface-2);
+      border-radius: var(--r-2);
+      overflow: hidden;
+      border: 1px solid var(--paper-line);
+    }
+
+    .table thead {
+      background: var(--surface-2);
+    }
+
+    .table thead th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: var(--ink-mute);
+      border-bottom: 1px solid var(--paper-line);
+      white-space: nowrap;
+    }
+
+    .table thead th:nth-child(1) {
+      width: auto;
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .table thead th:nth-child(2) {
+      text-align: right;
+      width: 150px;
+      padding-right: 12px;
+    }
+
+    .table thead th:nth-child(3) {
+      text-align: center;
+      width: 110px;
+      padding: 8px 6px;
+    }
+
+    /* Linhas da tabela - Compactas */
+    .table tbody tr {
+      height: auto;
+      min-height: 40px;
+      border-bottom: 1px solid var(--paper-line);
+      transition: background var(--d-1);
+    }
+
+    .table tbody tr:hover {
+      background: var(--surface-2);
+    }
+
+    .table tbody td {
+      vertical-align: middle;
+      padding: 8px 12px;
+    }
+
+    /* Coluna ITEM - Responsiva e compacta */
+    .table tbody td:first-child {
+      flex: 1;
+      min-width: 0;
+      padding: 8px 12px 8px 0;
+      max-width: none;
+      overflow: visible;
+    }
+
+    .table tbody td:first-child strong {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .table tbody td:first-child em {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      font-size: 0.8rem;
+      color: var(--ink-mute);
+    }
+
+    .table tbody td:first-child .tag {
+      display: inline-block;
+      white-space: nowrap;
+      margin-left: 6px !important;
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+    }
+
+    /* Coluna REMOVIDO - Compacta */
+    .table tbody td:nth-child(2) {
+      width: 150px;
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-mute);
+      padding: 8px 12px 8px 12px;
+      flex-shrink: 0;
+    }
+
+    /* Coluna AÇÕES - Compacta */
+    .table tbody td:nth-child(3) {
+      width: 110px;
+      text-align: center;
+      padding: 8px 6px;
+      flex-shrink: 0;
+    }
+
+    .table tbody td:nth-child(3) .row-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .table tbody td:nth-child(3) .row-actions button {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--r-1);
+      transition: background var(--d-1);
+      font-size: 0.9rem;
+    }
+
+    .table tbody td:nth-child(3) .row-actions button:hover {
+      background: var(--paper-line);
+    }
+
+    /* Estado vazio - profissional */
+    .lixeira-vazia {
+      text-align: center;
+      padding: var(--s-8) var(--s-5);
+      color: var(--ink-mute);
+    }
+
+    .lixeira-vazia__icon {
+      font-size: 3.5rem;
+      margin-bottom: var(--s-4);
+      opacity: 0.4;
+      line-height: 1;
+    }
+
+    .lixeira-vazia__texto {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      line-height: 1.6;
+      margin-bottom: var(--s-3);
+      color: var(--ink);
+    }
+
+    .lixeira-vazia__hint {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    /* Cores das categorias na lixeira */
+    .tag--politica   { background: rgba(0, 51, 102, 0.15); color: var(--cat-politica); border-color: rgba(0, 51, 102, 0.3); }
+    .tag--policia    { background: rgba(139, 0, 0, 0.15); color: var(--cat-policia); border-color: rgba(139, 0, 0, 0.3); }
+    .tag--cultura    { background: rgba(106, 27, 154, 0.15); color: var(--cat-cultura); border-color: rgba(106, 27, 154, 0.3); }
+    .tag--esportes   { background: rgba(27, 94, 32, 0.15); color: var(--cat-esportes); border-color: rgba(27, 94, 32, 0.3); }
+    .tag--economia   { background: rgba(0, 105, 92, 0.15); color: var(--cat-economia); border-color: rgba(0, 105, 92, 0.3); }
+    .tag--municipios { background: rgba(230, 81, 0, 0.15); color: var(--cat-municipios); border-color: rgba(230, 81, 0, 0.3); }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+      .table thead th:nth-child(2) {
+        width: 140px;
+      }
+      .table tbody td:nth-child(2) {
+        width: 140px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .table thead th {
+        padding: 6px 8px;
+      }
+      .table tbody tr {
+        min-height: 36px;
+      }
+      .table tbody td {
+        padding: 6px 8px;
+      }
+      .table thead th:nth-child(2),
+      .table tbody td:nth-child(2) {
+        width: 120px;
+        font-size: 0.7rem;
+      }
+      .table thead th:nth-child(3),
+      .table tbody td:nth-child(3) {
+        width: 90px;
+      }
+      .table tbody td:nth-child(3) .row-actions button {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Lixeira</span>
+        </nav>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          
+          <div class="page-title__main">
+            <p class="page-title__sub">Recuperação · arquivo</p>
+            <h1>O que foi <em style="font-style:italic;color:var(--brand)">descartado</em>.</h1>
+          </div>
+                <div class="topbar__actions">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+        <section class="section">
+          <div class="section__head">
+            <h2>Itens removidos</h2>
+            <p>Restaurar devolve ao módulo original. Excluir é definitivo.</p>
+            <div class="section__body">
+
+              <div class="filter-tabs" id="tabs">
+                <button class="is-active" data-tipo="noticias">Notícias</button>
+                <button data-tipo="videos">Vídeos</button>
+                <button data-tipo="anuncios">Anúncios</button>
+                <button data-tipo="comentarios">Comentários</button>
+                <button data-tipo="classificados">Classificados</button>
+              </div>
+
+              <div class="lixeira-meta">
+                <span class="table-meta" style="margin:0"><span id="meta-count">0</span> itens</span>
+                <button class="btn btn--danger btn-vazio" id="btn-vazio">Esvaziar lixeira</button>
+              </div>
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Removido</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="lista">
+                  <tr><td colspan="3" style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.78rem">Carregando…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from '/painel/js/shell.js';
+    import { apiGet, api } from '/painel/js/api.js';
+    import { toast, confirmar } from '/painel/js/ui.js';
+    await mountShell({ route: 'lixeira' });
+
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    function getCategoriaClass(cat) {
+      const mapping = {
+        'politica': 'tag--politica',
+        'policia': 'tag--policia',
+        'política': 'tag--politica',
+        'cultura': 'tag--cultura',
+        'esportes': 'tag--esportes',
+        'economia': 'tag--economia',
+        'municipios': 'tag--municipios'
+      };
+      return mapping[cat?.toLowerCase()] || 'tag--brand';
+    }
+
+    let tipo = 'noticias';
+
+    function rotuloItem(item, t) {
+      switch (t) {
+        case 'noticias':
+          return `<strong style="font-family:var(--font-display);font-weight:500;font-size:1rem">${esc(item.titulo)}</strong>${item.categoria ? `<span class="tag ${getCategoriaClass(item.categoria)}">${esc(item.categoria)}</span>` : ''}`;
+        case 'videos':
+          return `<strong style="font-family:var(--font-display);font-weight:500">${esc(item.titulo)}</strong><span style="display:block;color:var(--ink-mute);font-family:var(--font-mono);font-size:0.74rem;margin-top:2px">${item.duracao || ''}</span>`;
+        case 'anuncios':
+          return `<strong>${esc(item.nome)}</strong><span style="display:block;color:var(--ink-mute);font-family:var(--font-mono);font-size:0.74rem;margin-top:2px">${item.tamanho || ''}</span>`;
+        case 'comentarios':
+          return `<strong>${esc(item.autor)}</strong><em style="display:block;color:var(--ink-mute);margin-top:2px;font-size:0.85rem">"${esc(item.texto || '').slice(0, 50)}…"</em>`;
+        case 'classificados':
+          return `<strong>${esc(item.titulo)}</strong>`;
+      }
+      return JSON.stringify(item).slice(0, 80);
+    }
+
+    async function carregar() {
+      const tbody = document.getElementById('lista');
+      tbody.innerHTML = `<tr><td colspan="3" style="color:var(--ink-mute)">Carregando…</td></tr>`;
+      const items = await apiGet(`/lixeira/${tipo}`).catch(err => { toast(err.message, 'error'); return []; });
+      document.getElementById('meta-count').textContent = items.length;
+      if (!items.length) {
+        tbody.innerHTML = `<tr><td colspan="3"><div class="lixeira-vazia"><div class="lixeira-vazia__icon">📭</div><div class="lixeira-vazia__texto">Lixeira vazia</div><div class="lixeira-vazia__hint">Nenhum item foi removido desta categoria</div></div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = items.map(i => `
+        <tr data-id="${i.id}">
+          <td>${rotuloItem(i, tipo)}</td>
+          <td class="num">${i.removidoEm ? new Date(i.removidoEm).toLocaleString('pt-BR') : '—'}</td>
+          <td>
+            <div class="row-actions">
+              <button data-action="restaurar" title="Restaurar">↺</button>
+              <button data-action="excluir" class="danger" title="Excluir definitivamente">×</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('tabs').addEventListener('click', e => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('is-active', b === btn));
+      tipo = btn.dataset.tipo;
+      carregar();
+    });
+
+    document.getElementById('lista').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]'); if (!btn) return;
+      const row = btn.closest('tr');
+      const id = row.dataset.id;
+      const ac = btn.dataset.action;
+      try {
+        if (ac === 'restaurar') {
+          const tipoLabel = {
+            'noticias': 'notícia',
+            'videos': 'vídeo',
+            'anuncios': 'anúncio',
+            'comentarios': 'comentário',
+            'classificados': 'classificado'
+          };
+          const nome = tipoLabel[tipo] || tipo;
+          const ok = await confirmar({
+            titulo: `Restaurar ${nome}?`,
+            mensagem: `Deseja restaurar esta ${nome} para a seção original?`,
+            okText: 'Restaurar'
+          });
+          if (!ok) return;
+          btn.disabled = true;
+          await api(`/lixeira/${tipo}/${id}/restaurar`, { method: 'POST' });
+          toast(`✅ ${nome.charAt(0).toUpperCase() + nome.slice(1)} restaurada com sucesso!`, 'success');
+          row.style.opacity = '0.5';
+          await new Promise(r => setTimeout(r, 500));
+          carregar();
+        } else if (ac === 'excluir') {
+          const tipoLabel = {
+            'noticias': 'notícia',
+            'videos': 'vídeo',
+            'anuncios': 'anúncio',
+            'comentarios': 'comentário',
+            'classificados': 'classificado'
+          };
+          const nome = tipoLabel[tipo] || tipo;
+          const ok = await confirmar({
+            titulo: `Excluir ${nome} permanentemente?`,
+            mensagem: `Deseja excluir esta ${nome} definitivamente? Esta ação não pode ser desfeita.`,
+            okText: 'Excluir'
+          });
+          if (!ok) return;
+          btn.disabled = true;
+          await api(`/lixeira/${tipo}/${id}`, { method: 'DELETE' });
+          toast(`🗑️ ${nome.charAt(0).toUpperCase() + nome.slice(1)} excluída permanentemente!`, 'success');
+          row.style.opacity = '0.5';
+          await new Promise(r => setTimeout(r, 500));
+          carregar();
+        }
+      } catch (err) { toast('❌ Erro: ' + err.message, 'error'); }
+    });
+
+    document.getElementById('btn-vazio').addEventListener('click', async () => {
+      const ok = await confirmar({ titulo: 'Esvaziar lixeira?', mensagem: `Todos os itens da lixeira de ${tipo} serão excluídos permanentemente.`, okText: 'Esvaziar' });
+      if (!ok) return;
+      try { await api(`/lixeira/${tipo}`, { method: 'DELETE' }); toast('Lixeira esvaziada', 'success'); carregar(); }
+      catch (err) { toast(err.message, 'error'); }
+    });
+
+    // SSE: Ouvir eventos em tempo real
+    const eventoSource = new EventSource('/eventos');
+    eventoSource.addEventListener('message', (e) => {
+      try {
+        const evento = JSON.parse(e.data);
+
+        // Recarregar lixeira quando item é movido para lixeira
+        if (evento.tipo === 'anunciosAtualizados' && evento.acao === 'movido-para-lixeira') {
+          if (tipo === 'anuncios') {
+            console.log('📨 SSE: Anúncio movido para lixeira');
+            carregar();
+          }
+        }
+
+        // Recarregar lixeira quando item é restaurado
+        if (evento.tipo === 'restaurado') {
+          if (tipo === evento.categoria) {
+            console.log('📨 SSE: Item restaurado -', evento.categoria);
+            carregar();
+          }
+        }
+      } catch (err) {
+        // Ignorar heartbeats ou dados inválidos
+      }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>
+

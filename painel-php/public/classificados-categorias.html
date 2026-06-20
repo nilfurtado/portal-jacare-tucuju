@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categorias de Classificados · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <a href="/classificados.html">Classificados</a>
+          <span class="sep">/</span>
+          <span>Categorias</span>
+        </nav>
+      </header>
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">08</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Classificados · classificação</p>
+            <h1>As <em style="font-style:italic;color:var(--brand)">vitrines</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Nova categoria</h2>
+            <div class="section__body">
+              <form id="form-cat">
+                <div class="form-grid">
+                  <div class="field"><label class="field__label req">Nome</label><input class="input" name="label" required></div>
+                  <div class="field"><label class="field__label">Cor</label><input class="input" type="color" name="cor" value="#c9551d" style="height:44px;padding:6px"></div>
+                </div>
+                <div class="form-actions" style="border:none;padding-top:var(--s-3);margin-top:var(--s-3)">
+                  <button class="btn btn--primary" type="submit">Adicionar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">02</div>
+          <div class="section__head">
+            <h2>Categorias ativas</h2>
+            <div class="section__body">
+              <table class="table">
+                <thead><tr><th style="width:60px"></th><th>Nome</th><th>Slug</th><th></th></tr></thead>
+                <tbody id="lista"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPost, apiDelete } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+    await mountShell({ route: 'classificados' });
+
+    async function carregar() {
+      const cats = await apiGet('/classificados-categorias').catch(() => []);
+      document.getElementById('lista').innerHTML = cats.map(c => `
+        <tr data-slug="${c.slug}">
+          <td><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${c.cor};border:1px solid var(--rule)"></span></td>
+          <td><strong style="font-family:var(--font-display);font-weight:500">${c.label}</strong></td>
+          <td><code style="font-family:var(--font-mono);font-size:0.78rem;color:var(--ink-mute)">${c.slug}</code></td>
+          <td><div class="row-actions"><button data-action="remover" class="danger">×</button></div></td>
+        </tr>
+      `).join('') || '<tr><td colspan="4" style="color:var(--ink-mute)">Nenhuma categoria.</td></tr>';
+    }
+
+    document.getElementById('form-cat').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      try { await apiPost('/classificados-categorias', { label: fd.get('label'), cor: fd.get('cor') }); toast('Categoria criada', 'success'); e.target.reset(); carregar(); }
+      catch (err) { toast(err.message, 'error'); }
+    });
+
+    document.getElementById('lista').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action="remover"]'); if (!btn) return;
+      const slug = btn.closest('tr').dataset.slug;
+      const ok = await confirmar({ titulo: 'Remover categoria?', mensagem: slug, okText: 'Remover' });
+      if (!ok) return;
+      try { await apiDelete(`/classificados-categorias/${slug}`); toast('Categoria removida', 'success'); carregar(); }
+      catch (err) { toast(err.message, 'error'); }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

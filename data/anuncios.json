@@ -1,0 +1,45 @@
+[
+  {
+    "id": 11,
+    "nome": "governo",
+    "tipo": "topbar-banner",
+    "local": 0,
+    "paginas": [
+      "*"
+    ],
+    "ativo": true,
+    "criativo": {
+      "imagem": null,
+      "imagemWebp": null,
+      "html": null,
+      "titulo": "governo",
+      "modo": "rotativo",
+      "intervaloRotacao": 3,
+      "imagensRotativo": [
+        {
+          "original": "36_102032_35_18951_banner_canal_gea.jpg",
+          "jpeg": "/img/uploads/2026/06/anuncio-1781476017101-principal.jpg",
+          "webp": "/img/uploads/2026/06/anuncio-1781476017101-principal.webp"
+        },
+        {
+          "original": "IMG_1975-e1779735131671.jpeg",
+          "jpeg": "/img/uploads/2026/06/anuncio-1781476017468-principal.jpg",
+          "webp": "/img/uploads/2026/06/anuncio-1781476017468-principal.webp"
+        }
+      ],
+      "imagens": [
+        "/img/uploads/2026/06/anuncio-1781476017101-principal.jpg",
+        "/img/uploads/2026/06/anuncio-1781476017468-principal.jpg"
+      ]
+    },
+    "destino": null,
+    "periodo": {
+      "inicio": null,
+      "fim": null
+    },
+    "impressoes": 0,
+    "cliques": 0,
+    "criadoEm": "2026-06-14 22:26:57",
+    "atualizadoEm": null
+  }
+]

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar · Painel DM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #4a9fb5;
+      --brand-light: #6ab5c8;
+      --bg-base: #0f0f0f;
+      --color-text: #f4f5f7;
+      --ink-mute: #9aa0a8;
+      --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --motion-standard: 220ms cubic-bezier(0.16, 1, 0.3, 1);
+      --s-1: 0.5rem; --s-2: 0.75rem; --s-3: 1rem; --s-4: 1.5rem; --s-6: 2.5rem; --s-8: 4rem;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: var(--font-sans); background: linear-gradient(135deg, #4a9fb5 0%, #2d7a8a 100%); display: flex; align-items: center; justify-content: center; }
+    .login-container { width: 100%; max-width: 360px; padding: var(--s-4); display: flex; flex-direction: column; align-items: center; }
+    .login-icon { width: 70px; height: 70px; border: 2px solid rgba(255, 255, 255, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: var(--s-8); animation: slideDown 0.5s var(--motion-standard); }
+    .login-icon svg { width: 35px; height: 35px; stroke: rgba(255, 255, 255, 0.8); fill: none; stroke-width: 1.5; stroke-linecap: round; }
+    .login-card { width: 100%; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; background: rgba(15, 15, 15, 0.95); padding: var(--s-6) var(--s-4); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: slideUp 0.5s var(--motion-standard) 0.1s both; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; } }
+    .form-group { margin-bottom: var(--s-6); position: relative; }
+    .form-group:last-of-type { margin-bottom: var(--s-8); }
+    .form-icon { position: absolute; left: 0; top: 6px; color: rgba(255, 255, 255, 0.6); font-size: 16px; }
+    .form-label { display: block; font-family: monospace; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-mute); margin-bottom: var(--s-2); margin-left: 28px; }
+    .form-input { width: 100%; padding: 0 28px var(--s-1) 28px; font-size: 0.95rem; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.4); background: transparent; color: rgba(255, 255, 255, 0.95); transition: all var(--motion-standard); outline: none; }
+    .form-input:focus { border-bottom-color: rgba(255, 255, 255, 1); }
+    .form-footer { display: flex; justify-content: space-between; margin-bottom: var(--s-6); font-size: 0.85rem; }
+    .checkbox-group { display: flex; align-items: center; gap: var(--s-2); }
+    .checkbox-label { color: rgba(255, 255, 255, 0.8); cursor: pointer; user-select: none; }
+    .forgot-link { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-style: italic; }
+    .btn { font-family: var(--font-sans); font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: all var(--motion-standard); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.85rem; }
+    .btn--primary { width: 100%; padding: var(--s-2) var(--s-3); color: var(--bg-base); background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%); box-shadow: 0 8px 24px rgba(74, 159, 181, 0.3); }
+    .btn--primary:hover { transform: translateY(-2px); }
+    .btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .alert { padding: var(--s-2) var(--s-3); border-radius: 4px; margin-bottom: var(--s-4); font-size: 0.85rem; display: none; border-left: 4px solid; }
+    .alert.show { display: block; }
+    .alert--error { background: rgba(220, 38, 38, 0.15); color: rgba(255, 150, 150, 1); border-color: rgba(220, 38, 38, 0.5); }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+    </div>
+    <div class="login-card">
+      <div class="alert alert--error" id="alertError"></div>
+      <form id="loginForm">
+        <div class="form-group">
+          <span class="form-icon">✉</span>
+          <label class="form-label">Email ID</label>
+          <input type="text" class="form-input" id="emailInput" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <span class="form-icon">🔒</span>
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="passwordInput" autocomplete="current-password" required>
+        </div>
+        <div class="form-footer">
+          <div class="checkbox-group">
+            <input type="checkbox" id="rememberMe" class="checkbox-input">
+            <label for="rememberMe" class="checkbox-label">Remember me</label>
+          </div>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+        <button type="submit" class="btn btn--primary">LOGIN</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    function initLogin() {
+      const form = document.getElementById('loginForm');
+      const emailInput = document.getElementById('emailInput');
+      const rememberCheckbox = document.getElementById('rememberMe');
+
+      if (!form) {
+        console.error('Form not found');
+        return;
+      }
+
+      // Carregar email salvo se existir
+      const savedEmail = localStorage.getItem('painel-dm:remember-email');
+      if (savedEmail) {
+        emailInput.value = savedEmail;
+        rememberCheckbox.checked = true;
+      }
+
+      form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const credencial = emailInput.value.trim();
+      const senha = document.getElementById('passwordInput').value;
+      const btn = e.target.querySelector('.btn--primary');
+      const alert = document.getElementById('alertError');
+
+      console.log('🔐 Login attempt:', { credencial, senha: '***' });
+
+      if (!credencial || !senha) {
+        alert.textContent = 'Preencha e-mail/usuário e senha';
+        alert.classList.add('show');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Entrando...';
+      alert.classList.remove('show');
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: credencial, usuario: credencial, senha })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert.textContent = data.erro || 'Falha ao fazer login';
+          alert.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = 'LOGIN';
+          return;
+        }
+
+        localStorage.setItem('painel-dm:token', data.token);
+        localStorage.setItem('painel-dm:user', JSON.stringify(data.usuario));
+
+        // Salvar email se "Remember me" estiver marcado
+        if (rememberCheckbox.checked) {
+          localStorage.setItem('painel-dm:remember-email', credencial);
+        } else {
+          localStorage.removeItem('painel-dm:remember-email');
+        }
+
+        // Redirecionar baseado no tipo de usuário
+        const userType = data.usuario.tipo;
+        if (userType === 'admin' || userType === 'colaborador' || userType === 'colunista' || userType === 'autor') {
+          window.location.href = '/painel/'; // Painel para todos
+        } else {
+          window.location.href = '/index.html'; // Fallback
+        }
+      } catch (err) {
+        alert.textContent = err.message;
+        alert.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'LOGIN';
+      }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLogin);
+    } else {
+      initLogin();
+    }
+  </script>
+</body>
+</html>

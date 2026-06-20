@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Debug Article Loading</title>
+  <style>
+    body { font-family: monospace; padding: 20px; }
+    .section { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    .error { color: red; }
+    .success { color: green; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Article Loading Debug</h1>
+  
+  <div class="section">
+    <h2>API Status</h2>
+    <div id="api-status">Checking...</div>
+  </div>
+  
+  <div class="section">
+    <h2>Article Content</h2>
+    <div id="article-content">Loading...</div>
+  </div>
+  
+  <div class="section">
+    <h2>Console Logs</h2>
+    <pre id="logs"></pre>
+  </div>
+
+  <script>
+    // Capture all console outputs
+    const logs = [];
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    console.log = (...args) => {
+      logs.push('[LOG] ' + args.join(' '));
+      originalLog(...args);
+    };
+    console.error = (...args) => {
+      logs.push('[ERROR] ' + args.join(' '));
+      originalError(...args);
+    };
+    
+    // Test API
+    fetch('http://localhost:3000/api/portal/noticia/pororoca-definicao-ocorrencia-causas-e-caracteristicas')
+      .then(r => {
+        logs.push('API Response Status: ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        logs.push('API Data Keys: ' + Object.keys(data).join(', '));
+        logs.push('Lide: ' + (data.lide ? '✅ exists' : '❌ missing'));
+        logs.push('Conteudo: ' + (data.conteudo ? '✅ exists (' + data.conteudo.length + ' chars)' : '❌ missing'));
+        logs.push('Titulo: ' + (data.titulo || '❌ missing'));
+        
+        document.getElementById('article-content').innerHTML = '<pre>' + JSON.stringify(data, null, 2).substring(0, 500) + '</pre>';
+      })
+      .catch(err => {
+        logs.push('[FETCH ERROR] ' + err.message);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          document.getElementById('api-status').innerHTML = '<pre>' + logs.join('\n') + '</pre>';
+        }, 1000);
+      });
+  </script>
+</body>
+</html>

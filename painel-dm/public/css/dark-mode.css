@@ -1,0 +1,119 @@
+/* ================================================================
+   DARK MODE - Tema Escuro para Painel DM
+   Ativado quando <html data-theme="dark">
+   ================================================================ */
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Cores primárias */
+  --cor-principal: #ff9300;
+  --cor-pr-rgb: 255, 147, 0;
+
+  /* Status */
+  --cor-sucesso: #4a9d6f;
+  --cor-perigo: #e74c3c;
+  --cor-aviso: #f39c12;
+
+  /* Fundos */
+  --cor-fundo: #1a1a1a;
+  --cor-fundo-2: #242424;
+  --cor-fundo-3: #2e2e2e;
+
+  /* Bordas e texto */
+  --cor-borda: #404040;
+  --cor-texto: #f0f0f0;
+  --cor-texto-mute: #999;
+  --cor-texto-soft: #b0b0b0;
+
+  /* Sombras mais suaves no dark mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.7);
+}
+
+/* Componentes específicos */
+html[data-theme="dark"] body {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+html[data-theme="dark"] button,
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+  background-color: var(--cor-fundo-2);
+  color: var(--cor-texto);
+  border-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] button:hover:not(:disabled) {
+  background-color: var(--cor-fundo-3);
+}
+
+html[data-theme="dark"] .sidebar {
+  background-color: var(--cor-fundo-2);
+  border-right-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] .sidebar__link {
+  color: var(--cor-texto);
+}
+
+html[data-theme="dark"] .sidebar__link:hover,
+html[data-theme="dark"] .sidebar__link.is-active {
+  background-color: var(--cor-fundo-3);
+  color: var(--cor-principal);
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .modal__box,
+html[data-theme="dark"] [class*="__box"] {
+  background-color: var(--cor-fundo-2);
+  color: var(--cor-texto);
+  border-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] table {
+  background-color: var(--cor-fundo-2);
+  color: var(--cor-texto);
+  border-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] th {
+  background-color: var(--cor-fundo-3);
+  color: var(--cor-texto);
+}
+
+html[data-theme="dark"] td {
+  border-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] tr:hover {
+  background-color: var(--cor-fundo-3);
+}
+
+html[data-theme="dark"] code,
+html[data-theme="dark"] pre {
+  background-color: var(--cor-fundo-3);
+  color: #a0e7e5;
+  border-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] .toast {
+  background-color: var(--cor-fundo-2);
+  color: var(--cor-texto);
+  border-color: var(--cor-borda);
+}
+
+html[data-theme="dark"] .modal__backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+html[data-theme="dark"] input::placeholder {
+  color: var(--cor-texto-mute);
+}
+
+html[data-theme="dark"] hr {
+  border-color: var(--cor-borda);
+}

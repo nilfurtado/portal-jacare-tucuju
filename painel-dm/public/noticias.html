@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar notícia · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <link rel="stylesheet" href="/painel/css/tabela.css">
+  <link rel="stylesheet" href="/painel/css/editor.css">
+  <style>
+    /* Layout 2 colunas: editor + sidebar */
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: var(--s-6);
+      align-items: start;
+    }
+    .editor-main { min-width: 0; display: flex; flex-direction: column; gap: var(--s-5); }
+    .editor-sidebar { display: flex; flex-direction: column; gap: var(--s-4); position: sticky; top: calc(var(--topbar-h) + var(--s-5)); }
+
+    /* Card de seção */
+    .editor-card {
+      background: var(--surface);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-3);
+      overflow: hidden;
+    }
+    .editor-card__head {
+      padding: var(--s-3) var(--s-5);
+      border-bottom: 1px solid var(--paper-line);
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+    .editor-card__num {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      background: var(--paper-line);
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+    }
+    .editor-card__title {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .editor-card__body { padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-4); }
+    .editor-card__body--compact { padding: var(--s-4) var(--s-5); gap: var(--s-3); }
+
+    /* Status badge */
+    .status-selector {
+      display: flex;
+      gap: var(--s-2);
+      flex-wrap: wrap;
+    }
+    .status-opt { position: relative; }
+    .status-opt input { position: absolute; opacity: 0; }
+    .status-opt label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-pill);
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--d-1) var(--ease-out);
+      color: var(--ink-mute);
+    }
+    .status-opt label .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--ink-mute);
+    }
+    .status-opt input:checked + label {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: rgba(218,125,27,0.1);
+    }
+    .status-opt input:checked + label .dot { background: var(--brand); }
+    .status-opt.s-publicado input:checked + label { border-color: var(--positive); color: var(--positive); background: rgba(63,185,80,0.1); }
+    .status-opt.s-publicado input:checked + label .dot { background: var(--positive); }
+    .status-opt.s-rascunho input:checked + label { border-color: var(--ink-mute); color: var(--ink-soft); background: rgba(230,237,243,0.06); }
+    .status-opt.s-rascunho input:checked + label .dot { background: var(--ink-mute); }
+
+    /* Char counter */
+    .field-counter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .char-count {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--ink-faint);
+    }
+    .char-count.warn { color: var(--warning); }
+    .char-count.over { color: var(--danger); }
+
+    /* Slug preview */
+    .slug-preview {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--ink-mute);
+      background: var(--surface-2);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-2);
+      padding: 7px 10px;
+      word-break: break-all;
+    }
+    .slug-preview span { color: var(--brand); }
+
+    /* Editor word count bar */
+    .editor-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--paper-line);
+      border-top: none;
+      border-radius: 0 0 var(--r-2) var(--r-2);
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--ink-faint);
+    }
+
+    /* Autosave indicator */
+    .autosave {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      color: var(--ink-faint);
+      padding: 4px 10px;
+      background: var(--surface);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-pill);
+    }
+    .autosave__dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--ink-faint);
+    }
+    .autosave.saved .autosave__dot { background: var(--positive); }
+    .autosave.saving .autosave__dot { background: var(--warning); animation: pulse 1s infinite; }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* Publish button no sidebar */
+    .btn--publish {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+      width: 100%;
+      justify-content: center;
+      padding: 11px;
+      font-size: 0.88rem;
+      border-radius: var(--r-2);
+    }
+    .btn--publish:hover { background: var(--brand-deep); border-color: var(--brand-deep); transform: none; }
+
+    .btn--draft {
+      background: transparent;
+      color: var(--ink-soft);
+      border-color: var(--paper-line);
+      width: 100%;
+      justify-content: center;
+      border-radius: var(--r-2);
+      font-size: 0.82rem;
+    }
+    .btn--draft:hover { border-color: var(--ink-mute); color: var(--ink); }
+
+    /* Capa dropzone hover effect */
+    .capa-drop-zone:hover,
+    .capa-drop-zone:focus-within {
+      border-color: var(--brand);
+      background-color: rgba(218, 125, 27, 0.08);
+    }
+    .capa-drop-zone:hover .capa-icon,
+    .capa-drop-zone:focus-within .capa-icon {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+    .capa-drop-zone:hover .capa-title,
+    .capa-drop-zone:focus-within .capa-title {
+      color: var(--brand);
+    }
+
+    /* Quill Editor Styles */
+    .editor-wrap {
+      display: flex;
+      flex-direction: column;
+      min-height: 450px;
+    }
+
+    .ql-container {
+      font-size: 1rem;
+      font-family: inherit;
+      flex: 1;
+    }
+
+    .ql-editor {
+      padding: 15px 16px;
+      min-height: 400px;
+      line-height: 1.6;
+    }
+
+    .ql-toolbar {
+      background: var(--surface-2);
+      border: none;
+      border-bottom: 1px solid var(--paper-line);
+      padding: 8px 12px;
+    }
+
+    .ql-toolbar.ql-snow {
+      padding: 8px 12px;
+      background: var(--surface-2);
+    }
+
+    .ql-snow .ql-formats {
+      margin-right: 8px;
+    }
+
+    @media (max-width: 960px) {
+      .editor-layout { grid-template-columns: 1fr; }
+      .editor-sidebar { position: static; }
+    }
+  </style>
+
+  <!-- Socket.io para comunicação em tempo real -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/painel/js/realtime-client.js"></script>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle aria-label="Abrir menu">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <nav class="topbar__crumbs" aria-label="breadcrumb">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <a href="/noticias-lista.html">Notícias</a>
+          <span class="sep">/</span>
+          <span id="crumb-acao">Cadastrar</span>
+        </nav>
+        <div class="topbar__actions">
+          <div class="autosave" id="autosave-ind">
+            <span class="autosave__dot"></span>
+            <span id="autosave-txt">Não salvo</span>
+          </div>
+          <a class="topbar__btn" href="/noticias-lista.html">← Voltar</a>
+        </div>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          
+          <div class="page-title__main">
+            <p class="page-title__sub">Redação · <span id="acao-label">Nova notícia</span></p>
+            <h1 id="page-h1">A pauta <em style="font-style:italic;color:var(--brand)">começa</em> aqui.</h1>
+          </div>
+                <div class="topbar__actions">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+        <form id="form-noticia" novalidate>
+          <div class="editor-layout">
+
+            <!-- COLUNA PRINCIPAL -->
+            <div class="editor-main">
+
+              <!-- MANCHETE E LIDE -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__num">01</span>
+                  <span class="editor-card__title">Identidade</span>
+                </div>
+                <div class="editor-card__body">
+                  <div class="field" style="margin-bottom: 20px">
+                    <label class="field__label req" for="titulo">Manchete</label>
+                    <input class="input" type="text" id="titulo" name="titulo"
+                           placeholder="Ex.: Governo anuncia novo pacote para saúde" required
+                           style="font-size:1.2rem; font-weight:600; padding:14px 16px; letter-spacing:-0.01em;">
+                    <div class="field-counter">
+                      <span class="field__hint">Título principal da matéria</span>
+                      <span class="char-count" id="titulo-count">0</span>
+                    </div>
+                  </div>
+                  <div class="field" style="margin-bottom: 20px">
+                    <label class="field__label" for="lide">Lide / Subtítulo</label>
+                    <textarea class="textarea" id="lide" name="lide" rows="2"
+                              placeholder="Resumo de uma a duas linhas que aparece sob o título."
+                              style="font-size: 0.95rem; padding: 11px 14px;"></textarea>
+                    <div class="field-counter">
+                      <span class="field__hint">Quem, o quê, quando, onde — máx. 240 caracteres</span>
+                      <span class="char-count" id="lide-count">0 / 240</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- IMAGEM DE CAPA (NOVO SISTEMA) -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__num">02</span>
+                  <span class="editor-card__title">Imagem de capa</span>
+                </div>
+                <div class="editor-card__body">
+                  <!-- Status de upload -->
+                  <div id="capa-status"></div>
+
+                  <!-- Barra de progresso -->
+                  <div id="capa-progress" style="display:none;">
+                    <div style="
+                      background: #e0e0e0;
+                      height: 6px;
+                      border-radius: 3px;
+                      overflow: hidden;
+                      margin-bottom: 8px;
+                    ">
+                      <div id="capa-progress-bar" style="
+                        background: linear-gradient(90deg, var(--brand), #ff9500);
+                        height: 100%;
+                        width: 0%;
+                        transition: width 0.1s ease-out;
+                      "></div>
+                    </div>
+                    <small id="capa-progress-text" style="color: var(--ink-mute);">0%</small>
+                  </div>
+
+                  <!-- Upload dropzone -->
+                  <input type="file" id="capa-input" name="capa" accept="image/jpeg,image/png,image/webp" style="display:none">
+                  <div class="capa-drop-zone" style="
+                    border: 2px dashed var(--paper-line);
+                    border-radius: var(--r-3);
+                    padding: var(--s-5);
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all var(--d-1);
+                  ">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3" style="margin: 0 auto var(--s-2); transition: all var(--d-1);" class="capa-icon">
+                      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+                    </svg>
+                    <strong style="display:block; margin-bottom:4px; color:var(--ink-soft); transition: all var(--d-1);" class="capa-title">Clique, arraste ou cole uma imagem</strong>
+                    <small style="color:var(--ink-mute);">JPG, PNG ou WebP · Máximo 8MB · Suporta Ctrl+V</small>
+                  </div>
+
+                  <!-- Preview grid das 5 dimensões -->
+                  <div id="capa-preview-grid" style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    gap: var(--s-3);
+                    margin-top: var(--s-3);
+                  "></div>
+
+                  <!-- Botão para remover imagem -->
+                  <div id="capa-remove-btn" style="display:none; margin-top:var(--s-3);">
+                    <button type="button" class="btn btn--ghost" onclick="capaUploader?.resetCapa()" style="width:100%;">
+                      🗑️ Remover e começar novamente
+                    </button>
+                  </div>
+
+                  <!-- Campo oculto com dados da capa -->
+                  <input type="hidden" id="capa-json" name="capa" value="{}">
+
+                  <!-- Input de alt text -->
+                  <div class="field">
+                    <label class="field__label" for="capa-alt">Descrição da imagem (alt)</label>
+                    <input class="input" type="text" id="capa-alt" placeholder="Breve descrição para SEO e acessibilidade">
+                  </div>
+                </div>
+              </div>
+
+              <!-- EDITOR DE TEXTO -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__num">03</span>
+                  <span class="editor-card__title">Texto da matéria</span>
+                </div>
+                <div class="editor-card__body" style="padding-bottom:0">
+                  <div class="editor-wrap">
+                    <div id="editor-conteudo"></div>
+                    <input type="hidden" name="conteudo" id="conteudo">
+                  </div>
+                </div>
+                <div class="editor-footer">
+                  <span id="word-count">0 palavras</span>
+                  <span id="read-time">~0 min de leitura</span>
+                </div>
+              </div>
+
+              <!-- TAGS -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__num">04</span>
+                  <span class="editor-card__title">Tags</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
+                  <div class="field">
+                    <div class="tags-input" id="tags-wrap">
+                      <input class="tags-input__field" id="tag-input" placeholder="Digite para sugestões ou pressione Enter…" autocomplete="off">
+                    </div>
+                    <div id="tags-sugestoes" style="margin-top: var(--s-2); font-size: 0.8rem; color: var(--ink-mute);">
+                      <p style="margin: 0 0 var(--s-1) 0;">💡 Sugestões por categoria:</p>
+                      <div id="tags-categoria" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                    </div>
+                    <span class="field__hint">Palavras-chave para indexação interna</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- COLUNA SIDEBAR -->
+            <aside class="editor-sidebar">
+
+              <!-- PUBLICAR -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__title">Publicação</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
+
+                  <div class="status-selector">
+                    <div class="status-opt s-publicado">
+                      <input type="radio" name="status" id="st-pub" value="publicado" checked>
+                      <label for="st-pub"><span class="dot"></span> Publicar agora</label>
+                    </div>
+                    <div class="status-opt s-rascunho">
+                      <input type="radio" name="status" id="st-ras" value="rascunho">
+                      <label for="st-ras"><span class="dot"></span> Rascunho</label>
+                    </div>
+                    <div class="status-opt">
+                      <input type="radio" name="status" id="st-age" value="agendado">
+                      <label for="st-age"><span class="dot"></span> Agendar</label>
+                    </div>
+                  </div>
+
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                    <div class="field" id="field-data">
+                      <label class="field__label" for="data">Data</label>
+                      <input class="input input--mono" type="date" id="data" name="data">
+                    </div>
+                    <div class="field" id="field-hora">
+                      <label class="field__label" for="hora">Horário</label>
+                      <input class="input input--mono" type="time" id="hora" name="hora">
+                    </div>
+                  </div>
+
+                  <div style="display:flex;flex-direction:column;gap:var(--s-2);margin-top:var(--s-1)">
+                    <button class="btn btn--publish" type="submit" id="btn-salvar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+                      Publicar notícia
+                    </button>
+                    <a class="btn btn--draft" href="/noticias-lista.html">Cancelar</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CLASSIFICAÇÃO -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__title">Classificação</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
+                  <!-- Campo dinâmico: Editoria (Admin/Autor) ou Colunista -->
+                  <div class="field" id="field-editoria">
+                    <label class="field__label req" for="categoria">Editoria</label>
+                    <select class="select" id="categoria" name="categoria" required></select>
+                  </div>
+                  <div class="field" id="field-colunista" style="display: none;">
+                    <label class="field__label req" for="colunista">Colunista</label>
+                    <input class="input" type="text" id="colunista" name="colunista" readonly placeholder="Seu nome">
+                  </div>
+
+                  <div class="field" id="field-categoria-coluna" style="display: none;">
+                    <label class="field__label" for="categoriaColuna">Categoria da Coluna</label>
+                    <select class="select" id="categoriaColuna" name="categoriaColuna">
+                      <option value="">— Nenhuma —</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label class="field__label" for="municipio">Município</label>
+                    <select class="select" id="municipio" name="municipio">
+                      <option value="">— Nenhum —</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="autor">Autor / Repórter</label>
+                    <input class="input" type="text" id="autor" name="autor" placeholder="Nome do repórter">
+                  </div>
+                </div>
+              </div>
+
+              <!-- DESTAQUE -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__title">Destaque</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
+                  <label class="switch">
+                    <input type="checkbox" id="destaque" name="destaque">
+                    <span class="switch__track"></span>
+                    <span class="switch__label">Aparecer no carrossel da capa</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- SLUG / SEO PREVIEW -->
+              <div class="editor-card">
+                <div class="editor-card__head">
+                  <span class="editor-card__title">URL / Slug</span>
+                </div>
+                <div class="editor-card__body editor-card__body--compact">
+                  <div class="slug-preview" id="slug-preview">
+                    portaljt.com.br/<span id="slug-val">—</span>
+                  </div>
+                  <span class="field__hint">Gerado automaticamente pelo título</span>
+                </div>
+              </div>
+
+            </aside>
+          </div>
+        </form>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+  <script src="/painel/js/include.js"></script>
+  <script>
+    // Garantir que Quill está disponível globalmente
+    if (typeof Quill !== 'undefined') {
+      window.Quill = Quill;
+    }
+  </script>
+  <script type="module">
+    import { apiGet, apiPost, apiPut } from '/painel/js/api.js';
+    import { toast, confirmar } from '/painel/js/ui.js';
+    import CapaUploader from '/painel/js/capa-uploader.js';
+
+    window.CapaUploader = CapaUploader;
+
+    const params = new URLSearchParams(location.search);
+    const editId = params.get('id');
+    if (editId) {
+      document.getElementById('crumb-acao').textContent = 'Editar';
+      document.getElementById('acao-label').textContent = 'Editando matéria';
+      document.getElementById('page-h1').innerHTML = 'Reescrevendo <em style="font-style:italic;color:var(--brand)">a história</em>.';
+      document.getElementById('btn-salvar').textContent = 'Salvar alterações';
+    } else {
+      // Nova notícia: preencher autor automaticamente com o usuário logado
+      try {
+        const userJson = localStorage.getItem('painel-dm:user');
+        const user = userJson ? JSON.parse(userJson) : null;
+        if (user && user.nome) {
+          document.getElementById('autor').value = user.nome;
+        }
+      } catch (e) {
+        console.warn('[noticias.html] Erro ao carregar usuário:', e);
+      }
+    }
+
+    // Quill editor - PROFISSIONAL COM MUITAS OPÇÕES
+    const quill = new Quill('#editor-conteudo', {
+      theme: 'snow',
+      placeholder: 'Comece a escrever sua matéria…',
+      modules: {
+        toolbar: [
+          // HEADINGS
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+          // FORMATTING
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ script: 'sub' }, { script: 'super' }],
+
+          // COLOR & BACKGROUND
+          [{ color: [] }, { background: [] }],
+
+          // LISTS
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ indent: '-1' }, { indent: '+1' }],
+
+          // ALIGNMENT
+          [{ align: [] }],
+
+          // QUOTES & CODE
+          ['blockquote', 'code-block'],
+
+          // MEDIA
+          ['link', 'image', 'video'],
+
+          // DIRECTION
+          [{ direction: 'rtl' }],
+
+          // CLEAN
+          ['clean']
+        ],
+      },
+    });
+
+    // Capa Uploader — novo sistema de upload com 5 dimensões
+    window.capaUploader = null;
+    if (typeof CapaUploader !== 'undefined') {
+      // Gerar ID temporário para novo upload (será substituído pelo ID real após criação)
+      const tempNoticiId = editId || `temp-${Date.now()}`;
+      window.capaUploader = new CapaUploader({
+        noticiId: tempNoticiId,
+        inputSelector: '#capa-input',
+        previewGridSelector: '#capa-preview-grid',
+        altSelector: '#capa-alt',
+        statusSelector: '#capa-status'
+      });
+
+      // Se edição, carregar dados de capa existente
+      if (editId) {
+        // Será preenchido após carregar a notícia
+      }
+    }
+
+
+    // Word count
+    function updateWordCount() {
+      const text = quill.getText().trim();
+      const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+      const mins = Math.max(1, Math.ceil(words / 200));
+      document.getElementById('word-count').textContent = `${words.toLocaleString('pt-BR')} palavras`;
+      document.getElementById('read-time').textContent = `~${mins} min de leitura`;
+    }
+    quill.on('text-change', updateWordCount);
+
+    // Função de validação visual
+    function validarCampoVisualmente(campo, isValido) {
+      const input = typeof campo === 'string' ? document.getElementById(campo) : campo;
+      if (!input) return;
+
+      if (isValido) {
+        input.style.borderColor = '';
+        input.style.backgroundColor = '';
+      } else {
+        input.style.borderColor = 'var(--danger, #e74c3c)';
+        input.style.backgroundColor = 'rgba(231, 76, 60, 0.05)';
+      }
+    }
+
+    // Char counters
+    const tituloInp = document.getElementById('titulo');
+    const lideInp = document.getElementById('lide');
+    tituloInp.addEventListener('input', () => {
+      const n = tituloInp.value.length;
+      const el = document.getElementById('titulo-count');
+      el.textContent = n;
+      el.className = 'char-count' + (n > 120 ? ' warn' : '');
+      // Slug
+      document.getElementById('slug-val').textContent = tituloInp.value
+        .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+        .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || '—';
+    });
+    tituloInp.addEventListener('blur', () => {
+      validarCampoVisualmente(tituloInp, !!tituloInp.value.trim());
+    });
+
+    lideInp.addEventListener('input', () => {
+      const n = lideInp.value.length;
+      const el = document.getElementById('lide-count');
+      el.textContent = `${n} / 240`;
+      el.className = 'char-count' + (n > 240 ? ' over' : n > 200 ? ' warn' : '');
+    });
+    lideInp.addEventListener('blur', () => {
+      validarCampoVisualmente(lideInp, !!lideInp.value.trim());
+    });
+
+    // Detectar tipo de usuário e renderizar campos dinâmicos
+    const user = JSON.parse(localStorage.getItem('painel-dm:user') || '{}');
+    const isAdmin = user.tipo === 'admin';
+    const isAutor = user.tipo === 'autor';
+    const isColunista = user.tipo === 'colunista';
+
+    const fieldEditoria = document.getElementById('field-editoria');
+    const fieldColunista = document.getElementById('field-colunista');
+    const fieldCategoriaColuna = document.getElementById('field-categoria-coluna');
+    const colunistaNomeInp = document.getElementById('colunista');
+
+    // ADMIN: Vê campos de notícia regular (Editoria)
+    // AUTOR: Vê campos de notícia regular (Editoria)
+    // COLUNISTA: Vê campos de coluna (Colunista + Categoria da Coluna)
+    if (isColunista) {
+      fieldEditoria.style.display = 'none';
+      fieldColunista.style.display = 'block';
+      fieldCategoriaColuna.style.display = 'block';
+      colunistaNomeInp.value = user.nome || '';
+    } else if (isAutor || isAdmin) {
+      fieldEditoria.style.display = 'block';
+      fieldColunista.style.display = 'none';
+      fieldCategoriaColuna.style.display = 'none';
+    }
+
+    // Carregar categorias de colunas APENAS para colunistas
+    if (isColunista) {
+      try {
+        const res = await fetch('/data/categorias-colunas.json');
+        const categoriasColunas = await res.json();
+        const selectCategoriaColuna = document.getElementById('categoriaColuna');
+        categoriasColunas.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.slug;
+          opt.textContent = cat.nome;
+          selectCategoriaColuna.appendChild(opt);
+        });
+      } catch (err) {
+        console.warn('Erro ao carregar categorias de colunas:', err);
+      }
+    }
+
+    // Categorias + municípios
+    const cats = await apiGet('/categorias').catch(() => []);
+    const catSel = document.getElementById('categoria');
+    catSel.innerHTML = cats.map(c => `<option value="${c.slug}">${c.nome || c.label}</option>`).join('');
+    catSel.addEventListener('change', () => {
+      validarCampoVisualmente(catSel, !!catSel.value);
+    });
+
+    const muns = await fetch('/data/municipios.json').then(r => r.json()).catch(() => []);
+    const munSel = document.getElementById('municipio');
+    muns.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.slug; opt.textContent = m.label || m.nome;
+      munSel.appendChild(opt);
+    });
+
+    // Tags
+    const tags = new Set();
+    const tagsWrap = document.getElementById('tags-wrap');
+    const tagInput = document.getElementById('tag-input');
+
+    // 📋 Cache de tags históricas (extraído do banco)
+    let tagsHistoricas = new Set();
+
+    // Carregar tags históricas do banco de notícias
+    async function carregarTagsHistoricas() {
+      try {
+        const token = localStorage.getItem('painel-dm:token');
+        const res = await fetch('/api/noticias?limit=1000', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (!res.ok) {
+          console.warn('Erro ao carregar tags: status', res.status);
+          return;
+        }
+        const data = await res.json();
+        if (data.items && Array.isArray(data.items)) {
+          data.items.forEach(n => {
+            if (n.tags && Array.isArray(n.tags)) {
+              n.tags.forEach(t => tagsHistoricas.add(t.toLowerCase()));
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar tags históricas:', err);
+      }
+    }
+
+    // 🎯 Auto-completar tags
+    let sugestoesEl = null;
+    function mostrarSugestoes(query) {
+      if (!query) {
+        if (sugestoesEl) sugestoesEl.remove();
+        sugestoesEl = null;
+        return;
+      }
+
+      const q = query.toLowerCase();
+      const sugestoes = [...tagsHistoricas].filter(t =>
+        t.includes(q) && !tags.has(t)
+      ).slice(0, 5);
+
+      if (!sugestoes.length) {
+        if (sugestoesEl) sugestoesEl.remove();
+        sugestoesEl = null;
+        return;
+      }
+
+      if (sugestoesEl) sugestoesEl.remove();
+      sugestoesEl = document.createElement('div');
+      sugestoesEl.style.cssText = 'position:absolute; background:var(--surface); border:1px solid var(--paper-line); border-radius:var(--r-2); margin-top:2px; z-index:10; min-width:200px; box-shadow:0 2px 8px rgba(0,0,0,0.1);';
+
+      sugestoes.forEach(sugestao => {
+        const opt = document.createElement('div');
+        opt.textContent = sugestao;
+        opt.style.cssText = 'padding:8px 12px; cursor:pointer; font-size:0.85rem; border-bottom:1px solid var(--paper-line); transition:all 0.2s;';
+        opt.onmouseover = () => opt.style.background = 'rgba(218,125,27,0.1)';
+        opt.onmouseout = () => opt.style.background = '';
+        opt.onclick = () => {
+          tags.add(sugestao);
+          tagInput.value = '';
+          renderTags();
+          mostrarSugestoes('');
+        };
+        sugestoesEl.appendChild(opt);
+      });
+
+      tagInput.parentElement.style.position = 'relative';
+      tagInput.parentElement.appendChild(sugestoesEl);
+    }
+
+    function renderTags() {
+      [...tagsWrap.querySelectorAll('.tags-input__chip')].forEach(el => el.remove());
+      [...tags].forEach(t => {
+        const chip = document.createElement('span');
+        chip.className = 'tags-input__chip';
+        chip.innerHTML = `${t}<button type="button" data-tag="${t}">×</button>`;
+        tagsWrap.insertBefore(chip, tagInput);
+      });
+    }
+
+    tagInput.addEventListener('input', (e) => {
+      mostrarSugestoes(e.target.value);
+    });
+
+    tagInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const v = tagInput.value.trim().toLowerCase().replace(/,$/, '');
+        if (v) { tags.add(v); tagInput.value = ''; renderTags(); mostrarSugestoes(''); }
+      } else if (e.key === 'Backspace' && !tagInput.value && tags.size) {
+        const arr = [...tags];
+        tags.delete(arr[arr.length - 1]);
+        renderTags();
+      } else if (e.key === 'Escape') {
+        mostrarSugestoes('');
+      }
+    });
+
+    tagsWrap.addEventListener('click', e => {
+      const t = e.target.dataset?.tag;
+      if (t) { tags.delete(t); renderTags(); }
+    });
+
+    // 🎯 Tags sugeridas por categoria
+    const tagsPorCategoria = {
+      'politica': ['governo', 'política', 'assembleia', 'decreto', 'legislação'],
+      'policia': ['polícia', 'crime', 'operação', 'investigação', 'segurança'],
+      'cultura': ['cultura', 'arte', 'evento', 'show', 'exposição'],
+      'esportes': ['esportes', 'futebol', 'campeonato', 'atleta', 'competição'],
+      'economia': ['economia', 'comércio', 'negócios', 'mercado', 'finanças'],
+      'municipios': ['município', 'comunidade', 'local', 'desenvolvimento']
+    };
+
+    // catSel já declarado na linha 606
+    const tagsCategoriaDiv = document.getElementById('tags-categoria');
+
+    function atualizarSugestoesPorCategoria() {
+      const cat = catSel.value?.toLowerCase();
+      const sugestoes = tagsPorCategoria[cat] || [];
+
+      tagsCategoriaDiv.innerHTML = sugestoes.map(t =>
+        `<button type="button" style="padding:4px 10px; border:1px solid var(--brand); background:transparent; color:var(--brand); border-radius:var(--r-pill); cursor:pointer; font-size:0.75rem; transition:all 0.2s;" data-suggest="${t}">
+          + ${t}
+        </button>`
+      ).join('');
+
+      // Adicionar evento de clique
+      tagsCategoriaDiv.querySelectorAll('[data-suggest]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tag = btn.dataset.suggest;
+          tags.add(tag);
+          tagInput.value = '';
+          renderTags();
+          mostrarSugestoes('');
+          atualizarSugestoesPorCategoria();
+        });
+      });
+    }
+
+    catSel.addEventListener('change', atualizarSugestoesPorCategoria);
+
+    // Carregar tags ao iniciar
+    carregarTagsHistoricas();
+    atualizarSugestoesPorCategoria();
+
+    // Preview imagem (removido: usar CapaUploader em vez disso)
+
+    // Autosave indicator
+    const autosave = document.getElementById('autosave-ind');
+    const autosaveTxt = document.getElementById('autosave-txt');
+    function setAutosave(state) {
+      autosave.className = 'autosave ' + state;
+      autosaveTxt.textContent = state === 'saved' ? 'Salvo' : state === 'saving' ? 'Salvando…' : 'Não salvo';
+    }
+
+    // Pré-preenche se edição
+    if (editId) {
+      const n = await apiGet(`/noticias/${editId}`).catch(err => { toast(err.message, 'error'); return null; });
+      if (n) {
+        document.getElementById('titulo').value = n.titulo || '';
+        tituloInp.dispatchEvent(new Event('input'));
+        document.getElementById('lide').value = n.lide || '';
+        lideInp.dispatchEvent(new Event('input'));
+
+        // Carregar campo correto baseado no tipo de usuário
+        if (isColunista) {
+          colunistaNomeInp.value = n.colunista || user.nome || '';
+        } else {
+          catSel.value = n.categoria || cats[0]?.slug || '';
+        }
+
+        munSel.value = n.municipio || '';
+        document.getElementById('autor').value = n.autor || '';
+
+        // Nova estrutura: carregar capa se existir
+        if (n.capa && Object.keys(n.capa).length > 0) {
+          console.log('[noticias] Carregando capa:', n.capa);
+          if (window.capaUploader) {
+            window.capaUploader.setCapaData(n.capa);
+            window.capaUploader.noticiId = editId; // Atualizar ID para edição
+            console.log('[noticias] ✅ Capa carregada no uploader');
+          } else {
+            console.warn('[noticias] ⚠️ capaUploader não disponível, renderizando preview manual');
+            // Fallback: renderizar manualmente se capaUploader não estiver disponível
+            const previewGrid = document.getElementById('capa-preview-grid');
+            if (previewGrid && n.capa.principal) {
+              previewGrid.innerHTML = `
+                <div style="position: relative; width: 100%; padding-top: 66.67%; background: var(--surface); overflow: hidden; border-radius: var(--r-3); border: 1px solid var(--paper-line);">
+                  <img src="${n.capa.principal}" alt="Prévia da capa" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                </div>
+              `;
+              // Mostrar botão de remover mesmo com fallback
+              const removeBtn = document.getElementById('capa-remove-btn');
+              if (removeBtn) removeBtn.style.display = 'block';
+            }
+          }
+          document.getElementById('capa-json').value = JSON.stringify(n.capa);
+          document.getElementById('capa-alt').value = n.capa.metadados?.alt || '';
+        } else {
+          // Reversa-compatibilidade: se só tem 'imagem' antigo
+          document.getElementById('imagem').value = n.imagem || '';
+        }
+
+        if (n.data) {
+          const dt = n.data.slice(0, 16);
+          document.getElementById('data').value = dt.slice(0, 10);
+          document.getElementById('hora').value = dt.slice(11, 16);
+        }
+        document.getElementById('destaque').checked = !!n.destaque;
+        quill.root.innerHTML = n.conteudo || '';
+        (n.tags || []).forEach(t => tags.add(t));
+        renderTags();
+        updateWordCount();
+        setAutosave('saved');
+      }
+    } else {
+      const d = new Date();
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+      const dt = d.toISOString().slice(0, 16);
+      document.getElementById('data').value = dt.slice(0, 10);
+      document.getElementById('hora').value = dt.slice(11, 16);
+    }
+
+    // Submit
+    document.getElementById('form-noticia').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      console.log('[SUBMIT] Evento acionado');
+      const btn = document.getElementById('btn-salvar');
+      btn.disabled = true;
+      const original = btn.textContent;
+      btn.textContent = 'Validando…';
+      setAutosave('saving');
+
+      // Validações dos campos obrigatórios
+      const erros = [];
+      const titulo = document.getElementById('titulo').value.trim();
+      const capaData = window.capaUploader ? window.capaUploader.getCapaData() : null;
+      const conteudo = quill.root.innerHTML.trim().replace(/<[^>]*>/g, '').trim();
+
+      // Validação dinâmica baseada no tipo de usuário
+      let classificacao = '';
+      let labelClassificacao = '';
+      if (isColunista) {
+        classificacao = colunistaNomeInp.value.trim();
+        labelClassificacao = 'Colunista';
+      } else {
+        classificacao = catSel.value;
+        labelClassificacao = 'Editoria (Categoria)';
+      }
+
+      console.log('[VALIDAÇÃO]', { titulo: !!titulo, classificacao: !!classificacao, conteudo: !!conteudo, capa: !!capaData });
+
+      if (!titulo) erros.push('• Manchete (Título)');
+      if (!classificacao) erros.push(`• ${labelClassificacao}`);
+      if (!conteudo) erros.push('• Texto da matéria');
+      // Capa obrigatória apenas para admin/colaborador
+      if (!isColunista && !editId && !capaData) erros.push('• Imagem de Capa');
+
+      console.log('[ERROS]', erros);
+      console.log('[MODAL DEBUG] confirmar existe?', typeof confirmar);
+      console.log('[MODAL DEBUG] document.body existe?', !!document.body);
+
+      // Se houver erros, mostrar toast + modal com lista dos campos faltantes
+      if (erros.length > 0) {
+        // Toast de erro com lista
+        toast(`❌ Preencha os campos obrigatórios:\n${erros.join('\n')}`, 'error');
+
+        // Modal de confirmação
+        try {
+          await confirmar({
+            titulo: '⚠️ Campos Obrigatórios',
+            mensagem: `Preencha os campos marcados com *:\n\n${erros.join('\n')}`,
+            okText: 'OK'
+          });
+        } catch (err) {
+          console.error('[Validação] Erro ao mostrar modal:', err);
+        }
+
+        setAutosave('unsaved');
+        btn.disabled = false;
+        btn.textContent = original;
+        return;
+      }
+
+      // Construir body dinâmico baseado no tipo de usuário
+      const body = {
+        titulo:    document.getElementById('titulo').value.trim(),
+        lide:      document.getElementById('lide').value.trim(),
+        conteudo:  quill.root.innerHTML,
+        municipio: munSel.value,
+        autor:     document.getElementById('autor').value.trim(),
+        data:      new Date((document.getElementById('data').value || '') + 'T' + (document.getElementById('hora').value || '00:00') || Date.now()).toISOString(),
+        tags:      [...tags],
+        destaque:  document.getElementById('destaque').checked,
+        status:    document.querySelector('[name=status]:checked')?.value || 'publicado',
+      };
+
+      // Adicionar campo correto baseado no tipo de usuário
+      if (isColunista) {
+        body.colunista = colunistaNomeInp.value.trim();
+        body.categoriaColuna = document.getElementById('categoriaColuna').value;
+      } else {
+        body.categoria = catSel.value;
+      }
+
+      // Incluir capa se existir (novo sistema)
+      if (capaData) {
+        body.capa = capaData;
+        // Atualizar alt text
+        const alt = document.getElementById('capa-alt').value.trim();
+        if (alt && body.capa.metadados) {
+          body.capa.metadados.alt = alt;
+        }
+      }
+
+      try {
+        let titulo = '';
+        let mensagem = '';
+
+        if (editId) {
+          await apiPut(`/noticias/${editId}`, body);
+          titulo = '✅ Sucesso!';
+          mensagem = 'Notícia atualizada com sucesso.';
+          toast('Notícia atualizada', 'success');
+        } else {
+          await apiPost('/noticias', body);
+          titulo = '✅ Notícia Cadastrada!';
+          mensagem = `A notícia "${body.titulo}" foi publicada com sucesso.`;
+          toast('Notícia publicada', 'success');
+        }
+
+        setAutosave('saved');
+
+        // Mostrar modal de confirmação
+        const confirmacao = await confirmar({
+          titulo: titulo,
+          mensagem: mensagem,
+          okText: 'Voltar para Lista',
+          cancelText: 'Fechar'
+        });
+
+        if (confirmacao) {
+          location.replace('/painel/noticias/');
+        } else {
+          setTimeout(() => location.replace('/painel/noticias/'), 2000);
+        }
+      } catch (err) {
+        toast(err.message || 'Erro ao salvar', 'error');
+        setAutosave('unsaved');
+        btn.disabled = false;
+        btn.textContent = original;
+      }
+    });
+  </script>
+</body>
+</html>
+

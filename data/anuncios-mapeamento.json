@@ -1,0 +1,449 @@
+{
+  "titulo": "MAPEAMENTO COMPLETO DE POSIÇÕES PARA ANÚNCIOS",
+  "data": "2026-06-06",
+  "versao": "1.0",
+  "status": "para-analise",
+  "resumo": {
+    "total_locais": 8,
+    "total_tipos": 6,
+    "formatos_suportados": ["JPEG", "WebP"],
+    "sistema": "Portal Jacaré Tucujú"
+  },
+  "plataformas": {
+    "portal": {
+      "nome": "Portal Jacaré Tucujú - Site Principal",
+      "url_base": "http://localhost:8000",
+      "locais": [
+        {
+          "id": 1,
+          "nome": "Super Banner - Topo (Header)",
+          "local_arquivo": "partials/header.html",
+          "posicao_secao": "HEADER",
+          "posicao_relativa": "DENTRO DO HEADER - Logo, Menu de navegação",
+          "posicao_html": "Entre <nav> e conteúdo principal",
+          "tipo": "super-banner",
+          "dimensoes": {
+            "largura": 970,
+            "altura": 150,
+            "unidade": "pixels",
+            "aspectratio": "97:15"
+          },
+          "paginas": [
+            "index.html",
+            "busca.html",
+            "categoria.html",
+            "municipio.html",
+            "noticia.html",
+            "sobre.html",
+            "privacidade.html",
+            "contato.html",
+            "termos.html",
+            "classificados.html",
+            "enquetes.html",
+            "videos.html"
+          ],
+          "visibilidade": "Todas as páginas",
+          "visibilidade_detalhada": {
+            "sessao": "HEADER (Topbar + Logo + Menu)",
+            "posicao": "Entre a navegação e o conteúdo principal",
+            "ordem_visual": "Primeira coisa abaixo do header"
+          },
+          "responsivo": "Redimensiona em mobile (<768px)",
+          "slot": "header-970x150",
+          "ativo": false
+        },
+        {
+          "id": 2,
+          "nome": "Medium Rectangle - Sidebar Superior",
+          "local_arquivo": "partials/sidebar.html",
+          "posicao_secao": "SIDEBAR (Coluna Direita)",
+          "posicao_relativa": "TOPO DA SIDEBAR - Acima do Half Page",
+          "posicao_html": "Primeiro elemento após .sidebar",
+          "tipo": "medium-rectangle",
+          "dimensoes": {
+            "largura": 300,
+            "altura": 250,
+            "unidade": "pixels",
+            "aspectratio": "6:5"
+          },
+          "paginas": [
+            "index.html",
+            "busca.html",
+            "categoria.html",
+            "municipio.html",
+            "noticia.html"
+          ],
+          "visibilidade": "Páginas com sidebar",
+          "visibilidade_detalhada": {
+            "sessao": "SIDEBAR DIREITA",
+            "posicao": "ANTES do Half Page (300x600)",
+            "ordem_visual": "Primeira coisa na coluna lateral",
+            "paginas_listadas": [
+              "Homepage",
+              "Busca",
+              "Categoria",
+              "Município",
+              "Notícia individual"
+            ]
+          },
+          "responsivo": "Oculto em mobile (<768px)",
+          "slot": "sidebar-300x250",
+          "ativo": false
+        },
+        {
+          "id": 4,
+          "nome": "Half Page - Sidebar Lateral",
+          "local_arquivo": "partials/sidebar.html",
+          "posicao_secao": "SIDEBAR (Coluna Direita)",
+          "posicao_relativa": "ABAIXO do Medium Rectangle (300x250)",
+          "posicao_html": "Segundo elemento após .sidebar",
+          "tipo": "half-page",
+          "dimensoes": {
+            "largura": 300,
+            "altura": 600,
+            "unidade": "pixels",
+            "aspectratio": "1:2"
+          },
+          "paginas": [
+            "index.html",
+            "busca.html",
+            "categoria.html",
+            "municipio.html",
+            "noticia.html"
+          ],
+          "visibilidade": "Páginas com sidebar",
+          "visibilidade_detalhada": {
+            "sessao": "SIDEBAR DIREITA",
+            "posicao": "DEPOIS do Medium Rectangle (300x250)",
+            "ordem_visual": "Segunda posição na coluna lateral",
+            "paginas_listadas": [
+              "Homepage",
+              "Busca",
+              "Categoria",
+              "Município",
+              "Notícia individual"
+            ]
+          },
+          "responsivo": "Oculto em mobile (<768px)",
+          "slot": "sidebar-300x600",
+          "ativo": false
+        },
+        {
+          "id": 10,
+          "nome": "Super Banner - Rodapé",
+          "local_arquivo": "partials/footer.html",
+          "posicao_secao": "FOOTER (Rodapé)",
+          "posicao_relativa": "ANTES dos links e informações do rodapé",
+          "posicao_html": "Primeiro elemento dentro do footer",
+          "tipo": "super-banner",
+          "dimensoes": {
+            "largura": 970,
+            "altura": 150,
+            "unidade": "pixels",
+            "aspectratio": "97:15"
+          },
+          "paginas": [
+            "index.html",
+            "busca.html",
+            "categoria.html",
+            "municipio.html",
+            "noticia.html",
+            "sobre.html",
+            "privacidade.html",
+            "contato.html",
+            "termos.html",
+            "classificados.html",
+            "enquetes.html",
+            "videos.html"
+          ],
+          "visibilidade": "Todas as páginas",
+          "visibilidade_detalhada": {
+            "sessao": "FOOTER (Rodapé completo)",
+            "posicao": "ANTES dos links, horários e contato",
+            "ordem_visual": "Primeira coisa ao final da página",
+            "paginas_listadas": "Todas as páginas do portal"
+          },
+          "responsivo": "Redimensiona em mobile",
+          "slot": "footer-970x150",
+          "ativo": false
+        },
+        {
+          "id": 11,
+          "nome": "Interstitial Pop-up",
+          "local_arquivo": "index.html",
+          "posicao_secao": "OVERLAY (Acima de tudo)",
+          "posicao_relativa": "MODAL FLUTUANTE - Sobrepõe todo conteúdo da página",
+          "posicao_html": "Primeiro elemento no body (antes de header)",
+          "tipo": "interstitial",
+          "dimensoes": {
+            "largura": 580,
+            "altura": 400,
+            "unidade": "pixels",
+            "aspectratio": "29:20"
+          },
+          "paginas": [
+            "index.html (homepage apenas)"
+          ],
+          "visibilidade": "Homepage apenas",
+          "visibilidade_detalhada": {
+            "sessao": "OVERLAY/MODAL (Flutuante)",
+            "posicao": "SOBRE TODO O CONTEÚDO - Centrado na tela",
+            "ordem_visual": "Aparece acima de qualquer outra coisa",
+            "paginas_listadas": [
+              "Homepage / index.html"
+            ],
+            "comportamento": "Aparece automaticamente após 15 segundos de carregamento"
+          },
+          "responsivo": "Redimensiona responsivamente",
+          "slot": "ad-popup",
+          "ativo": false,
+          "delay_exibicao_ms": 15000,
+          "pode_fechar": true
+        },
+        {
+          "id": 12,
+          "nome": "Rectangle Medium - Topo Principal",
+          "local_arquivo": "index.html",
+          "posicao_secao": "MAIN CONTENT (Conteúdo principal)",
+          "posicao_relativa": "DEPOIS do Super Banner - ANTES da seção de Política",
+          "posicao_html": "Entre <.ad-strip> e <section.cat-section#section-politica>",
+          "tipo": "rectangle-medium",
+          "dimensoes": {
+            "largura": 280,
+            "altura": 196,
+            "unidade": "pixels",
+            "aspectratio": "10:7"
+          },
+          "paginas": [
+            "index.html"
+          ],
+          "visibilidade": "Homepage apenas",
+          "visibilidade_detalhada": {
+            "sessao": "MAIN GRID / CONTENT PRINCIPAL",
+            "posicao": "DEPOIS do Super Banner (970x150) - ANTES da seção de Política",
+            "ordem_visual": "Entre o primeiro anúncio e as notícias principais",
+            "paginas_listadas": [
+              "Homepage / index.html"
+            ],
+            "contexto": "Aparece entre o Super Banner do topo e a primeira categoria de notícias"
+          },
+          "responsivo": "Redimensiona em mobile",
+          "slot": "main-280x196",
+          "ativo": false
+        }
+      ]
+    },
+    "painel_dm": {
+      "nome": "Painel DM - Admin Node.js",
+      "url_base": "http://localhost:3000",
+      "info": "Gerenciamento de anúncios - sem exibição de anúncios",
+      "funcionalidades": [
+        "Criar novo anúncio",
+        "Editar anúncio existente",
+        "Upload de imagem (JPEG + WebP automático)",
+        "Ativar/desativar anúncio",
+        "Visualizar estatísticas (impressões, cliques, CTR)",
+        "Mover para lixeira",
+        "Restaurar de lixeira",
+        "Excluir permanentemente"
+      ]
+    }
+  },
+  "tipos_anuncios": {
+    "super-banner": {
+      "dimensoes": "970x150",
+      "uso": "Topo e rodapé do site",
+      "visibilidade": "Alta - Todas as páginas",
+      "est_impressoes": "1000-5000/dia",
+      "locais": [1, 10]
+    },
+    "medium-rectangle": {
+      "dimensoes": "300x250",
+      "uso": "Sidebar superior",
+      "visibilidade": "Média - Apenas com sidebar",
+      "est_impressoes": "500-2000/dia",
+      "locais": [2]
+    },
+    "half-page": {
+      "dimensoes": "300x600",
+      "uso": "Sidebar lateral completa",
+      "visibilidade": "Média-alta - Sidebar visible",
+      "est_impressoes": "800-3000/dia",
+      "locais": [4]
+    },
+    "interstitial": {
+      "dimensoes": "580x400",
+      "uso": "Pop-up modal na homepage",
+      "visibilidade": "Muito alta - Sobrepõe conteúdo",
+      "est_impressoes": "500-1500/dia",
+      "locais": [11],
+      "comportamento": "Aparece após 15s, pode fechar"
+    },
+    "rectangle-medium": {
+      "dimensoes": "280x196",
+      "uso": "Acima listagem principal",
+      "visibilidade": "Média - Homepage",
+      "est_impressoes": "200-800/dia",
+      "locais": [12]
+    },
+    "billboard": {
+      "dimensoes": "970x90",
+      "uso": "Future: Leaderboard top/bottom",
+      "visibilidade": "Planejado",
+      "status": "Não implementado"
+    }
+  },
+  "tecnicas_responsivas": {
+    "desktop": {
+      "breakpoint": ">=1024px",
+      "todos_anuncios": "Visível",
+      "layout": "Completo com sidebar"
+    },
+    "tablet": {
+      "breakpoint": "768px - 1023px",
+      "visivel": ["super-banner", "interstitial", "rectangle-medium"],
+      "oculto": ["medium-rectangle", "half-page"],
+      "layout": "Reduzido, sem sidebar"
+    },
+    "mobile": {
+      "breakpoint": "<768px",
+      "visivel": ["super-banner (redimensionado)", "interstitial", "rectangle-medium"],
+      "oculto": ["medium-rectangle", "half-page"],
+      "layout": "Móvel, 100% width"
+    }
+  },
+  "formatos_aceitos": {
+    "imagem": {
+      "formatos": ["JPEG", "PNG", "GIF", "WebP"],
+      "tamanho_maximo": "8MB",
+      "otimizacao": "Automática (JPEG + WebP)"
+    },
+    "html": {
+      "status": "Planejado",
+      "info": "Para código HTML/JavaScript customizado"
+    }
+  },
+  "configuracoes_recomendadas": {
+    "super-banner": {
+      "formato_recomendado": "JPEG/WebP",
+      "tamanho_arquivo": "50-150KB",
+      "aspectratio": "970x150",
+      "dicas": [
+        "Use imagens largas e de baixa altura",
+        "Otimize para carregar rápido",
+        "Texto deve ser legível em fundo escuro/claro",
+        "Padding mínimo nas laterais (10px)"
+      ]
+    },
+    "medium-rectangle": {
+      "formato_recomendado": "JPEG/WebP",
+      "tamanho_arquivo": "30-80KB",
+      "aspectratio": "300x250",
+      "dicas": [
+        "Tamanho padrão IAB",
+        "Crie versões mobile (redimensiona automático)",
+        "Inclua call-to-action claro",
+        "Evite texto pequeno demais"
+      ]
+    },
+    "half-page": {
+      "formato_recomendado": "JPEG/WebP",
+      "tamanho_arquivo": "40-100KB",
+      "aspectratio": "300x600",
+      "dicas": [
+        "Imagem alta e estreita",
+        "Ótimo para conteúdo vertical",
+        "Destaque bem o elemento principal",
+        "Considere espaço para fechar (X)"
+      ]
+    },
+    "interstitial": {
+      "formato_recomendado": "JPEG/WebP",
+      "tamanho_arquivo": "60-150KB",
+      "aspectratio": "580x400",
+      "dicas": [
+        "Pop-up modal, use design chamativo",
+        "Exibe após 15 segundos",
+        "Usuário pode fechar",
+        "Teste em diferentes resoluções",
+        "Centrado na tela"
+      ]
+    },
+    "rectangle-medium": {
+      "formato_recomendado": "JPEG/WebP",
+      "tamanho_arquivo": "25-60KB",
+      "aspectratio": "280x196",
+      "dicas": [
+        "Pequeno, mas visível",
+        "Acima da lista de notícias",
+        "Inclua logo se possível",
+        "Cores vibrantes atraem atenção"
+      ]
+    }
+  },
+  "api_endpoints": {
+    "listar": "GET /api/anuncios",
+    "criar": "POST /api/anuncios",
+    "editar": "PUT /api/anuncios/:id",
+    "ativar_desativar": "PATCH /api/anuncios/:id",
+    "deletar": "DELETE /api/anuncios/:id (move para lixeira)",
+    "upload_imagem": "POST /api/anuncios/upload/imagem",
+    "impressao": "POST /api/anuncios/:id/impressao",
+    "clique": "POST /api/anuncios/:id/clique"
+  },
+  "base_de_dados": {
+    "tabela": "anuncios",
+    "campos": [
+      "id (PK)",
+      "nome (VARCHAR)",
+      "tipo (super-banner, medium-rectangle, half-page, interstitial, rectangle-medium)",
+      "local (1, 2, 4, 10, 11, 12)",
+      "paginas (JSON array)",
+      "criativo (JSON: imagem, imagemWebp, titulo)",
+      "destino (URL para clique)",
+      "periodo (JSON: inicio, fim)",
+      "ativo (0/1)",
+      "impressoes (INT)",
+      "cliques (INT)",
+      "historico (JSON array)",
+      "criadoEm (TIMESTAMP)",
+      "atualizadoEm (TIMESTAMP)"
+    ],
+    "indices": [
+      "idx_anuncios_local (para buscar por local)",
+      "idx_anuncios_ativo (para listar ativos)"
+    ]
+  },
+  "performance": {
+    "carregamento": "Assíncrono via js/ads-loader.js",
+    "cache": "Cache-control: no-cache",
+    "sso": "Server-Sent Events para atualizações em tempo real",
+    "lazy_load": "Imagens carregam sob demanda",
+    "otimizacao": "JPEG + WebP automático"
+  },
+  "proximas_melhorias": [
+    "Adicionar tipo 'billboard' (970x90)",
+    "Suporte para HTML/JavaScript customizado",
+    "A/B testing de criativos",
+    "Segmentação por audiência",
+    "Relatórios avançados de desempenho",
+    "Integração com DMP (Data Management Platform)",
+    "Programação de horários específicos"
+  ],
+  "analise": {
+    "status": "PRONTO PARA ANÁLISE",
+    "total_locais_mapeados": 6,
+    "tipos_definidos": 6,
+    "responsivo": "Sim - Desktop, Tablet, Mobile",
+    "otimizacao_imagem": "Automática (JPEG + WebP)",
+    "rastreamento": "Impressões e cliques",
+    "sincronizacao": "Tempo real via SSE",
+    "recomendacoes": [
+      "Implementar tipo 'billboard' (970x90) para leaderboard",
+      "Adicionar suporte HTML para anúncios rich media",
+      "Criar templates de dimensões padrão",
+      "Documentar guias criativos por tipo",
+      "Implementar A/B testing de criativos"
+    ]
+  }
+}

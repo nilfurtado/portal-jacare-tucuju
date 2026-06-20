@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Painel DM</title>
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/login.css">
+  <style>
+    body { margin: 0; font-family: var(--font-body); }
+  </style>
+</head>
+<body>
+  <main class="login">
+    <section class="login__hero">
+      <header class="login__masthead">
+        <span class="login__masthead-edition">Painel <span>DM</span></span>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+      <div class="login__hero-body">
+        <p class="login__hero-eyebrow">Sistema Editorial</p>
+        <h1 class="login__hero-title">A redação <em>tem nova mesa.</em></h1>
+      </div>
+    </section>
+
+    <section class="login__form-side">
+      <div class="login__form-wrap">
+        <header class="login__welcome">
+          <h2 class="login__welcome-title">Entre <em>na redação.</em></h2>
+                <div class="topbar__actions">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+        <form id="form-login" class="login__form">
+          <div class="login__error" id="login-error"></div>
+
+          <div class="field">
+            <label class="field__label req">Usuário ou E-mail</label>
+            <input class="input" type="text" id="usuario" required placeholder="Nildo">
+          </div>
+
+          <div class="field">
+            <label class="field__label req">Senha</label>
+            <input class="input" type="password" id="senha" required placeholder="••••••••">
+          </div>
+
+          <button class="btn btn--primary" type="submit">Acessar Painel</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const usuario = document.getElementById('usuario').value;
+      const senha = document.getElementById('senha').value;
+      const errBox = document.getElementById('login-error');
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario, senha })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem('painel-dm:token', data.token);
+          localStorage.setItem('painel-dm:user', JSON.stringify(data.usuario));
+          window.location.href = '/painel/';
+        } else {
+          errBox.textContent = data.erro || 'Erro ao fazer login';
+          errBox.style.display = 'block';
+        }
+      } catch (err) {
+        errBox.textContent = 'Erro: ' + err.message;
+        errBox.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

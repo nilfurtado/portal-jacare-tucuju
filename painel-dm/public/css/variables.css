@@ -1,0 +1,513 @@
+/* ================================================================
+   DESIGN SYSTEM - VARIÁVEIS CSS
+   ================================================================ */
+
+:root {
+    /* CORES - Inspiradas em código legacy */
+    --cor-principal: #ff9300;
+    --cor-pr-rgb: 255, 147, 0;
+    --cor-sucesso: #3e6b3a;
+    --cor-perigo: #cd3232;
+    --cor-aviso: #d97d2f;
+
+    --cor-fundo: #ffffff;
+    --cor-fundo-2: #f8f8f8;
+    --cor-fundo-3: #f0f0f0;
+    --cor-borda: #ddd;
+    --cor-texto: #1a1a1a;
+    --cor-texto-mute: #999;
+    --cor-texto-soft: #666;
+
+    /* FONTS - Inspiradas em código legacy */
+    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Roboto', serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+    /* ESPAÇAMENTO */
+    --s-1: 4px;
+    --s-2: 8px;
+    --s-3: 12px;
+    --s-4: 16px;
+    --s-5: 20px;
+    --s-6: 24px;
+    --s-7: 32px;
+    --s-8: 40px;
+
+    /* RAIOS DE BORDA */
+    --r-1: 3px;
+    --r-2: 4px;
+    --r-3: 8px;
+
+    /* SOMBRAS */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+
+    /* TRANSIÇÕES */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ================================================================
+   RESET & BASE
+   ================================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: var(--font-body);
+    color: var(--cor-texto);
+    background: var(--cor-fundo);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+body {
+    background: var(--cor-fundo-2);
+}
+
+/* ================================================================
+   TIPOGRAFIA
+   ================================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+
+a {
+    color: var(--cor-principal);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: #e68a00;
+}
+
+/* ================================================================
+   FORMULÁRIOS
+   ================================================================ */
+
+.input-form,
+.textarea-form,
+select {
+    width: 100%;
+    padding: var(--s-2) var(--s-3);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--r-2);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    transition: all var(--transition-fast);
+}
+
+.input-form:focus,
+.textarea-form:focus,
+select:focus {
+    outline: none;
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 0 3px rgba(255, 147, 0, 0.1);
+}
+
+textarea {
+    font-family: var(--font-mono);
+    resize: vertical;
+}
+
+label {
+    display: block;
+    margin-bottom: var(--s-2);
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--cor-texto);
+}
+
+.tt-item-form {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--cor-texto);
+}
+
+.form-obr::after {
+    content: ' *';
+    color: var(--cor-perigo);
+}
+
+/* ================================================================
+   BOTÕES
+   ================================================================ */
+
+.botao-submit,
+.botao-filtrar,
+.botao-delete {
+    padding: var(--s-2) var(--s-4);
+    border: 1px solid transparent;
+    border-radius: var(--r-2);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.botao-submit,
+.botao-filtrar,
+.back-pr {
+    background: var(--cor-principal);
+    color: white;
+}
+
+.botao-submit:hover,
+.botao-filtrar:hover,
+.back-pr:hover {
+    background: #e68a00;
+    box-shadow: var(--shadow-md);
+}
+
+.botao-ghost,
+.botao-limpar {
+    background: transparent;
+    color: var(--cor-texto);
+    border: 1px solid var(--cor-borda);
+}
+
+.botao-ghost:hover,
+.botao-limpar:hover {
+    background: var(--cor-fundo-3);
+    border-color: var(--cor-texto);
+}
+
+.botao-delete {
+    background: var(--cor-perigo);
+    color: white;
+}
+
+.botao-delete:hover {
+    background: #b71c1c;
+}
+
+/* ================================================================
+   LAYOUT & ESTRUTURA
+   ================================================================ */
+
+.titulo-interno {
+    background: var(--cor-fundo);
+    padding: var(--s-6);
+    border-bottom: 1px solid var(--cor-borda);
+    margin-bottom: var(--s-6);
+}
+
+.titulo-interno h1 {
+    margin-bottom: var(--s-2);
+}
+
+.mapa-interno {
+    font-size: 0.9rem;
+    color: var(--cor-texto-mute);
+}
+
+.mapa-interno a {
+    color: var(--cor-principal);
+}
+
+.mapa-interno .sep {
+    margin: 0 var(--s-2);
+}
+
+.conteudo-painel {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--s-4);
+}
+
+/* ================================================================
+   SEÇÕES DE FORMULÁRIO
+   ================================================================ */
+
+.pos-secao-form {
+    background: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--r-3);
+    padding: var(--s-6);
+    margin-bottom: var(--s-6);
+}
+
+.tt-secao-form {
+    margin-bottom: var(--s-4);
+    padding-bottom: var(--s-4);
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.tt-secao-form h2,
+.tt-secao-form h3 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.secao-form {
+    display: grid;
+    gap: var(--s-4);
+}
+
+.item-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+}
+
+.form-triplo {
+    grid-column: span 1;
+}
+
+.form-duplo {
+    grid-column: span 1;
+}
+
+/* ================================================================
+   OPÇÕES DUPLAS (Radio/Checkbox)
+   ================================================================ */
+
+.opcao-dupla-form {
+    display: flex;
+    gap: var(--s-4);
+}
+
+.opcao-dupla-form input[type="radio"],
+.opcao-dupla-form input[type="checkbox"] {
+    display: none;
+}
+
+.opcao-dupla-form label {
+    flex: 1;
+    margin: 0;
+    padding: var(--s-3);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--r-2);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.opcao-dupla-form input[type="radio"]:checked + label,
+.opcao-dupla-form input[type="checkbox"]:checked + label {
+    background: var(--cor-principal);
+    color: white;
+    border-color: var(--cor-principal);
+}
+
+.item-form-escolha {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin: 0;
+    cursor: pointer;
+}
+
+.item-form-escolha input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--cor-principal);
+}
+
+/* ================================================================
+   UPLOAD DE ARQUIVO
+   ================================================================ */
+
+.pos-select-arquivo {
+    border: 2px dashed var(--cor-borda);
+    border-radius: var(--r-3);
+    padding: var(--s-4);
+    text-align: center;
+    transition: all var(--transition-normal);
+    cursor: pointer;
+}
+
+.pos-select-arquivo:hover {
+    border-color: var(--cor-principal);
+    background: rgba(255, 147, 0, 0.05);
+}
+
+.pos-select-arquivo img {
+    max-width: 100%;
+    max-height: 150px;
+    margin-bottom: var(--s-3);
+}
+
+.select-arquivo {
+    position: relative;
+}
+
+.arquivo-form {
+    display: none;
+}
+
+.desc-select-arquivo {
+    font-size: 0.85rem;
+    color: var(--cor-texto-mute);
+}
+
+.desc-select-arquivo p {
+    margin: var(--s-1) 0;
+}
+
+/* ================================================================
+   FILTROS
+   ================================================================ */
+
+.pos-filtros-listagem {
+    display: grid;
+    gap: var(--s-4);
+    margin-bottom: var(--s-4);
+}
+
+.item-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+}
+
+.botoes-filtros {
+    display: flex;
+    gap: var(--s-3);
+    justify-content: flex-end;
+}
+
+/* ================================================================
+   TABELA
+   ================================================================ */
+
+.pos-tabela {
+    overflow-x: auto;
+}
+
+.table-list {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.table-list .tr-pr {
+    background: var(--cor-fundo-3);
+    border-bottom: 2px solid var(--cor-borda);
+}
+
+.table-list th {
+    padding: var(--s-3);
+    text-align: left;
+    font-weight: 600;
+    color: var(--cor-texto);
+}
+
+.table-list td {
+    padding: var(--s-3);
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.table-list tbody tr:hover {
+    background: var(--cor-fundo-2);
+}
+
+/* ================================================================
+   PAGINAÇÃO
+   ================================================================ */
+
+.paginacao {
+    display: flex;
+    gap: var(--s-2);
+    justify-content: center;
+    padding: var(--s-4) 0;
+    font-size: 0.9rem;
+}
+
+.paginacao span {
+    padding: var(--s-2) var(--s-3);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--r-2);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.paginacao span.active {
+    background: var(--cor-principal);
+    color: white;
+    border-color: var(--cor-principal);
+}
+
+/* ================================================================
+   MODAL
+   ================================================================ */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--s-4);
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.modal-box {
+    position: relative;
+    background: var(--cor-fundo);
+    border-radius: var(--r-3);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: var(--s-6);
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-titulo {
+    margin-bottom: var(--s-4);
+}
+
+.modal-acoes {
+    display: flex;
+    gap: var(--s-3);
+    justify-content: flex-end;
+    margin-top: var(--s-6);
+}
+
+/* ================================================================
+   UTILITÁRIOS
+   ================================================================ */
+
+.tt-quantidade {
+    font-size: 0.9rem;
+    color: var(--cor-texto-mute);
+    margin-bottom: var(--s-4);
+}
+
+.info-secao-form {
+    padding: var(--s-3);
+    background: rgba(255, 147, 0, 0.05);
+    border-left: 3px solid var(--cor-principal);
+    border-radius: var(--r-2);
+    font-size: 0.85rem;
+    color: var(--cor-texto-soft);
+}

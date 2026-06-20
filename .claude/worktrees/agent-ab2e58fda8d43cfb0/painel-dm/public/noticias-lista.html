@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notícias · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    /* Table melhorada */
+    .table .thumb {
+      width: 44px; height: 30px;
+      border-radius: var(--r-1);
+      background: var(--paper-line);
+      object-fit: cover;
+      display: block;
+      flex-shrink: 0;
+    }
+    .table .thumb-placeholder {
+      width: 44px; height: 30px;
+      border-radius: var(--r-1);
+      background: var(--paper-line);
+      flex-shrink: 0;
+    }
+    .noticia-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+    .noticia-cell__text strong {
+      display: block;
+      font-weight: 500;
+      font-size: 0.88rem;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+    .noticia-cell__text span {
+      font-size: 0.75rem;
+      color: var(--ink-mute);
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: var(--s-9) var(--s-6);
+      color: var(--ink-mute);
+    }
+    .empty-state svg { margin: 0 auto var(--s-4); opacity: 0.25; display: block; }
+    .empty-state p { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle aria-label="Abrir menu">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <nav class="topbar__crumbs" aria-label="breadcrumb">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Notícias</span>
+        </nav>
+        <div class="topbar__actions">
+          <a class="btn btn--primary" href="/noticias.html" style="border-radius:var(--r-2);padding:7px 14px;font-size:0.82rem">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Nova matéria
+          </a>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          <div class="page-title__index">02</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Redação · arquivo editorial</p>
+            <h1>Tudo que <em style="font-style:italic;color:var(--brand)">circulou</em>.</h1>
+          </div>
+        </header>
+
+        <!-- STATS -->
+        <div class="stats-bar" id="stats-bar">
+          <div class="stat-card">
+            <div class="stat-card__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-total">—</div>
+              <div class="stat-card__label">Total</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(63,185,80,0.12);color:var(--positive)">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-hoje">—</div>
+              <div class="stat-card__label">Hoje</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(218,125,27,0.12);color:var(--brand)">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-destaque">—</div>
+              <div class="stat-card__label">Destaques</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(88,166,255,0.12);color:var(--info)">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-views">—</div>
+              <div class="stat-card__label">Views totais</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE TOOLBAR (search + tabs + action) -->
+        <div class="page-toolbar" id="toolbar">
+          <div class="page-toolbar__search">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="input" type="text" id="q" name="q" placeholder="Buscar notícias…" autocomplete="off">
+          </div>
+          <div class="page-toolbar__tabs" id="status-tabs">
+            <button class="tab-btn is-active" data-status="">Todas</button>
+            <button class="tab-btn" data-status="publicado">Publicadas</button>
+            <button class="tab-btn" data-status="rascunho">Rascunhos</button>
+            <button class="tab-btn" data-status="agendado">Agendadas</button>
+            <button class="tab-btn" data-status="destaque">Destaques <span class="tab-count" id="count-destaque">0</span></button>
+          </div>
+          <div class="page-toolbar__spacer"></div>
+          <div class="page-toolbar__actions">
+            <a class="btn btn--primary" href="/noticias.html">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Nova
+            </a>
+          </div>
+        </div>
+
+        <!-- META E TABELA -->
+        <div class="table-meta">
+          <span><strong id="meta-total">0</strong> matérias encontradas</span>
+          <span>Página <strong id="meta-page">1</strong> de <strong id="meta-pages">1</strong></span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width:42%">Matéria</th>
+                <th>Editoria</th>
+                <th>Autor</th>
+                <th>Publicada</th>
+                <th style="text-align:right">Views</th>
+                <th style="text-align:center">Status</th>
+                <th style="width:80px"></th>
+              </tr>
+            </thead>
+            <tbody id="lista">
+              <tr>
+                <td colspan="7">
+                  <div class="empty-state">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+                    <p>Carregando matérias…</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="pagination" id="pagination" aria-label="Paginação"></nav>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiDelete, apiPatch } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+
+    await mountShell({ route: 'noticias-lista' });
+
+    let estado = { q: '', status: '', page: 1, perPage: 20 };
+
+    // Tabs de status
+    document.getElementById('status-tabs').addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      estado.status = btn.dataset.status;
+      estado.page = 1;
+      carregar();
+    });
+
+    // Search
+    let searchTimeout;
+    document.getElementById('q').addEventListener('input', e => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        estado.q = e.target.value;
+        estado.page = 1;
+        carregar();
+      }, 300);
+    });
+
+    // Stats
+    async function carregarStats() {
+      try {
+        const noticias = await fetch('/data/noticias.json').then(r => r.json()).catch(() => []);
+        const hoje = new Date().toDateString();
+        document.getElementById('st-total').textContent = noticias.length;
+        document.getElementById('st-hoje').textContent = noticias.filter(n => new Date(n.data).toDateString() === hoje).length;
+        document.getElementById('st-destaque').textContent = noticias.filter(n => n.destaque).length;
+        document.getElementById('st-views').textContent = noticias.reduce((s, n) => s + (n.views || 0), 0).toLocaleString('pt-BR');
+        // Atualiza contadores dos tabs
+        document.getElementById('count-destaque').textContent = noticias.filter(n => n.destaque).length;
+      } catch {}
+    }
+    carregarStats();
+
+    async function carregar() {
+      const qs = new URLSearchParams(estado).toString();
+      const tbody = document.getElementById('lista');
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p style="color:var(--ink-mute)">Carregando…</p></div></td></tr>';
+      try {
+        const data = await apiGet(`/noticias?${qs}`);
+        document.getElementById('meta-total').textContent = data.total;
+        document.getElementById('meta-page').textContent = data.page;
+        document.getElementById('meta-pages').textContent = data.totalPages || 1;
+
+        if (data.items.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+            <p>Nenhuma matéria encontrada com os filtros aplicados.</p>
+          </div></td></tr>`;
+        } else {
+          tbody.innerHTML = data.items.map(n => `
+            <tr data-id="${n.id}">
+              <td>
+                <div class="noticia-cell">
+                  ${n.imagem
+                    ? `<img class="thumb" src="${escapeHtml(n.imagem)}" alt="" loading="lazy">`
+                    : `<div class="thumb-placeholder"></div>`}
+                  <div class="noticia-cell__text">
+                    <strong>${escapeHtml(n.titulo)}</strong>
+                    ${n.lide ? `<span>${escapeHtml(n.lide)}</span>` : ''}
+                  </div>
+                </div>
+              </td>
+              <td><span class="tag tag--${getCategoriaClass(n.categoria)}">${escapeHtml(n.categoria)}</span></td>
+              <td class="num">${escapeHtml(n.autor || '—')}</td>
+              <td class="num">${formatarData(n.data)}</td>
+              <td class="num" style="text-align:right">${(n.views || 0).toLocaleString('pt-BR')}</td>
+              <td style="text-align:center">
+                ${n.destaque
+                  ? '<span class="tag tag--brand">★ Destaque</span>'
+                  : '<span class="tag tag--mute">Normal</span>'}
+              </td>
+              <td style="text-align:right">
+                <div class="row-actions">
+                  <button title="${n.destaque ? 'Remover destaque' : 'Marcar destaque'}" data-action="destaque" data-id="${n.id}">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="${n.destaque ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  </button>
+                  <button title="Editar" data-action="editar" data-id="${n.id}">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16.5 3.5l4 4L7 21H3v-4z"/></svg>
+                  </button>
+                  <button title="Remover" data-action="remover" data-id="${n.id}" class="danger">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+        renderPag(data.page, data.totalPages);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color:var(--danger);padding:var(--s-5);font-family:var(--font-mono);font-size:0.8rem">${err.message}</td></tr>`;
+      }
+    }
+
+    function renderPag(cur, total) {
+      const nav = document.getElementById('pagination');
+      if (!total || total <= 1) { nav.innerHTML = ''; return; }
+      const buttons = [];
+      buttons.push(`<button ${cur === 1 ? 'disabled' : ''} data-page="${cur - 1}">‹ Anterior</button>`);
+      for (let i = 1; i <= total; i++) {
+        if (i === 1 || i === total || (i >= cur - 2 && i <= cur + 2)) {
+          buttons.push(`<button ${i === cur ? 'class="is-active"' : ''} data-page="${i}">${i}</button>`);
+        } else if (i === cur - 3 || i === cur + 3) {
+          buttons.push(`<button disabled>…</button>`);
+        }
+      }
+      buttons.push(`<button ${cur === total ? 'disabled' : ''} data-page="${cur + 1}">Próxima ›</button>`);
+      nav.innerHTML = buttons.join('');
+    }
+
+    document.getElementById('pagination').addEventListener('click', e => {
+      const p = e.target.dataset?.page;
+      if (p) { estado.page = Number(p); carregar(); }
+    });
+
+    document.getElementById('lista').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const acao = btn.dataset.action;
+      if (acao === 'editar') {
+        location.href = `/noticias.html?id=${id}`;
+      } else if (acao === 'destaque') {
+        try { await apiPatch(`/noticias/${id}/destaque`); toast('Destaque alterado', 'success'); carregar(); carregarStats(); }
+        catch (err) { toast(err.message, 'error'); }
+      } else if (acao === 'remover') {
+        const ok = await confirmar({ titulo: 'Remover matéria?', mensagem: 'A matéria irá para a lixeira e poderá ser restaurada.', okText: 'Remover' });
+        if (!ok) return;
+        try { await apiDelete(`/noticias/${id}`); toast('Matéria movida para lixeira', 'success'); carregar(); carregarStats(); }
+        catch (err) { toast(err.message, 'error'); }
+      }
+    });
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+    }
+    function formatarData(iso) {
+      try { return new Date(iso).toLocaleDateString('pt-BR'); }
+      catch { return '—'; }
+    }
+    function getCategoriaClass(categoria) {
+      const map = {
+        'política': 'politica',
+        'polícia': 'policia',
+        'cultura': 'cultura',
+        'esportes': 'esportes',
+        'economia': 'economia',
+        'municípios': 'municipios'
+      };
+      return map[categoria?.toLowerCase()] || 'brand';
+    }
+
+    carregar();
+  </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<div class="modal-overlay" id="modalNovoFeed" style="display: none;">
+  <div class="modal-content" style="max-width: 600px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s-4); padding-bottom: var(--s-3); border-bottom: 1px solid var(--paper-line);">
+      <h2 style="margin: 0; font-size: var(--t-h2);">Novo Feed RSS</h2>
+      <button type="button" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink-mute);" onclick="fecharModalNovoFeed()">×</button>
+    </div>
+
+    <form id="formNovoFeed" style="display: flex; flex-direction: column; gap: var(--s-4);">
+      <!-- URL Input -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2);">
+        <label for="feedUrl" style="font-weight: 600; color: var(--ink); font-size: var(--t-small);">URL do Feed *</label>
+        <div style="display: flex; gap: var(--s-2);">
+          <input
+            type="url"
+            id="feedUrl"
+            placeholder="https://exemplo.com/feed.xml"
+            required
+            style="flex: 1;"
+          />
+          <button type="button" class="btn btn--ghost" id="btnValidar" onclick="validarFeedUrl()" style="white-space: nowrap;">
+            Validar Feed
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Section -->
+      <div id="previewSection" style="display: none; background: var(--surface); padding: var(--s-3); border-radius: var(--r-2); border: 1px solid var(--paper-line);">
+        <p style="color: var(--ink-mute); font-size: var(--t-small); margin: 0 0 var(--s-2) 0;">Preview do Feed</p>
+        <div style="display: flex; flex-direction: column; gap: var(--s-2);">
+          <div>
+            <p style="margin: 0; font-size: 0.75rem; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.04em;">Título</p>
+            <p id="previewTitle" style="margin: var(--s-1) 0 0 0; font-weight: 600; color: var(--ink);"></p>
+          </div>
+          <div>
+            <p style="margin: 0; font-size: 0.75rem; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.04em;">Descrição</p>
+            <p id="previewDesc" style="margin: var(--s-1) 0 0 0; color: var(--ink-mute); font-size: var(--t-small);"></p>
+          </div>
+          <div>
+            <p style="margin: 0; font-size: 0.75rem; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.04em;">Artigos Encontrados</p>
+            <p id="previewCount" style="margin: var(--s-1) 0 0 0; font-weight: 600; color: var(--brand); font-size: var(--t-h3);">0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nome Input -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2);">
+        <label for="feedNome" style="font-weight: 600; color: var(--ink); font-size: var(--t-small);">Nome do Feed</label>
+        <input
+          type="text"
+          id="feedNome"
+          placeholder="Ex: Agência Brasil"
+        />
+        <p style="margin: 0; font-size: 0.75rem; color: var(--ink-mute);">Se vazio, será usado o título do feed</p>
+      </div>
+
+      <!-- Categoria Select -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2);">
+        <label for="feedCategoria" style="font-weight: 600; color: var(--ink); font-size: var(--t-small);">Categoria *</label>
+        <select id="feedCategoria" required>
+          <option value="">Selecionar categoria...</option>
+        </select>
+      </div>
+
+      <!-- Intervalo Select -->
+      <div style="display: flex; flex-direction: column; gap: var(--s-2);">
+        <label for="feedIntervalo" style="font-weight: 600; color: var(--ink); font-size: var(--t-small);">Intervalo de Sincronização *</label>
+        <select id="feedIntervalo" required>
+          <option value="">Selecionar intervalo...</option>
+          <option value="1">A cada 1 hora</option>
+          <option value="2">A cada 2 horas</option>
+          <option value="4">A cada 4 horas</option>
+          <option value="6">A cada 6 horas</option>
+          <option value="12">A cada 12 horas</option>
+          <option value="24">A cada 24 horas</option>
+          <option value="48">A cada 48 horas</option>
+        </select>
+      </div>
+
+      <!-- Ativar Feed Checkbox -->
+      <div style="display: flex; align-items: center; gap: var(--s-2);">
+        <input
+          type="checkbox"
+          id="feedAtivo"
+          checked
+          style="width: 20px; height: 20px; cursor: pointer;"
+        />
+        <label for="feedAtivo" style="cursor: pointer; margin: 0; color: var(--ink);">Ativar feed automaticamente</label>
+      </div>
+
+      <!-- Status Message -->
+      <div id="statusDiv" style="display: none; padding: var(--s-3); border-radius: var(--r-2); font-size: var(--t-small);">
+      </div>
+
+      <!-- Buttons -->
+      <div style="display: flex; gap: var(--s-3); margin-top: var(--s-3); border-top: 1px solid var(--paper-line); padding-top: var(--s-4);">
+        <button type="button" class="btn btn--ghost" onclick="fecharModalNovoFeed()">Cancelar</button>
+        <button type="button" class="btn btn--brand" id="btnSubmit" onclick="submitNovoFeed()" style="flex: 1;">Criar Feed</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-content {
+    background: var(--surface);
+    border: 1px solid var(--paper-line);
+    border-radius: var(--r-4);
+    padding: var(--s-6);
+    box-shadow: var(--sh-3);
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp var(--d-2) var(--ease-out);
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  #statusDiv.error {
+    background: rgba(220, 53, 69, 0.15);
+    color: var(--danger);
+    border-left: 4px solid var(--danger);
+  }
+
+  #statusDiv.success {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--positive);
+    border-left: 4px solid var(--positive);
+  }
+
+  #statusDiv.loading {
+    background: rgba(33, 150, 243, 0.15);
+    color: var(--info);
+    border-left: 4px solid var(--info);
+  }
+
+  @media (max-width: 640px) {
+    .modal-content {
+      width: 90vw;
+      padding: var(--s-4);
+      max-height: 95vh;
+    }
+  }
+</style>
+
+<script>
+  // Carregar categorias ao abrir modal
+  async function carregarCategorias() {
+    try {
+      const response = await fetch('/painel/api/categorias');
+      const categorias = await response.json();
+      const select = document.getElementById('feedCategoria');
+
+      const currentValue = select.value;
+      select.innerHTML = '<option value="">Selecionar categoria...</option>' +
+        (Array.isArray(categorias) ? categorias : []).map(c =>
+          `<option value="${c.id}">${c.nome}</option>`
+        ).join('');
+      select.value = currentValue;
+    } catch (err) {
+      console.error('Erro ao carregar categorias:', err);
+    }
+  }
+
+  window.abrirModalNovoFeed = function() {
+    document.getElementById('modalNovoFeed').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    carregarCategorias();
+    limparFormulario();
+  };
+
+  window.fecharModalNovoFeed = function() {
+    document.getElementById('modalNovoFeed').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    limparFormulario();
+  };
+
+  function limparFormulario() {
+    document.getElementById('formNovoFeed').reset();
+    document.getElementById('previewSection').style.display = 'none';
+    document.getElementById('statusDiv').style.display = 'none';
+  }
+
+  window.validarFeedUrl = async function() {
+    const url = document.getElementById('feedUrl').value;
+    if (!url) {
+      mostrarStatus('Digite uma URL válida', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('btnValidar');
+    btn.disabled = true;
+    mostrarStatus('Validando feed...', 'loading');
+
+    try {
+      const response = await fetch('/painel/api/rss-feeds/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (localStorage.getItem('painel-dm:token') || '')
+        },
+        body: JSON.stringify({ url })
+      });
+
+      if (!response.ok) {
+        mostrarStatus('Feed inválido ou inacessível', 'error');
+        return;
+      }
+
+      const data = await response.json();
+
+      document.getElementById('previewTitle').textContent = data.title || 'Sem título';
+      document.getElementById('previewDesc').textContent = data.description || 'Sem descrição';
+      document.getElementById('previewCount').textContent = (data.items?.length || 0);
+      document.getElementById('previewSection').style.display = 'block';
+
+      if (!document.getElementById('feedNome').value) {
+        document.getElementById('feedNome').value = data.title || '';
+      }
+
+      mostrarStatus('Feed validado com sucesso!', 'success');
+    } catch (err) {
+      console.error(err);
+      mostrarStatus('Erro ao validar feed: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  window.submitNovoFeed = async function() {
+    const url = document.getElementById('feedUrl').value;
+    const nome = document.getElementById('feedNome').value;
+    const categoria = document.getElementById('feedCategoria').value;
+    const intervalo = document.getElementById('feedIntervalo').value;
+    const ativo = document.getElementById('feedAtivo').checked;
+
+    if (!url || !categoria || !intervalo) {
+      mostrarStatus('Preencha todos os campos obrigatórios', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    mostrarStatus('Criando feed...', 'loading');
+
+    try {
+      const response = await fetch('/painel/api/rss-feeds', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (localStorage.getItem('painel-dm:token') || '')
+        },
+        body: JSON.stringify({
+          url,
+          nome: nome || url,
+          categoria,
+          intervalo: parseInt(intervalo),
+          ativo
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao criar feed');
+      }
+
+      mostrarStatus('Feed criado com sucesso!', 'success');
+      setTimeout(() => {
+        fecharModalNovoFeed();
+        window.location.reload();
+      }, 1500);
+    } catch (err) {
+      console.error(err);
+      mostrarStatus('Erro: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  window.mostrarStatus = function(mensagem, tipo) {
+    const div = document.getElementById('statusDiv');
+    div.textContent = mensagem;
+    div.className = tipo;
+    div.style.display = 'block';
+  };
+
+  // Fechar ao clicar fora
+  document.getElementById('modalNovoFeed')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+      fecharModalNovoFeed();
+    }
+  });
+</script>

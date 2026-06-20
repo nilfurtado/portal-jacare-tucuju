@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <style>
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--s-6);
+      margin: var(--s-6) 0;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-3);
+      padding: var(--s-5);
+      text-align: center;
+    }
+    .card-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--brand);
+      margin: var(--s-3) 0;
+    }
+    .card-label {
+      font-size: 0.9rem;
+      color: var(--ink-mute);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle aria-label="Abrir menu">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <nav class="topbar__crumbs" aria-label="breadcrumb">
+          <a href="/painel/acessos/">Dashboard</a>
+          <span class="sep">/</span>
+          <span>Bem-vindo</span>
+        </nav>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__main">
+            <p class="page-title__sub">Bem-vindo ao Painel</p>
+            <h1>Comece por <em style="font-style:italic;color:var(--brand)">aqui</em></h1>
+            <p style="color: var(--ink-mute); margin-top: var(--s-2); font-size: 0.95rem;">
+              Acesse o dashboard com estatísticas completas, gráficos e métricas clicando em "Dashboard" no menu lateral ou nos cards abaixo.
+            </p>
+          </div>
+                <div class="topbar__actions">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+        <section class="dashboard-grid">
+          <div class="card">
+            <div class="card-label">Notícias</div>
+            <div class="card-number" id="total-noticias">—</div>
+            <a href="/painel/noticias/" style="color: var(--brand); text-decoration: none; font-size: 0.85rem;">Ver listagem</a>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Anúncios</div>
+            <div class="card-number" id="total-anuncios">—</div>
+            <a href="/painel/anuncios/" style="color: var(--brand); text-decoration: none; font-size: 0.85rem;">Ver listagem</a>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Vídeos</div>
+            <div class="card-number" id="total-videos">—</div>
+            <a href="/painel/videos/" style="color: var(--brand); text-decoration: none; font-size: 0.85rem;">Ver listagem</a>
+          </div>
+
+          <div class="card">
+            <div class="card-label">Usuários</div>
+            <div class="card-number" id="total-usuarios">—</div>
+            <a href="/painel/usuarios/" style="color: var(--brand); text-decoration: none; font-size: 0.85rem;">Gerenciar</a>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="/painel/js/include.js"></script>
+  <script type="module">
+    import { mountShell } from '/painel/js/shell.js';
+    import { apiGet, getUser } from '/painel/js/api.js';
+    import { requireAuth } from '/painel/js/auth.js';
+
+    // DEBUG: Verificar token
+    const token = localStorage.getItem('painel-dm:token');
+    console.log('🔍 Token presente?', !!token);
+    console.log('🔍 Token valor:', token ? token.substring(0, 20) + '...' : 'NENHUM');
+
+    // Verificar autenticação
+    requireAuth();
+    const user = getUser();
+    console.log('🔍 User:', user);
+
+    // Montar menu
+    await mountShell({ route: 'dashboard' });
+
+    // Carregar estatísticas
+    async function carregarEstatisticas() {
+      try {
+        const [noticias, anuncios, videos, usuarios] = await Promise.all([
+          apiGet('/noticias?limit=1').then(r => r.data ? r.data.length : 0).catch(() => 0),
+          apiGet('/anuncios?limit=1').then(r => r.data ? r.data.length : 0).catch(() => 0),
+          apiGet('/videos?limit=1').then(r => r.data ? r.data.length : 0).catch(() => 0),
+          apiGet('/usuarios?limit=1').then(r => r.data ? r.data.length : 0).catch(() => 0),
+        ]);
+
+        document.getElementById('total-noticias').textContent = noticias;
+        document.getElementById('total-anuncios').textContent = anuncios;
+        document.getElementById('total-videos').textContent = videos;
+        document.getElementById('total-usuarios').textContent = usuarios;
+      } catch (err) {
+        console.error('Erro ao carregar estatísticas:', err);
+      }
+    }
+
+    carregarEstatisticas();
+  </script>
+</body>
+</html>

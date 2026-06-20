@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>✅ Verificar Layout da Notícia</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    h1 {
+      color: #333;
+      border-bottom: 3px solid #ff6b35;
+      padding-bottom: 10px;
+    }
+    .elemento {
+      margin: 20px 0;
+      padding: 15px;
+      border-left: 5px solid #ddd;
+      background: #fafafa;
+    }
+    .elemento.ok {
+      border-left-color: #4caf50;
+      background: #e8f5e9;
+    }
+    .elemento.erro {
+      border-left-color: #f44336;
+      background: #ffebee;
+    }
+    .numero {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff6b35;
+      margin-right: 10px;
+    }
+    .status {
+      font-weight: bold;
+      margin-left: 20px;
+    }
+    .ok { color: #4caf50; }
+    .erro { color: #f44336; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✅ VERIFICAÇÃO COMPLETA DA NOTÍCIA</h1>
+    
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    async function verificar() {
+      const div = document.getElementById('resultado');
+      let html = '';
+      
+      try {
+        // Carregar notícia
+        const res = await fetch('http://localhost:3000/api/noticias/6');
+        const n = await res.json();
+        
+        // Verificações
+        const verificacoes = [
+          {
+            nome: 'TÍTULO (n.titulo)',
+            valor: n.titulo,
+            esperado: 'Texto não-vazio',
+            check: () => n.titulo && n.titulo.length > 0
+          },
+          {
+            nome: 'LIDE/SUBTÍTULO (n.lide)',
+            valor: n.lide,
+            esperado: 'Texto não-vazio',
+            check: () => n.lide && n.lide.length > 0
+          },
+          {
+            nome: 'CONTEÚDO (n.conteudo)',
+            valor: n.conteudo ? n.conteudo.substring(0, 50) + '...' : 'vazio',
+            esperado: 'HTML com conteúdo',
+            check: () => n.conteudo && n.conteudo.length > 100
+          },
+          {
+            nome: 'AUTOR (n.autor)',
+            valor: n.autor,
+            esperado: 'Nome do autor',
+            check: () => n.autor && n.autor.length > 0
+          },
+          {
+            nome: 'CATEGORIA (n.categoria)',
+            valor: n.categoria,
+            esperado: 'Slug da categoria',
+            check: () => n.categoria && n.categoria.length > 0
+          },
+          {
+            nome: 'DATA (n.data)',
+            valor: n.data,
+            esperado: 'Data ISO válida',
+            check: () => n.data && new Date(n.data) instanceof Date
+          },
+          {
+            nome: 'IMAGEM (n.imagem)',
+            valor: n.imagem,
+            esperado: '/img/uploads/2026/06/noticia-6-principal.jpg',
+            check: () => n.imagem && n.imagem.includes('noticia-6-principal.jpg')
+          },
+          {
+            nome: 'DESTAQUE (n.destaque)',
+            valor: n.destaque ? 'SIM' : 'NÃO',
+            esperado: 'SIM (1)',
+            check: () => n.destaque === 1
+          }
+        ];
+        
+        // Renderizar verificações
+        verificacoes.forEach((v, i) => {
+          const ok = v.check();
+          const classe = ok ? 'ok' : 'erro';
+          
+          html += `
+            <div class="elemento ${classe}">
+              <span class="numero">${i + 1}</span>
+              <strong>${v.nome}</strong><br>
+              <small>Esperado: ${v.esperado}</small><br>
+              <small>Valor: <code>${v.valor}</code></small>
+              <span class="status ${classe}">${ok ? '✅ OK' : '❌ ERRO'}</span>
+            </div>
+          `;
+        });
+        
+        // Resumo
+        const okCount = verificacoes.filter(v => v.check()).length;
+        html += `
+          <div style="margin-top: 30px; padding: 20px; background: #e3f2fd; border-radius: 8px;">
+            <h2>📊 RESUMO</h2>
+            <p><strong>${okCount}/${verificacoes.length}</strong> elementos OK</p>
+            ${okCount === verificacoes.length ? 
+              '<p style="color: #4caf50; font-size: 18px;">✅ TUDO CORRETO!</p>' :
+              '<p style="color: #f44336; font-size: 18px;">⚠️ ALGUNS ELEMENTOS COM ERRO</p>'
+            }
+          </div>
+        `;
+        
+        div.innerHTML = html;
+        
+      } catch (err) {
+        div.innerHTML = '<h2>❌ Erro ao carregar:</h2><p>' + err.message + '</p>';
+      }
+    }
+    
+    verificar();
+  </script>
+</body>
+</html>

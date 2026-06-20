@@ -1,0 +1,47 @@
+CHECKLIST RÁPIDO PARA O USUÁRIO
+═══════════════════════════════════════════════════════════════════
+
+☐ PASSO 1: Limpar cache do navegador
+  • Windows + Chrome/Edge: Ctrl+Shift+Delete
+  • Selecionar "All time" ou "Past hour"
+  • Clicar "Clear data"
+  • Recarregar página (F5)
+
+☐ PASSO 2: Forçar reload duro
+  • Ctrl+F5 (ou Cmd+Shift+R no Mac)
+  • Aguardar carregar completamente
+
+☐ PASSO 3: Abrir Developer Tools e verificar erros
+  • F12 para abrir Developer Tools
+  • Clicar na aba "Console"
+  • Procurar por mensagens em VERMELHO
+  • Tirar print do erro se houver
+
+☐ PASSO 4: Verificar autenticação
+  • F12 → Aba "Application"
+  • Expandir "Local Storage"
+  • Procurar por chave "painel-dm:token"
+  • Se não existir → fazer login novamente
+
+☐ PASSO 5: Testar em modo privado/incógnito
+  • Ctrl+Shift+N (novo abadado privado)
+  • Acessar http://localhost:3000/painel/anuncios/
+  • Fazer login
+  • Verificar se carrega corretamente
+
+═══════════════════════════════════════════════════════════════════
+
+RESULTADO ESPERADO:
+✓ Página carrega com CSS
+✓ Mostra grid de anúncios
+✓ Botão "+ Novo anúncio" está presente
+✓ Filtros de busca funcionam
+✓ Modais abrem corretamente
+
+═══════════════════════════════════════════════════════════════════
+
+SE AINDA NÃO FUNCIONAR:
+1. Tirar screenshot do console (F12)
+2. Tirar screenshot da Network (F12 → Network)
+3. Tirar screenshot do localStorage (F12 → Application)
+4. Enviar esses prints para análise

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anúncios · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <script src="/painel/js/include.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <link rel="stylesheet" href="/painel/css/tabela.css">
+  <style>
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--s-3);
+    }
+    .slot-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-2);
+      padding: var(--s-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+      transition: all var(--motion-fast);
+    }
+    .slot-card:hover {
+      border-color: var(--brand);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .slot-title {
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    .slot-meta {
+      display: flex;
+      gap: var(--s-2);
+      font-size: 0.8rem;
+      color: var(--ink-mute);
+    }
+    .slot-actions {
+      display: flex;
+      gap: var(--s-1);
+      margin-top: var(--s-2);
+    }
+    .slot-btn {
+      flex: 1;
+      padding: var(--s-1) var(--s-2);
+      border: none;
+      background: var(--rule);
+      color: var(--ink);
+      border-radius: var(--r-1);
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all var(--motion-fast);
+    }
+    .slot-btn:hover {
+      background: var(--brand);
+      color: white;
+    }
+    .badge {
+      display: inline-block;
+      padding: var(--s-1) var(--s-2);
+      background: var(--rule);
+      border-radius: var(--r-1);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .badge.active {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Anúncios</span>
+        </nav>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__main">
+            <p class="page-title__sub">Publicidade · gerenciamento</p>
+            <h1>Anúncios <em style="font-style:italic;color:var(--brand)">ativos</em>.</h1>
+          </div>
+                <div class="topbar__actions">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+        <!-- PAGE TOOLBAR -->
+        <div class="page-toolbar">
+          <div style="display:flex;align-items:center;gap:var(--s-2);font-family:var(--font-mono);font-size:0.8rem;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em">Filtros:</div>
+          <div class="page-toolbar__tabs" id="filter-tabs">
+            <input type="text" id="search-input" class="tab-btn" placeholder="Buscar..." style="width:200px;padding:var(--s-1) var(--s-2);border:1px solid var(--rule);">
+            <select id="type-filter" class="tab-btn" style="padding:var(--s-1) var(--s-2);border:1px solid var(--rule);">
+              <option value="">Todos os tipos</option>
+              <option value="imagem">Imagem</option>
+              <option value="html">HTML</option>
+            </select>
+          </div>
+          <div class="page-toolbar__spacer"></div>
+          <div class="page-toolbar__actions">
+            <button class="btn btn--ghost" id="btn-novo">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Novo anúncio
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <section class="bento stagger">
+          <article class="card card--narrow card--dark">
+            <p class="card__eyebrow">— Total de anúncios</p>
+            <h2 class="card__metric" id="total-count">0</h2>
+            <p class="card__label">cadastrados</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Ativos agora</p>
+            <h2 class="card__metric" id="active-count">0</h2>
+            <p class="card__label" id="active-sub">de 0</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Impressões</p>
+            <h2 class="card__metric" id="impressions-count">0</h2>
+            <p class="card__label">últimos 7 dias</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— CTR médio</p>
+            <h2 class="card__metric" id="ctr-count">0<small>%</small></h2>
+            <p class="card__label">taxa de clique</p>
+          </article>
+        </section>
+
+        <!-- GRID DE ANÚNCIOS -->
+        <section style="margin-top:var(--s-6);">
+          <h2 style="margin-bottom:var(--s-3);font-size:1.1rem;font-weight:600;">Gerenciamento</h2>
+          <div class="slot-grid stagger" id="slot-grid">
+            <div style="grid-column:1/-1;text-align:center;color:var(--ink-mute);padding:var(--s-6);">
+              Carregando anúncios...
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script type="module" src="/painel/js/pages/anuncios-painel.js"></script>
+</body>
+</html>

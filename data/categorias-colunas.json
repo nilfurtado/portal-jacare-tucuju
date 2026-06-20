@@ -1,0 +1,47 @@
+[
+  {
+    "id": "col-001",
+    "nome": "Análise Política",
+    "slug": "analise-politica",
+    "cor": "#FF6B6B",
+    "descricao": "Análise profunda de questões políticas e governamentais",
+    "count": 0,
+    "criadoPor": "Admin"
+  },
+  {
+    "id": "col-002",
+    "nome": "Opinião & Debate",
+    "slug": "opiniao-debate",
+    "cor": "#4ECDC4",
+    "descricao": "Artigos de opinião, análises críticas e debates diversos",
+    "count": 0,
+    "criadoPor": "Admin"
+  },
+  {
+    "id": "col-003",
+    "nome": "Inovação Digital",
+    "slug": "inovacao-digital",
+    "cor": "#95E1D3",
+    "descricao": "Colunas sobre inovação, tecnologia e transformação digital",
+    "count": 0,
+    "criadoPor": "Admin"
+  },
+  {
+    "id": "col-004",
+    "nome": "Desenvolvimento Sustentável",
+    "slug": "desenvolvimento-sustentavel",
+    "cor": "#FFE66D",
+    "descricao": "Análises sobre desenvolvimento econômico e social sustentável",
+    "count": 0,
+    "criadoPor": "Admin"
+  },
+  {
+    "id": "col-005",
+    "nome": "Artes & Patrimônio",
+    "slug": "artes-patrimonio",
+    "cor": "#C7CEEA",
+    "descricao": "Artigos sobre cultura, artes, patrimônio e entretenimento",
+    "count": 0,
+    "criadoPor": "Admin"
+  }
+]

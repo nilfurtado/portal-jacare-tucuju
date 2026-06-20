@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste Portal</title>
+</head>
+<body>
+  <h1>🧪 Teste do Portal</h1>
+  
+  <div id="resultado"></div>
+
+  <script>
+    async function teste() {
+      const div = document.getElementById('resultado');
+      
+      try {
+        // Testar bootstrap
+        const res = await fetch('http://localhost:3000/api/portal/bootstrap');
+        const data = await res.json();
+        
+        div.innerHTML = `
+          <h2>✅ Bootstrap OK</h2>
+          <p>Noticias: ${data.noticias.length}</p>
+          <p>Primeira: ${data.noticias[0]?.titulo}</p>
+          <p>Destaque: ${data.noticias[0]?.destaque}</p>
+          
+          <h3>Teste loadAll:</h3>
+          <pre id="debug"></pre>
+        `;
+        
+        // Simular loadAll
+        console.log('Dados recebidos:', data);
+        
+      } catch (err) {
+        div.innerHTML = `<h2>❌ Erro: ${err.message}</h2>`;
+      }
+    }
+    
+    teste();
+  </script>
+</body>
+</html>

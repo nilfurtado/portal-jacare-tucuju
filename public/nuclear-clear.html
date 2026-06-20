@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>🧹 Limpeza Nuclear</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    h1 { font-size: 48px; }
+    p { font-size: 18px; }
+    .loading { font-size: 36px; animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <h1>🧹 LIMPEZA NUCLEAR</h1>
+  <p>Limpando TODO o cache...</p>
+  <p class="loading">⏳</p>
+
+  <script>
+    // Limpar TUDO
+    console.clear();
+    
+    // localStorage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Service workers
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
+      });
+    }
+    
+    // Remover cookies
+    document.cookie.split(";").forEach(c => {
+      document.cookie = c.replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    
+    console.log('✅ Tudo limpo!');
+    
+    // Redirecionar
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 2000);
+  </script>
+</body>
+</html>

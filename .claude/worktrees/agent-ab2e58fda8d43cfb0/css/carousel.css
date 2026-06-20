@@ -1,0 +1,275 @@
+/* ===========================================================
+   CAROUSEL — classificados rotativo
+   =========================================================== */
+.classif-carousel {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--sp-4);
+}
+
+[data-theme="dark"] .classif-carousel {
+  background: #161b22;
+  border-color: #252b36;
+}
+
+.classif-carousel__header {
+  background: var(--cat-municipios);
+  color: #fff;
+  padding: var(--sp-3) var(--sp-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.classif-carousel__header > a:first-child {
+  color: #fff;
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.classif-carousel__publish {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  background: rgba(0, 0, 0, 0.18);
+  color: #fff;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: background var(--transition);
+}
+
+.classif-carousel__publish:hover {
+  background: rgba(0, 0, 0, 0.32);
+  color: #fff;
+}
+
+.classif-carousel__publish svg { width: 12px; height: 12px; fill: currentColor; }
+
+.classif-carousel__viewport {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+}
+
+.classif-carousel__track {
+  display: flex;
+  transition: transform 480ms var(--ease-out);
+  will-change: transform;
+}
+
+.classif-carousel__slide {
+  flex: 0 0 100%;
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  text-decoration: none;
+  color: inherit;
+}
+
+.classif-carousel__image {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--color-bg-alt);
+}
+
+.classif-carousel__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.classif-carousel__slide:hover .classif-carousel__image img {
+  transform: scale(1.04);
+}
+
+.classif-carousel__cat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cat-municipios);
+}
+
+.classif-carousel__preco {
+  font-family: var(--font-serif);
+  font-weight: 900;
+  font-size: var(--fs-xl);
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.classif-carousel__titulo {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  line-height: 1.35;
+  color: var(--color-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.classif-carousel__cidade {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.classif-carousel__cidade svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
+}
+
+.classif-carousel__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .classif-carousel__nav {
+  background: #0f1419;
+  border-top-color: #252b36;
+}
+
+.classif-carousel__arrow {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: #fff;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+[data-theme="dark"] .classif-carousel__arrow { background: #1a1f2a; border-color: #3a4150; }
+
+.classif-carousel__arrow:hover {
+  background: var(--cat-municipios);
+  color: #fff;
+  border-color: var(--cat-municipios);
+}
+
+.classif-carousel__arrow svg { width: 14px; height: 14px; fill: currentColor; }
+
+.classif-carousel__dots {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.classif-carousel__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--color-border-strong);
+  cursor: pointer;
+  transition: width var(--transition), background var(--transition);
+}
+
+.classif-carousel__dot.is-active {
+  background: var(--cat-municipios);
+  width: 22px;
+  border-radius: var(--radius-full);
+}
+
+/* ===========================================================
+   GRADE de CATEGORIAS de classificados (ícones)
+   =========================================================== */
+.classif-cats {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-6);
+}
+
+[data-theme="dark"] .classif-cats {
+  background: #161b22;
+  border-color: #252b36;
+}
+
+.classif-cats__title {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin-bottom: var(--sp-3);
+}
+
+.classif-cats__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-2);
+}
+
+.classif-cats__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-1);
+  text-decoration: none;
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), transform var(--transition);
+  text-align: center;
+}
+
+.classif-cats__item:hover {
+  background: var(--color-bg-alt);
+  transform: translateY(-2px);
+}
+
+.classif-cats__icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.classif-cats__icon svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.classif-cats__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+.classif-cats__item:hover .classif-cats__label {
+  color: var(--cat-municipios);
+}

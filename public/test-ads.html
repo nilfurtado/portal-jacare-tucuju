@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>🧪 Teste de Anúncios</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #00ffff;
+      border-bottom: 2px solid #00ffff;
+      padding-bottom: 10px;
+    }
+    .test {
+      background: #2d2d2d;
+      padding: 15px;
+      margin: 10px 0;
+      border-left: 3px solid #ff00ff;
+    }
+    .ok { color: #00ff00; }
+    .erro { color: #ff0000; }
+    .info { color: #ffff00; }
+    pre {
+      background: #0d0d0d;
+      padding: 10px;
+      overflow-x: auto;
+      border: 1px solid #444;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Teste de Anúncios</h1>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    const resultado = document.getElementById('resultado');
+    let html = '';
+
+    // Teste 1: Suporte WebP
+    html += '<div class="test"><h3>1️⃣ Navegador suporta WebP?</h3>';
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    const webpSupport = canvas.toDataURL('image/webp').indexOf('image/webp') === 5;
+    html += `<p class="${webpSupport ? 'ok' : 'erro'}">${webpSupport ? '✅ SIM' : '❌ NÃO'} - WebP ${webpSupport ? 'suportado' : 'NÃO suportado'}</p></div>`;
+
+    // Teste 2: Carregar JPEG
+    html += '<div class="test"><h3>2️⃣ Carregando JPEG...</h3><div id="jpeg-result">⏳ Testando...</div></div>';
+
+    // Teste 3: Carregar WebP
+    html += '<div class="test"><h3>3️⃣ Carregando WebP...</h3><div id="webp-result">⏳ Testando...</div></div>';
+
+    // Teste 4: Verificar picture tag
+    html += '<div class="test"><h3>4️⃣ Anúncio no DOM</h3><div id="picture-result">⏳ Analisando...</div></div>';
+
+    resultado.innerHTML = html;
+
+    // Executar testes
+    setTimeout(() => {
+      // JPEG
+      const testJpeg = new Image();
+      testJpeg.onload = () => {
+        document.getElementById('jpeg-result').innerHTML = '<p class="ok">✅ JPEG carrega (29 KB)</p>';
+      };
+      testJpeg.onerror = () => {
+        document.getElementById('jpeg-result').innerHTML = '<p class="erro">❌ JPEG falha ao carregar</p>';
+      };
+      testJpeg.src = '/img/uploads/2026/06/anuncio-1780984047750-principal.jpg';
+
+      // WebP
+      const testWebp = new Image();
+      testWebp.onload = () => {
+        document.getElementById('webp-result').innerHTML = '<p class="ok">✅ WebP carrega (19 KB)</p>';
+      };
+      testWebp.onerror = () => {
+        document.getElementById('webp-result').innerHTML = '<p class="erro">❌ WebP falha ao carregar</p>';
+      };
+      testWebp.src = '/img/uploads/2026/06/anuncio-1780984047750-principal.webp';
+
+      // Picture tag
+      setTimeout(() => {
+        const picture = document.querySelector('[data-ad-type="super-banner"] picture');
+        let pictureHtml = '';
+
+        if (picture) {
+          pictureHtml = '<p class="ok">✅ Picture encontrado</p>';
+          const sources = picture.querySelectorAll('source');
+          pictureHtml += `<p class="info">Sources: ${sources.length}</p>`;
+          pictureHtml += '<pre>';
+
+          sources.forEach((s, i) => {
+            const type = s.type || 'sem type';
+            const src = s.srcset?.substring(0, 50) || 'sem srcset';
+            pictureHtml += `Source ${i}: ${type}\n  ${src}\n\n`;
+          });
+
+          const img = picture.querySelector('img');
+          if (img) {
+            pictureHtml += `IMG:\n  src: ${img.src?.substring(0, 50)}\n  altura: ${img.offsetHeight}px\n`;
+          }
+          pictureHtml += '</pre>';
+        } else {
+          pictureHtml = '<p class="erro">❌ Picture NÃO encontrado</p>';
+        }
+
+        document.getElementById('picture-result').innerHTML = pictureHtml;
+      }, 1000);
+    }, 500);
+  </script>
+</body>
+</html>

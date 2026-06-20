@@ -1,0 +1,17 @@
+<!-- BREAKING NEWS — ticker animado preenchido por components.js -->
+<aside class="breaking-news" aria-label="Últimas notícias em tempo real">
+  <div class="container breaking-news__row">
+    <span class="breaking-news__label">
+      <span class="breaking-news__pulse" aria-hidden="true"></span>
+      Agora
+    </span>
+    <div class="breaking-news__viewport">
+      <div class="breaking-news__track" id="breaking-news-track">
+        <!-- itens injetados via JS -->
+      </div>
+    </div>
+    <button class="breaking-news__toggle" type="button" aria-label="Pausar/retomar" data-bn-toggle>
+      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>
+    </button>
+  </div>
+</aside>

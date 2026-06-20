@@ -1,0 +1,121 @@
+[
+  {
+    "id": 1,
+    "nome": "Pop-up Publicitário",
+    "tipo": "interstitial",
+    "tamanho": "580x400",
+    "posicao": "Overlay ao carregar a home (delay 3s)",
+    "paginas": [
+      "home"
+    ],
+    "ativo": false,
+    "criativo": {
+      "imagem": "",
+      "html": "",
+      "titulo": ""
+    },
+    "destino": "",
+    "periodo": {
+      "inicio": null,
+      "fim": null
+    },
+    "impressoes": 0,
+    "cliques": 0
+  },
+  {
+    "id": 2,
+    "nome": "Super Banner",
+    "tipo": "super-banner",
+    "tamanho": "970x150",
+    "posicao": "Abaixo do hero / manchete principal",
+    "paginas": [
+      "home"
+    ],
+    "ativo": true,
+    "criativo": {
+      "imagem": "https://picsum.photos/seed/superbanner/970/150",
+      "html": "",
+      "titulo": "Campanha Teste"
+    },
+    "destino": "https://anunciante.com.br",
+    "periodo": {
+      "inicio": null,
+      "fim": null
+    },
+    "impressoes": 0,
+    "cliques": 0
+  },
+  {
+    "id": 3,
+    "nome": "Half Page",
+    "tipo": "half-page",
+    "tamanho": "300x600",
+    "posicao": "Sidebar — abaixo das categorias",
+    "paginas": [
+      "home",
+      "noticia",
+      "categoria"
+    ],
+    "ativo": false,
+    "criativo": {
+      "imagem": "",
+      "html": "",
+      "titulo": ""
+    },
+    "destino": "",
+    "periodo": {
+      "inicio": null,
+      "fim": null
+    },
+    "impressoes": 0,
+    "cliques": 0
+  },
+  {
+    "id": 4,
+    "nome": "Medium Rectangle",
+    "tipo": "medium-rectangle",
+    "tamanho": "300x250",
+    "posicao": "Sidebar — abaixo da enquete",
+    "paginas": [
+      "home",
+      "noticia",
+      "categoria"
+    ],
+    "ativo": false,
+    "criativo": {
+      "imagem": "",
+      "html": "",
+      "titulo": ""
+    },
+    "destino": "",
+    "periodo": {
+      "inicio": null,
+      "fim": null
+    },
+    "impressoes": 0,
+    "cliques": 0
+  },
+  {
+    "id": 5,
+    "nome": "Billboard",
+    "tipo": "billboard",
+    "tamanho": "970x90",
+    "posicao": "Entre municípios e vídeos",
+    "paginas": [
+      "home"
+    ],
+    "ativo": false,
+    "criativo": {
+      "imagem": "",
+      "html": "",
+      "titulo": ""
+    },
+    "destino": "",
+    "periodo": {
+      "inicio": null,
+      "fim": null
+    },
+    "impressoes": 0,
+    "cliques": 0
+  }
+]

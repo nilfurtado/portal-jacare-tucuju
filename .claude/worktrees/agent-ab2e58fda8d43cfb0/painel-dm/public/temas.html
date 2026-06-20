@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temas · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    .preset-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-4); margin-top: var(--s-3); }
+    .preset { background: var(--surface); border: 2px solid var(--rule); border-radius: var(--r-3); padding: var(--s-4); cursor: pointer; transition: all var(--d-1); }
+    .preset:hover { transform: translateY(-2px); }
+    .preset.is-active { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand) inset; }
+    .preset__swatches { display: flex; gap: 4px; margin-bottom: var(--s-3); }
+    .preset__sw { flex: 1; aspect-ratio: 1; border-radius: var(--r-2); }
+    .preset__nome { font-family: var(--font-display); font-variation-settings: 'opsz' 60, 'SOFT' 30; font-weight: 500; font-size: 1.1rem; }
+    .preset__hex { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-mute); margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Temas</span>
+        </nav>
+      </header>
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">16</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Identidade · cromática</p>
+            <h1>A <em style="font-style:italic;color:var(--brand)">paleta</em> do dia.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Presets de cor</h2>
+            <p>Clique para selecionar. A escolha vale para o portal e o painel.</p>
+            <div class="section__body">
+              <div class="preset-grid" id="presets"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">02</div>
+          <div class="section__head">
+            <h2>Modo de cor</h2>
+            <p>Como o portal deve aparecer por padrão para os leitores.</p>
+            <div class="section__body">
+              <div class="radio-group" style="grid-template-columns: repeat(3, 1fr)">
+                <div class="radio-card"><input type="radio" id="modo-claro" name="modo" value="claro"><label for="modo-claro"><strong>Claro</strong><span>Papel branco editorial</span></label></div>
+                <div class="radio-card"><input type="radio" id="modo-escuro" name="modo" value="escuro"><label for="modo-escuro"><strong>Escuro</strong><span>Tinta preta para leitura noturna</span></label></div>
+                <div class="radio-card"><input type="radio" id="modo-auto" name="modo" value="auto"><label for="modo-auto"><strong>Automático</strong><span>Segue preferência do sistema</span></label></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">03</div>
+          <div class="section__head">
+            <h2>Tipografia</h2>
+            <p>Famílias usadas no portal. Padrão usa fontes carregadas via CDN.</p>
+            <div class="section__body">
+              <div class="form-grid">
+                <div class="field"><label class="field__label">Fonte de títulos</label><select class="select" name="fonte-display"><option>Fraunces</option><option>Playfair Display</option><option>Lora</option><option>Cormorant Garamond</option></select></div>
+                <div class="field"><label class="field__label">Fonte de texto</label><select class="select" name="fonte-body"><option>IBM Plex Sans</option><option>Inter</option><option>IBM Plex Mono</option><option>Sora</option></select></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <button class="btn btn--primary" id="btn-salvar">Salvar tema</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPut } from './js/api.js';
+    import { toast } from './js/ui.js';
+    await mountShell({ route: 'temas' });
+
+    let cfg = await apiGet('/tema');
+
+    function renderPresets() {
+      const grid = document.getElementById('presets');
+      grid.innerHTML = cfg.tema.presets.map(p => `
+        <article class="preset ${cfg.tema.presetAtivo === p.id ? 'is-active' : ''}" data-id="${p.id}">
+          <div class="preset__swatches">
+            <div class="preset__sw" style="background:${p.primaria}"></div>
+            <div class="preset__sw" style="background:${p.secundaria}"></div>
+            <div class="preset__sw" style="background:${p.acento}"></div>
+          </div>
+          <div class="preset__nome">${p.nome}</div>
+          <div class="preset__hex">${p.primaria.toUpperCase()}</div>
+        </article>
+      `).join('');
+    }
+    renderPresets();
+    document.querySelector(`[name="fonte-display"]`).value = cfg.tema.fontes?.display || 'Fraunces';
+    document.querySelector(`[name="fonte-body"]`).value    = cfg.tema.fontes?.body    || 'IBM Plex Sans';
+    document.querySelector(`#modo-${cfg.tema.modo || 'claro'}`).checked = true;
+
+    document.getElementById('presets').addEventListener('click', e => {
+      const card = e.target.closest('.preset'); if (!card) return;
+      cfg.tema.presetAtivo = card.dataset.id;
+      renderPresets();
+    });
+
+    document.getElementById('btn-salvar').addEventListener('click', async () => {
+      cfg.tema.modo = document.querySelector('[name="modo"]:checked').value;
+      cfg.tema.fontes = {
+        display: document.querySelector('[name="fonte-display"]').value,
+        body:    document.querySelector('[name="fonte-body"]').value,
+      };
+      try { await apiPut('/tema', { tema: cfg.tema }); toast('Tema salvo', 'success'); }
+      catch (err) { toast(err.message, 'error'); }
+    });
+  </script>
+</body>
+</html>

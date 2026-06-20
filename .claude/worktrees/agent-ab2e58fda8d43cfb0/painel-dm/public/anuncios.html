@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anúncios · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <link rel="stylesheet" href="css/anuncios.css">
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle aria-label="Abrir menu">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <nav class="topbar__crumbs" aria-label="breadcrumb">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Anúncios</span>
+        </nav>
+        <div class="topbar__actions">
+          <a class="topbar__btn" href="../index.html" target="_blank">
+            Ver portal
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 17L17 7M17 7H8M17 7v9"/>
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          <div class="page-title__index">03</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Comercial · publicidade</p>
+            <h1>Os <em style="font-style:italic;color:var(--brand)">espaços</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Slots disponíveis</h2>
+            <p>Ative, edite criativo e defina destino de cada slot do portal. Mudanças refletem em tempo real.</p>
+
+            <div class="section__body">
+              <div class="slot-grid stagger" id="slot-grid">
+                <div style="grid-column:1/-1;text-align:center;color:var(--ink-mute);padding:var(--s-6);font-family:var(--font-mono);font-size:0.78rem">
+                  Carregando slots…
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPatch, apiPut } from './js/api.js';
+    import { toast, staggerChildren } from './js/ui.js';
+
+    await mountShell({ route: 'anuncios' });
+
+    const grid = document.getElementById('slot-grid');
+
+    function renderSlots(slots) {
+      if (slots.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--ink-mute)">Nenhum slot cadastrado.</div>`;
+        return;
+      }
+      grid.innerHTML = slots.map(ad => `
+        <article class="slot ${ad.ativo ? 'is-active' : ''}" data-id="${ad.id}">
+          <header class="slot__head">
+            <div class="slot__head-info">
+              <p class="slot__eyebrow">${ad.tipo}</p>
+              <h3 class="slot__name">${ad.nome}</h3>
+            </div>
+            <span class="slot__status">
+              <span class="slot__status-dot"></span>
+              ${ad.ativo ? 'no ar' : 'parado'}
+            </span>
+          </header>
+
+          <div class="slot__preview">
+            ${ad.criativo?.imagem
+              ? `<img src="${esc(ad.criativo.imagem)}" alt="${esc(ad.criativo.titulo || ad.nome)}">`
+              : `<div class="slot__preview-placeholder">${ad.tamanho}</div>`}
+          </div>
+
+          <dl class="slot__meta">
+            <dt>Tamanho</dt><dd>${ad.tamanho}</dd>
+            <dt>Posição</dt><dd>${esc(ad.posicao || '—')}</dd>
+            <dt>Páginas</dt><dd>${(ad.paginas || []).join(' · ') || 'todas'}</dd>
+            <dt>Período</dt><dd>${formatarPeriodo(ad.periodo)}</dd>
+          </dl>
+
+          <div class="slot__metrics">
+            <div class="slot__metric">
+              <strong>${(ad.impressoes || 0).toLocaleString('pt-BR')}</strong>
+              <span>Impressões</span>
+            </div>
+            <div class="slot__metric">
+              <strong>${(ad.cliques || 0).toLocaleString('pt-BR')}</strong>
+              <span>Cliques</span>
+            </div>
+            <div class="slot__metric">
+              <strong>${calcularCTR(ad)}</strong>
+              <span>CTR</span>
+            </div>
+          </div>
+
+          <div class="slot__foot">
+            <label class="switch">
+              <input type="checkbox" data-action="toggle" ${ad.ativo ? 'checked' : ''}>
+              <span class="switch__track"></span>
+              <span class="switch__label">${ad.ativo ? 'No ar' : 'Pausado'}</span>
+            </label>
+            <button class="btn btn--ghost" data-action="editar">Editar criativo</button>
+          </div>
+        </article>
+      `).join('');
+      staggerChildren(grid);
+    }
+
+    function formatarPeriodo(p) {
+      if (!p?.inicio && !p?.fim) return 'sem prazo';
+      const f = (s) => s ? new Date(s).toLocaleDateString('pt-BR') : '—';
+      return `${f(p.inicio)} → ${f(p.fim)}`;
+    }
+    function calcularCTR(ad) {
+      const i = ad.impressoes || 0;
+      const c = ad.cliques || 0;
+      if (!i) return '0,0%';
+      return ((c / i) * 100).toFixed(1).replace('.', ',') + '%';
+    }
+    function esc(s) {
+      return String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+    }
+
+    async function carregar() {
+      const slots = await apiGet('/anuncios').catch(err => { toast(err.message, 'error'); return []; });
+      renderSlots(slots);
+    }
+
+    // Toggle e editar
+    grid.addEventListener('click', async e => {
+      const art = e.target.closest('article.slot');
+      if (!art) return;
+      const id = art.dataset.id;
+      const acao = e.target.dataset?.action || e.target.closest('[data-action]')?.dataset?.action;
+
+      if (acao === 'toggle') {
+        try {
+          const r = await apiPatch(`/anuncios/${id}/ativar`);
+          toast(r.ativo ? 'Slot ativado — no ar' : 'Slot pausado', 'success');
+          carregar();
+        } catch (err) { toast(err.message, 'error'); }
+      } else if (acao === 'editar') {
+        abrirEditor(id);
+      }
+    });
+
+    async function abrirEditor(id) {
+      const ad = await apiGet(`/anuncios/${id}`).catch(() => null);
+      if (!ad) return;
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal__backdrop"></div>
+        <div class="modal__box modal__box--lg">
+          <h3 class="modal__title" style="font-family:var(--font-display);font-style:italic">Editar — ${esc(ad.nome)}</h3>
+          <p class="modal__msg">Tamanho ${ad.tamanho} · ${esc(ad.posicao)}</p>
+
+          <div class="slot-editor__preview" id="ed-preview">
+            ${ad.criativo?.imagem ? `<img src="${esc(ad.criativo.imagem)}" alt="">` : `<span style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.74rem">Sem criativo</span>`}
+          </div>
+
+          <form id="ed-form" style="display:flex;flex-direction:column;gap:var(--s-3)">
+            <div class="field">
+              <label class="field__label">URL da imagem (criativo)</label>
+              <input class="input input--mono" name="imagem" value="${esc(ad.criativo?.imagem || '')}" placeholder="https://…">
+              <span class="field__hint">Recomendado: ${ad.tamanho}px (formatos JPG/PNG/WebP).</span>
+            </div>
+            <div class="field">
+              <label class="field__label">URL de destino (clique)</label>
+              <input class="input input--mono" name="destino" value="${esc(ad.destino || '')}" placeholder="https://anunciante.com/promo">
+            </div>
+            <div class="field">
+              <label class="field__label">Título / alt-text</label>
+              <input class="input" name="titulo" value="${esc(ad.criativo?.titulo || '')}" placeholder="Nome da campanha">
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label">Início</label>
+                <input class="input" type="date" name="inicio" value="${ad.periodo?.inicio?.slice(0,10) || ''}">
+              </div>
+              <div class="field">
+                <label class="field__label">Fim</label>
+                <input class="input" type="date" name="fim" value="${ad.periodo?.fim?.slice(0,10) || ''}">
+              </div>
+            </div>
+          </form>
+
+          <div class="modal__actions" style="margin-top:var(--s-4)">
+            <button class="btn btn--ghost" data-cancel>Cancelar</button>
+            <button class="btn btn--primary" data-save>Salvar criativo</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+
+      const close = () => modal.remove();
+      modal.querySelector('[data-cancel]').onclick = close;
+      modal.querySelector('.modal__backdrop').onclick = close;
+
+      // Live preview do URL imagem
+      const imgInp = modal.querySelector('[name="imagem"]');
+      const prev   = modal.querySelector('#ed-preview');
+      imgInp.addEventListener('input', () => {
+        const url = imgInp.value.trim();
+        prev.innerHTML = url
+          ? `<img src="${esc(url)}" alt="">`
+          : `<span style="color:var(--ink-mute);font-family:var(--font-mono);font-size:0.74rem">Sem criativo</span>`;
+      });
+
+      modal.querySelector('[data-save]').onclick = async () => {
+        const fd = new FormData(modal.querySelector('#ed-form'));
+        const body = {
+          criativo: {
+            imagem: (fd.get('imagem') || '').trim(),
+            titulo: (fd.get('titulo') || '').trim(),
+            html: ad.criativo?.html || '',
+          },
+          destino: (fd.get('destino') || '').trim(),
+          periodo: {
+            inicio: fd.get('inicio') ? new Date(fd.get('inicio')).toISOString() : null,
+            fim:    fd.get('fim')    ? new Date(fd.get('fim')).toISOString()    : null,
+          },
+        };
+        try {
+          await apiPut(`/anuncios/${id}`, body);
+          toast('Criativo salvo', 'success');
+          close();
+          carregar();
+        } catch (err) { toast(err.message, 'error'); }
+      };
+    }
+
+    carregar();
+  </script>
+</body>
+</html>

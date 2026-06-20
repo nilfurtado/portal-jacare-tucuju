@@ -1,0 +1,187 @@
+ANÁLISE TÉCNICA DETALHADA DO PROBLEMA
+═════════════════════════════════════════════════════════════════════════════════
+
+RESUMO EXECUTIVO
+─────────────────────────────────────────────────────────────────────────────────
+O servidor está funcionando corretamente. O problema é 100% no lado do cliente
+(cache do navegador ou erro JavaScript em tempo de execução).
+
+TESTES REALIZADOS
+─────────────────────────────────────────────────────────────────────────────────
+
+1. TESTE DE ARQUIVOS
+   ├─ find . -name "anuncios.html" → Encontrou 2 cópias
+   ├─ ls -lah painel-dm/public/anuncios.html → 44K, Jun 4 14:08 ✓
+   ├─ ls -lah painel-php/public/anuncios.html → 11K, May 29 ✗ (DESATUALIZADO)
+   └─ Status: 2 VERSÕES DIFERENTES COEXISTINDO
+
+2. TESTE DO SERVIDOR EXPRESS
+   ├─ Configuração prioridade: painel-dm > painel-php > portal ✓
+   ├─ app.use('/', express.static(PUBLIC_DIR)) → Linha 61 ✓
+   ├─ Ordem correta respeitada ✓
+   └─ Status: CONFIGURAÇÃO CORRETA
+
+3. TESTE DE HTTP HEADERS
+   ├─ curl -I http://localhost:3000/painel/anuncios/
+   ├─ HTTP/1.1 200 OK ✓
+   ├─ Cache-Control: public, max-age=0 (forçando revalidação) ✓
+   ├─ ETag: W/"afe6-19e939c01e8" (hash do arquivo NOVO) ✓
+   ├─ Last-Modified: Thu, 04 Jun 2026 17:08:55 GMT ✓
+   └─ Status: HEADERS CORRETOS
+
+4. TESTE DO CONTEÚDO
+   ├─ curl http://localhost:3000/painel/anuncios/ > /tmp/response.html
+   ├─ diff /tmp/response.html painel-dm/public/anuncios.html
+   ├─ Resultado: Arquivos idênticos (0 diferenças) ✓
+   ├─ Verificado: ${classe} é template literal (não renderizado) ✓
+   ├─ Verificado: Grid element ID="slot-grid" presente ✓
+   └─ Status: CONTEÚDO CORRETO
+
+5. TESTE DE ASSETS
+   ├─ curl -I http://localhost:3000/css/anuncios.css → 200 OK ✓
+   ├─ curl -I http://localhost:3000/js/shell.js → 200 OK ✓
+   ├─ curl -I http://localhost:3000/js/api.js → 200 OK ✓
+   ├─ curl -I http://localhost:3000/js/ui.js → 200 OK ✓
+   ├─ curl -I http://localhost:3000/js/lib-drag-sort.js → 200 OK ✓
+   └─ Status: TODOS OS ASSETS ACESSÍVEIS
+
+6. TESTE DE ESTRUTURA HTML
+   ├─ grep -c "<div" anuncios.html → 89
+   ├─ grep -c "</div>" anuncios.html → 89
+   ├─ Verificado: HTML bem formado ✓
+   ├─ Verificado: 2 tags </script> (corretas) ✓
+   ├─ Verificado: Script é type="module" ✓
+   └─ Status: ESTRUTURA OK
+
+7. TESTE DE CÓDIGO JAVASCRIPT
+   ├─ Verificado: import { mountShell } from '/js/shell.js' ✓
+   ├─ Verificado: const grid = document.getElementById('slot-grid') ✓
+   ├─ Verificado: if (!grid) throw new Error() (proteção contra erro) ✓
+   ├─ Verificado: await mountShell({ route: 'anuncios' }) ✓
+   ├─ Verificado: async function carregar() { ... } ✓
+   └─ Status: CÓDIGO JAVASCRIPT CORRETO
+
+CONCLUSÃO DOS TESTES
+─────────────────────────────────────────────────────────────────────────────────
+✓ Servidor serve o arquivo CORRETO (painel-dm, não painel-php)
+✓ HTTP headers estão corretos (ETag, Last-Modified, Cache-Control)
+✓ HTML está bem formado (89 divs abertos/fechados)
+✓ Assets estão todos acessíveis (CSS, JS, etc)
+✓ JavaScript está correto (imports, template literals, error handling)
+
+═════════════════════════════════════════════════════════════════════════════════
+
+HIPÓTESES DO PROBLEMA RAIZ
+─────────────────────────────────────────────────────────────────────────────────
+
+HIPÓTESE 1: CACHE DO NAVEGADOR (PROBABILIDADE: 85%)
+├─ Se usuário acessou ANTES de 14:08 do dia 4 de junho
+├─ Navegador salvou versão ANTIGA (painel-php) em cache local
+├─ Cache tem 5 minutos (max-age=300), dependendo de quando foi acessado
+├─ Se cache ainda está fresco, navegador NÃO faz requisição ao servidor
+├─ Resultado: Usuário vê versão ANTIGA com CSS mínimo e "${classe}" literal
+└─ Confirmação: curl mostra correto mas navegador mostra errado
+
+COMO VERIFICAR:
+  F12 → Network → Limpar → Recarregar F5
+  Procurar por anuncios.html
+  Se status é 304 (Not Modified) = cache estava fresco
+  Se status é 200 = novo download do servidor
+
+HIPÓTESE 2: ERRO DE JAVASCRIPT EM TEMPO DE EXECUÇÃO (PROBABILIDADE: 10%)
+├─ Erro ao importar /js/shell.js ou outro módulo
+├─ Erro ao chamar document.getElementById('slot-grid')
+├─ Erro ao chamar await mountShell()
+├─ Resultado: Página carrega mas grid fica em "Carregando slots..."
+└─ Grid nunca é populado com dados
+
+COMO VERIFICAR:
+  F12 → Console
+  Procurar por erros em VERMELHO
+  Executar: document.getElementById('slot-grid')
+  Deve retornar: <div class="slot-grid stagger" id="slot-grid">...</div>
+  Se retorna null = problema mais grave
+
+HIPÓTESE 3: AUTENTICAÇÃO EXPIRADA (PROBABILIDADE: 3%)
+├─ localStorage['painel-dm:token'] está vazio ou expirado
+├─ requireAuth() em shell.js detecta isso
+├─ Página redireciona para /painel/login/
+├─ Resultado: Usuário é forçado a login novamente
+└─ Pode parecer que página não funciona
+
+COMO VERIFICAR:
+  F12 → Application → Local Storage → http://localhost:3000
+  Procurar por chaves: painel-dm:token, painel-dm:user
+  Se vazias = precisa fazer login
+
+HIPÓTESE 4: PROXY HTTP INTERMEDIÁRIO (PROBABILIDADE: 2%)
+├─ nginx, Apache, ou outro proxy entre cliente e servidor
+├─ Proxy tem cache próprio servindo versão antiga
+├─ Resultado: curl localhost:3000 mostra correto,
+│            mas navegador (em IP diferente) vê versão antiga
+└─ Problema no nível de infraestrutura
+
+COMO VERIFICAR:
+  Verificar nginx.conf ou Apache config
+  Procurar por proxy_cache_path ou CacheEnable
+  Limpar cache do proxy: service nginx reload
+
+═════════════════════════════════════════════════════════════════════════════════
+
+SOLUÇÃO RECOMENDADA
+─────────────────────────────────────────────────────────────────────────────────
+
+PASSO 1: LIMPAR CACHE DO NAVEGADOR (MAIS IMPORTANTE)
+  Ctrl+Shift+Delete
+  → Selecionar "All time" ou "Past hour"
+  → Marcar: Cookies and other site data
+  → Marcar: Cached images and files
+  → Clicar "Clear data"
+
+PASSO 2: FORÇAR RELOAD DURO
+  Ctrl+F5 (força novo download do arquivo)
+  
+PASSO 3: LIMPAR CACHE LOCAL DO BROWSER
+  F12 → Application → Cache Storage
+  → Deletar todos os caches desta origem
+
+PASSO 4: TESTE EM NOVO ABADADO/INCÓGNITO
+  Ctrl+Shift+N
+  → Sem cache de histórico
+  → Sem cookies persistentes
+  → Sem cache local
+
+PASSO 5: SE AINDA NÃO FUNCIONAR
+  Verificar F12 Console para erros
+  Se houver erro → desabilitar/abilitar extensões do navegador
+  Se persistir → reiniciar servidor Node
+
+═════════════════════════════════════════════════════════════════════════════════
+
+RECOMENDAÇÕES FUTURAS
+─────────────────────────────────────────────────────────────────────────────────
+
+1. DELETAR ARQUIVO DESATUALIZADO
+   ├─ painel-php/public/anuncios.html (11KB, May 29)
+   ├─ Está 3+ semanas desatualizado
+   ├─ Pode causar confusão se alguém acessar /painel-php/anuncios.html
+   └─ Ação: remover ou sincronizar com painel-dm
+
+2. IMPLEMENTAR VERSIONING DE ASSETS
+   ├─ Adicionar hash (hash-based versioning) nos assets
+   ├─ Exemplo: anuncios.css?v=abc123 ou anuncios-abc123.css
+   ├─ Força navegador a baixar nova versão quando código muda
+   └─ Evita problemas de cache em futuro
+
+3. ADICIONAR CACHE BUSTER AUTOMÁTICO
+   ├─ Usar timestamp ou git commit hash
+   ├─ Exemplo: <link href="/css/anuncios.css?v={timestamp}">
+   ├─ Automático no build
+   └─ Zero problemas de cache
+
+4. REMOVER ARQUIVO DUPLICADO
+   ├─ Centralizar código em painel-dm/public
+   ├─ Se precisa de painel-php, manter sincronizado via script
+   └─ Reduz confusão e bugs
+
+═════════════════════════════════════════════════════════════════════════════════

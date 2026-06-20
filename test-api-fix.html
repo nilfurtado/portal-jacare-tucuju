@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="painel-api" content="http://localhost:3000/api">
+  <title>Teste de Correção da API</title>
+  <style>
+    body { font-family: system-ui; padding: 40px; line-height: 1.6; max-width: 800px; margin: 0 auto; }
+    .test { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+    .pass { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+    .fail { background: #ffebee; border-color: #f44336; color: #c62828; }
+    .pending { background: #fff3e0; border-color: #ff9800; color: #e65100; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Teste de Correção de API</h1>
+  <p>Verificando se o ads-loader.js está usando a porta correta para requisições de API...</p>
+  
+  <div id="test1" class="test pending">
+    <strong>Test 1: Meta tag painel-api</strong>
+    <p id="result1">Executando...</p>
+  </div>
+  
+  <div id="test2" class="test pending">
+    <strong>Test 2: apiBase() com localhost:8000</strong>
+    <p id="result2">Executando...</p>
+  </div>
+  
+  <div id="test3" class="test pending">
+    <strong>Test 3: Requisição POST para /api/anuncios</strong>
+    <p id="result3">Executando...</p>
+  </div>
+
+  <script>
+    // Simular a função apiBase() do ads-loader.js (corrigida)
+    function apiBase() {
+      const meta = document.querySelector('meta[name="painel-api"]');
+      if (meta?.content) {
+        return meta.content.replace(/\/+$/, '');
+      }
+      if (location.hostname === 'localhost' && location.port === '8000') {
+        return 'http://localhost:3000/api';
+      }
+      return '/api';
+    }
+
+    // Test 1: Verificar meta tag
+    const meta = document.querySelector('meta[name="painel-api"]');
+    const test1 = document.getElementById('result1');
+    if (meta?.content === 'http://localhost:3000/api') {
+      test1.textContent = '✅ Meta tag encontrada e correta: ' + meta.content;
+      document.getElementById('test1').className = 'test pass';
+    } else {
+      test1.textContent = '❌ Meta tag não encontrada ou incorreta';
+      document.getElementById('test1').className = 'test fail';
+    }
+
+    // Test 2: Verificar apiBase()
+    const base = apiBase();
+    const test2 = document.getElementById('result2');
+    if (base === 'http://localhost:3000/api') {
+      test2.textContent = '✅ apiBase() retorna: ' + base;
+      document.getElementById('test2').className = 'test pass';
+    } else {
+      test2.textContent = '❌ apiBase() retorna: ' + base + ' (esperado: http://localhost:3000/api)';
+      document.getElementById('test2').className = 'test fail';
+    }
+
+    // Test 3: Fazer requisição POST de teste
+    const test3 = document.getElementById('result3');
+    fetch(base + '/anuncios', { cache: 'no-cache' })
+      .then(res => {
+        if (res.ok) {
+          test3.textContent = '✅ Requisição para ' + base + '/anuncios retornou ' + res.status;
+          document.getElementById('test3').className = 'test pass';
+        } else {
+          test3.textContent = '⚠️ Requisição retornou ' + res.status + ' de ' + base;
+          document.getElementById('test3').className = 'test pending';
+        }
+      })
+      .catch(err => {
+        test3.textContent = '❌ Erro: ' + err.message;
+        document.getElementById('test3').className = 'test fail';
+      });
+  </script>
+</body>
+</html>

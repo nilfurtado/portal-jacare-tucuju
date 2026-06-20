@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Debug Notícia</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    .section { border: 2px solid red; padding: 10px; margin: 10px 0; }
+    .section h2 { margin: 0 0 10px 0; color: red; }
+    .section p { margin: 0; max-width: 600px; }
+    code { background: #f0f0f0; padding: 2px 5px; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Debug de Renderização de Notícia</h1>
+  
+  <div id="debug"></div>
+
+  <script>
+    async function debug() {
+      const div = document.getElementById('debug');
+      
+      try {
+        // Obter notícia
+        const res = await fetch('http://localhost:3000/api/noticias/6');
+        const n = await res.json();
+        
+        let html = '';
+        
+        html += '<div class="section">';
+        html += '<h2>1. TÍTULO (n.titulo)</h2>';
+        html += '<p>' + n.titulo.substring(0, 100) + '</p>';
+        html += '</div>';
+        
+        html += '<div class="section">';
+        html += '<h2>2. LIDE/SUBTÍTULO (n.lide)</h2>';
+        html += '<p>' + n.lide.substring(0, 100) + '</p>';
+        html += '</div>';
+        
+        html += '<div class="section">';
+        html += '<h2>3. CONTEÚDO (n.conteudo) - Primeiras 200 chars:</h2>';
+        html += '<p><code>' + n.conteudo.substring(0, 200).replace(/</g, '&lt;') + '...</code></p>';
+        html += '</div>';
+        
+        html += '<div class="section">';
+        html += '<h2>RESUMO</h2>';
+        html += '<p><strong>Título:</strong> ' + (n.titulo ? '✅ OK' : '❌ Vazio') + '</p>';
+        html += '<p><strong>Lide:</strong> ' + (n.lide ? '✅ OK' : '❌ Vazio') + '</p>';
+        html += '<p><strong>Conteúdo:</strong> ' + (n.conteudo ? '✅ OK (' + n.conteudo.length + ' chars)' : '❌ Vazio') + '</p>';
+        html += '</div>';
+        
+        div.innerHTML = html;
+        
+      } catch (err) {
+        div.innerHTML = '<h2>❌ Erro:</h2><p>' + err.message + '</p>';
+      }
+    }
+    
+    debug();
+  </script>
+</body>
+</html>

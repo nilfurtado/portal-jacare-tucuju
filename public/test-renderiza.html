@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Teste Renderização</title>
+  <link rel="stylesheet" href="css/tokens.css?v=30">
+  <link rel="stylesheet" href="css/reset.css?v=30">
+  <link rel="stylesheet" href="css/base.css?v=30">
+  <link rel="stylesheet" href="css/article.css?v=38">
+  <style>
+    body { margin: 20px; }
+    .debug-box { 
+      border: 3px solid red; 
+      padding: 15px; 
+      margin: 15px 0;
+      background: #fff0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Teste de Renderização Simples</h1>
+
+  <div id="resultado"></div>
+
+  <script>
+    async function teste() {
+      try {
+        // Carregar notícia
+        const res = await fetch('http://localhost:3000/api/noticias/6');
+        const n = await res.json();
+        
+        const div = document.getElementById('resultado');
+        
+        let html = '';
+        
+        html += '<div class="debug-box">';
+        html += '<strong>TÍTULO:</strong><br>';
+        html += '<h1 style="margin:10px 0; border:2px solid blue; padding:10px; background:#f0f0ff;">' + n.titulo + '</h1>';
+        html += '</div>';
+        
+        html += '<div class="debug-box">';
+        html += '<strong>LIDE (Subtítulo):</strong><br>';
+        html += '<p style="margin:10px 0; border:2px solid green; padding:10px; background:#f0fff0;">' + n.lide + '</p>';
+        html += '</div>';
+        
+        html += '<div class="debug-box">';
+        html += '<strong>CONTEÚDO (Primeiras 300 chars):</strong><br>';
+        html += '<div style="margin:10px 0; border:2px solid orange; padding:10px; background:#fffaf0;">';
+        html += n.conteudo.substring(0, 300) + '...';
+        html += '</div>';
+        html += '</div>';
+        
+        div.innerHTML = html;
+        
+      } catch (err) {
+        document.getElementById('resultado').innerHTML = '<h2>❌ Erro: ' + err.message + '</h2>';
+      }
+    }
+    
+    teste();
+  </script>
+</body>
+</html>

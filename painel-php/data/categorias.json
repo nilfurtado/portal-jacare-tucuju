@@ -1,0 +1,82 @@
+[
+  {
+    "id": 8,
+    "nome": "Cultura",
+    "slug": "cultura",
+    "cor": "#f39c12",
+    "label": "Cultura",
+    "descricao": null
+  },
+  {
+    "id": 3,
+    "nome": "Economia",
+    "slug": "economia",
+    "cor": "#9b59b6",
+    "label": "Economia",
+    "descricao": "Notícias econômicas"
+  },
+  {
+    "id": 5,
+    "nome": "Educação",
+    "slug": "educacao",
+    "cor": "#3498db",
+    "label": "Educação",
+    "descricao": "Notícias de educação"
+  },
+  {
+    "id": 2,
+    "nome": "Esporte",
+    "slug": "esporte",
+    "cor": "#e74c3c",
+    "label": "Esporte",
+    "descricao": "Notícias de esportes"
+  },
+  {
+    "id": 9,
+    "nome": "Meio Ambiente",
+    "slug": "meio-ambiente",
+    "cor": "#27ae60",
+    "label": "Meio Ambiente",
+    "descricao": null
+  },
+  {
+    "id": 11,
+    "nome": "Opinião",
+    "slug": "opinio",
+    "cor": "#d35400",
+    "label": "Opinião",
+    "descricao": null
+  },
+  {
+    "id": 7,
+    "nome": "Política",
+    "slug": "poltica",
+    "cor": "#c9551d",
+    "label": "Política",
+    "descricao": null
+  },
+  {
+    "id": 4,
+    "nome": "Saúde",
+    "slug": "saude",
+    "cor": "#2ecc71",
+    "label": "Saúde",
+    "descricao": "Notícias de saúde"
+  },
+  {
+    "id": 10,
+    "nome": "Segurança",
+    "slug": "segurana",
+    "cor": "#34495e",
+    "label": "Segurança",
+    "descricao": null
+  },
+  {
+    "id": 6,
+    "nome": "Tecnologia",
+    "slug": "tecnologia",
+    "cor": "#1abc9c",
+    "label": "Tecnologia",
+    "descricao": null
+  }
+]

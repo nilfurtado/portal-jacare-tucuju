@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Sidebar Completo</title>
+  <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <script src="/painel/js/include.js"></script>
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+    .box { border: 1px solid #0f0; padding: 15px; margin: 10px 0; background: #000; }
+    h2 { color: #0f0; margin-top: 0; }
+    .pass { color: #0f0; }
+    .fail { color: #f00; }
+    button { padding: 10px 20px; background: #0f0; color: #000; border: none; cursor: pointer; margin: 5px; }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/painel/">Painel</a><span class="sep">/</span><span>Debug</span>
+        </nav>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+      <main class="content">
+        <div class="box">
+          <h2>🔍 DEBUG SIDEBAR COMPLETO</h2>
+          <p>Verificando TUDO que pode estar errado...</p>
+        </div>
+
+        <div class="box" id="checks">
+          <h2>✅ Checklist:</h2>
+          <div id="output"></div>
+        </div>
+
+        <div class="box">
+          <h2>🧪 Testes Manuais:</h2>
+          <button onclick="testarInclude()">1. Testar include.js</button>
+          <button onclick="testarShell()">2. Testar shell.html</button>
+          <button onclick="testarDOM()">3. Testar DOM</button>
+          <button onclick="testarAuth()">4. Testar Auth</button>
+          <button onclick="limpar()">Limpar output</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from '/painel/js/shell.js';
+    import { requireAuth } from '/painel/js/auth.js';
+
+    const output = document.getElementById('output');
+
+    function log(msg, status = '✅') {
+      output.innerHTML += `<div class="${status === '❌' ? 'fail' : 'pass'}">${status} ${msg}</div>`;
+      console.log(msg);
+    }
+
+    // Checklist automático
+    log('Include.js carregado?', typeof window.loadIncludes !== 'undefined' ? '✅' : '❌');
+    log('Shell.html elemento existe?', document.querySelector('[data-include="partials/shell.html"]') ? '✅' : '❌');
+    log('Div.painel existe?', document.querySelector('.painel') ? '✅' : '❌');
+    log('Token localStorage?', localStorage.getItem('painel-dm:token') ? '✅' : '❌');
+    log('User localStorage?', localStorage.getItem('painel-dm:user') ? '✅' : '❌');
+
+    await mountShell({ route: 'debug' });
+
+    log('Shell.html foi inserido?', document.querySelector('.sidebar') ? '✅' : '❌');
+    log('Sidebau visível?', document.querySelector('.sidebar')?.offsetHeight > 0 ? '✅' : '❌');
+
+    // Testes manuais
+    window.testarInclude = async () => {
+      output.innerHTML += '<h3>Testando include.js...</h3>';
+      try {
+        const res = await fetch('/partials/shell.html');
+        log(`Fetch /partials/shell.html: Status ${res.status}`, res.ok ? '✅' : '❌');
+      } catch (e) {
+        log(`Erro ao fazer fetch: ${e.message}`, '❌');
+      }
+    };
+
+    window.testarShell = () => {
+      output.innerHTML += '<h3>Testando shell.html...</h3>';
+      const elem = document.querySelector('[data-include="partials/shell.html"]');
+      log(`Elemento data-include existe?`, elem ? '✅' : '❌');
+      log(`Elemento HTML:`, elem ? `<${elem.tagName}>` : 'NENHUM');
+      log(`innerHTML length:`, elem?.innerHTML?.length || 0);
+    };
+
+    window.testarDOM = () => {
+      output.innerHTML += '<h3>Testando DOM...</h3>';
+      log(`Total elementos no DOM:`, document.querySelectorAll('*').length);
+      log(`.sidebar existe?`, document.querySelector('.sidebar') ? '✅' : '❌');
+      log(`.painel existe?`, document.querySelector('.painel') ? '✅' : '❌');
+      log(`.main existe?`, document.querySelector('.main') ? '✅' : '❌');
+    };
+
+    window.testarAuth = () => {
+      output.innerHTML += '<h3>Testando Auth...</h3>';
+      const token = localStorage.getItem('painel-dm:token');
+      const user = localStorage.getItem('painel-dm:user');
+      log(`Token presente?`, token ? `✅ ${token.substring(0,20)}...` : '❌ NENHUM');
+      log(`User presente?`, user ? `✅ ${user.substring(0,30)}...` : '❌ NENHUM');
+    };
+
+    window.limpar = () => {
+      output.innerHTML = '';
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+/* Mapeamento de classes com acentos para variáveis sem acentos */
+
+.card__cat--política { color: var(--cat-politica) !important; }
+.card__cat--policia { color: var(--cat-policia) !important; }
+.card__cat--economia { color: var(--cat-economia) !important; }
+.card__cat--educação { color: var(--cat-educacao) !important; }
+.card__cat--esportes { color: var(--cat-esportes) !important; }
+.card__cat--cultura { color: var(--cat-cultura) !important; }
+.card__cat--segurança { color: var(--cat-seguranca) !important; }
+.card__cat--saúde { color: var(--cat-saude) !important; }
+.card__cat--tecnologia { color: var(--cat-tecnologia) !important; }
+.card__cat--meio-ambiente { color: var(--cat-meio-ambiente) !important; }
+.card__cat--opinião { color: var(--cat-opiniao) !important; }
+.card__cat--geral { color: var(--cat-geral) !important; }
+
+.badge--política { background: var(--cat-politica) !important; }
+.badge--policia { background: var(--cat-policia) !important; }
+.badge--economia { background: var(--cat-economia) !important; }
+.badge--educação { background: var(--cat-educacao) !important; }
+.badge--esportes { background: var(--cat-esportes) !important; }
+.badge--cultura { background: var(--cat-cultura) !important; }
+.badge--segurança { background: var(--cat-seguranca) !important; }
+.badge--saúde { background: var(--cat-saude) !important; }
+.badge--tecnologia { background: var(--cat-tecnologia) !important; }
+.badge--meio-ambiente { background: var(--cat-meio-ambiente) !important; }
+.badge--opinião { background: var(--cat-opiniao) !important; }
+.badge--geral { background: var(--cat-geral) !important; }
+
+.ranked-item__cat--política { color: var(--cat-politica) !important; }
+.ranked-item__cat--policia { color: var(--cat-policia) !important; }
+.ranked-item__cat--economia { color: var(--cat-economia) !important; }
+.ranked-item__cat--educação { color: var(--cat-educacao) !important; }
+.ranked-item__cat--esportes { color: var(--cat-esportes) !important; }
+.ranked-item__cat--cultura { color: var(--cat-cultura) !important; }
+.ranked-item__cat--segurança { color: var(--cat-seguranca) !important; }
+.ranked-item__cat--saúde { color: var(--cat-saude) !important; }
+.ranked-item__cat--tecnologia { color: var(--cat-tecnologia) !important; }
+.ranked-item__cat--meio-ambiente { color: var(--cat-meio-ambiente) !important; }
+.ranked-item__cat--opinião { color: var(--cat-opiniao) !important; }
+.ranked-item__cat--geral { color: var(--cat-geral) !important; }

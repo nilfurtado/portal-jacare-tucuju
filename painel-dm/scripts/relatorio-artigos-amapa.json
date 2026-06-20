@@ -1,0 +1,118 @@
+{
+  "titulo": "RELATÓRIO COMPLETO: 6 ARTIGOS FICTÍCIOS DO AMAPÁ",
+  "data": "31/05/2026",
+  "hora": "19:27:29",
+  "total": 6,
+  "criados": 6,
+  "erros": 0,
+  "artigos": [
+    {
+      "numero": 1,
+      "id": 42,
+      "slug": "macapa-cidade-do-equador-recebe-novo-terminal-de-cruzeiros",
+      "titulo": "Macapá: Cidade do Equador Recebe Novo Terminal de Cruzeiros",
+      "categoria": "economia",
+      "municipio": "macapa",
+      "autor": "Marina Silva",
+      "destaque": true,
+      "tags": [
+        "turismo",
+        "porto",
+        "infraestrutura"
+      ],
+      "caracteres": 773,
+      "metaDescription": "Terminal de cruzeiros em Macapá promete revolucionar turismo"
+    },
+    {
+      "numero": 2,
+      "id": 43,
+      "slug": "operacao-integrada-da-pol-cia-desmantela-maior-rede-de-trafico-em-santana",
+      "titulo": "Operação Integrada da Polícia Desmantela Maior Rede de Tráfico em Santana",
+      "categoria": "policia",
+      "municipio": "santana",
+      "autor": "Roberto Costa",
+      "destaque": true,
+      "tags": [
+        "segurança",
+        "tráfico",
+        "operação"
+      ],
+      "caracteres": 687,
+      "metaDescription": "Polícia desmantel maior rede de tráfico com 23 presos"
+    },
+    {
+      "numero": 3,
+      "id": 44,
+      "slug": "festival-de-arte-ind-gena-em-oiapoque-celebra-cultura-ancestral",
+      "titulo": "Festival de Arte Indígena em Oiapoque Celebra Cultura Ancestral",
+      "categoria": "cultura",
+      "municipio": "oiapoque",
+      "autor": "João Ferreira",
+      "destaque": false,
+      "tags": [
+        "cultura",
+        "arte",
+        "indígena"
+      ],
+      "caracteres": 710,
+      "metaDescription": "Festival de Arte Indígena celebra 15 etnias em Oiapoque"
+    },
+    {
+      "numero": 4,
+      "id": 45,
+      "slug": "campeonato-estadual-de-futebol-fc-laranjal-conquista-primeiro-t-tulo",
+      "titulo": "Campeonato Estadual de Futebol: FC Laranjal Conquista Primeiro Título",
+      "categoria": "esportes",
+      "municipio": "laranjal-do-jari",
+      "autor": "Carlos Mendes",
+      "destaque": true,
+      "tags": [
+        "esportes",
+        "futebol",
+        "campeonato"
+      ],
+      "caracteres": 685,
+      "metaDescription": "FC Laranjal vence campeonato estadual de futebol"
+    },
+    {
+      "numero": 5,
+      "id": 46,
+      "slug": "mazagao-registra-crescimento-economico-de-18-com-expansao-do-turismo",
+      "titulo": "Mazagão Registra Crescimento Econômico de 18% Com Expansão do Turismo",
+      "categoria": "economia",
+      "municipio": "mazagao",
+      "autor": "Ana Paula Rodrigues",
+      "destaque": false,
+      "tags": [
+        "economia",
+        "turismo",
+        "desenvolvimento"
+      ],
+      "caracteres": 754,
+      "metaDescription": "Mazagão cresce 18% com expansão do turismo cultural"
+    },
+    {
+      "numero": 6,
+      "id": 47,
+      "slug": "porto-grande-inaugura-rodovia-estratagica-que-reduz-trajeto-em-40",
+      "titulo": "Porto Grande Inaugura Rodovia Estratégica que Reduz Trajeto em 40%",
+      "categoria": "municipios",
+      "municipio": "porto-grande",
+      "autor": "Luis Alberto Santos",
+      "destaque": true,
+      "tags": [
+        "infraestrutura",
+        "rodovia",
+        "desenvolvimento"
+      ],
+      "caracteres": 753,
+      "metaDescription": "Porto Grande inaugura rodovia de 35 km que reduz trajeto em 40%"
+    }
+  ],
+  "resumo": {
+    "total": 6,
+    "criados": 6,
+    "erros": 0,
+    "taxa": "100.0%"
+  }
+}

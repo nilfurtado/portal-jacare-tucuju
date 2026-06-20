@@ -1,0 +1,74 @@
+# ============================================================
+# Deploy automático para Hostinger via FTP
+# Dispara em cada push na branch main
+#
+# Antes de funcionar, configure 4 secrets em:
+#   GitHub → Settings → Secrets and variables → Actions
+#     • HOSTINGER_FTP_HOST    → ex: ftp.seudominio.com.br
+#     • HOSTINGER_FTP_USER    → conta FTP da Hostinger
+#     • HOSTINGER_FTP_PASS    → senha da conta FTP
+#     • HOSTINGER_FTP_DIR     → ex: /public_html/ (com barras)
+# ============================================================
+
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # permite disparar manualmente pela aba Actions
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: FTP Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Sincronizar via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_HOST }}
+          username: ${{ secrets.HOSTINGER_FTP_USER }}
+          password: ${{ secrets.HOSTINGER_FTP_PASS }}
+          server-dir: ${{ secrets.HOSTINGER_FTP_DIR }}
+          local-dir: ./
+          # Modo de transferência (Hostinger funciona com FTPS implícito ou explícito)
+          protocol: ftps
+          port: 21
+          log-level: minimal
+          # ----- Arquivos que NÃO devem ser enviados -----
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.github/**
+            **/.vscode/**
+            **/.idea/**
+            **/.claude/**
+            **/*.md
+            **/.env
+            **/.env.local
+            **/.env.production
+            **/painel-dm/**
+            **/painel-dm
+            **/install.locked
+            **/migrate.locked
+            **/img/uploads/**
+            **/storage/uploads/**
+            **/storage/logs/**
+            **/*.log
+            **/*.bak
+            **/*.zip
+            **/__autologin.html
+            **/__taballer.html
+            **/data/usuarios.json
+            **/data/lixeira-*.json
+            **/data/tema-layout.json
+            .gitignore
+            .deployignore

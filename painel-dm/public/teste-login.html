@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teste Login</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+    .box { border: 1px solid #0f0; padding: 10px; margin: 10px 0; }
+    button { padding: 10px 20px; background: #0f0; color: #000; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🧪 Teste de Login</h2>
+    <button onclick="testarLogin()">1. FAZER LOGIN</button>
+    <button onclick="verificarToken()">2. VERIFICAR TOKEN</button>
+    <button onclick="irParaPainel()">3. IR PARA PAINEL</button>
+    <button onclick="limpar()">4. LIMPAR TUDO</button>
+  </div>
+
+  <div class="box" id="output"></div>
+
+  <script>
+    function log(msg) {
+      document.getElementById('output').innerHTML += msg + '<br>';
+      console.log(msg);
+    }
+
+    function testarLogin() {
+      document.getElementById('output').innerHTML = '';
+      log('🔐 Fazendo login...');
+
+      fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'admin@localhost', senha: 'admin' })
+      })
+      .then(r => {
+        log(`Status: ${r.status}`);
+        return r.json();
+      })
+      .then(d => {
+        log('Resposta: ' + JSON.stringify(d, null, 2));
+        if (d.token) {
+          log('✅ Token recebido!');
+          localStorage.setItem('painel-dm:token', d.token);
+          localStorage.setItem('painel-dm:user', JSON.stringify(d.usuario));
+          log('✅ Token salvo no localStorage!');
+        } else {
+          log('❌ Sem token na resposta!');
+        }
+      })
+      .catch(e => log('❌ Erro: ' + e.message));
+    }
+
+    function verificarToken() {
+      document.getElementById('output').innerHTML = '';
+      const token = localStorage.getItem('painel-dm:token');
+      log('Token existe? ' + (token ? '✅ SIM' : '❌ NÃO'));
+      if (token) {
+        log('Token: ' + token.substring(0, 50) + '...');
+      }
+    }
+
+    function irParaPainel() {
+      const token = localStorage.getItem('painel-dm:token');
+      if (token) {
+        log('🚀 Redirecionando para /painel/');
+        window.location.href = '/painel/';
+      } else {
+        log('❌ Sem token! Faça login primeiro.');
+      }
+    }
+
+    function limpar() {
+      localStorage.clear();
+      document.getElementById('output').innerHTML = '✅ localStorage limpo!';
+    }
+
+    log('📍 Teste de Login');
+    log('Clique nos botões acima para testar');
+  </script>
+</body>
+</html>

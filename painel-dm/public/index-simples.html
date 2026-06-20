@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel DM — Dashboard</title>
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/sidebar.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <style>
+    body { margin: 0; font-family: var(--font-body); background: var(--paper); color: var(--ink); }
+    .dashboard { padding: 40px; max-width: 1200px; margin: 0 auto; }
+    .header { margin-bottom: 40px; }
+    .header h1 { font-size: 2.5rem; margin: 0; font-family: var(--font-display); }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .card { background: var(--surface); padding: 20px; border-radius: 8px; border: 1px solid var(--rule); }
+    .card__value { font-size: 2rem; font-weight: bold; color: var(--brand); }
+    .card__label { font-size: 0.9rem; color: var(--ink-mute); margin-top: 8px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface); border-bottom: 1px solid var(--rule); margin-bottom: 30px; }
+    .topbar a { color: var(--brand); text-decoration: none; }
+    .topbar button { background: var(--brand); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+    .section { margin-bottom: 40px; }
+    .section h2 { font-size: 1.3rem; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--rule); }
+    th { font-weight: 600; color: var(--ink-soft); }
+    tr:hover { background: var(--surface-2); }
+    .empty { text-align: center; padding: 40px; color: var(--ink-mute); }
+    .logout-btn { background: var(--danger); color: white; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1>📰 Painel DM</h1>
+      <p style="margin: 0; color: var(--ink-mute); font-size: 0.9rem;">Bem-vindo, <span id="user-name">Carregando...</span></p>
+    </div>
+    <button class="logout-btn" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="dashboard">
+    <div class="header">
+      <h2>Dashboard</h2>
+      <p style="color: var(--ink-mute);">Visão geral do portal</p>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card__label">Notícias Publicadas</div>
+        <div class="card__value" id="total-noticias">0</div>
+      </div>
+      <div class="card">
+        <div class="card__label">Categorias</div>
+        <div class="card__value" id="total-categorias">0</div>
+      </div>
+      <div class="card">
+        <div class="card__label">Usuários</div>
+        <div class="card__value" id="total-usuarios">0</div>
+      </div>
+      <div class="card">
+        <div class="card__label">Visualizações</div>
+        <div class="card__value" id="total-views">0</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📰 Notícias Recentes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Categoria</th>
+            <th>Data</th>
+            <th style="text-align: right;">Views</th>
+          </tr>
+        </thead>
+        <tbody id="noticias-table">
+          <tr><td colspan="4" class="empty">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>🔗 Links Úteis</h2>
+      <ul style="list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+        <li><a href="/painel/noticias/" style="display: block; padding: 12px; background: var(--surface); border-radius: 4px; text-decoration: none;">📝 Notícias</a></li>
+        <li><a href="/painel/categorias/" style="display: block; padding: 12px; background: var(--surface); border-radius: 4px; text-decoration: none;">📂 Categorias</a></li>
+        <li><a href="/painel/usuarios/" style="display: block; padding: 12px; background: var(--surface); border-radius: 4px; text-decoration: none;">👥 Usuários</a></li>
+        <li><a href="/painel/acessos/" style="display: block; padding: 12px; background: var(--surface); border-radius: 4px; text-decoration: none;">📊 Acessos</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Verifica autenticação
+    if (!localStorage.getItem('painel-dm:token')) {
+      window.location.href = '/painel/login/';
+    }
+
+    const user = JSON.parse(localStorage.getItem('painel-dm:user') || '{}');
+    document.getElementById('user-name').textContent = user.nome || 'Usuário';
+
+    // Carrega dados do banco via API
+    async function loadData() {
+      try {
+        const token = localStorage.getItem('painel-dm:token');
+
+        // Carrega notícias
+        const notRes = await fetch('/api/noticias', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const notData = await notRes.json();
+        const noticias = notData.items || [];
+
+        // Carrega categorias
+        const catRes = await fetch('/api/categorias', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const catData = await catRes.json();
+        const categorias = Array.isArray(catData) ? catData : [];
+
+        // Carrega usuários
+        const usrRes = await fetch('/api/usuarios', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const usrData = await usrRes.json();
+        const usuarios = Array.isArray(usrData) ? usrData : [];
+
+        // Atualiza cards
+        document.getElementById('total-noticias').textContent = noticias.length;
+        document.getElementById('total-categorias').textContent = categorias.length;
+        document.getElementById('total-usuarios').textContent = usuarios.length;
+        document.getElementById('total-views').textContent =
+          noticias.reduce((s, n) => s + (n.views || 0), 0).toLocaleString('pt-BR');
+
+        // Carrega tabela de notícias
+        const tbody = document.getElementById('noticias-table');
+        if (noticias.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="empty">Nenhuma notícia publicada</td></tr>';
+        } else {
+          tbody.innerHTML = noticias.slice(0, 10).map(n => `
+            <tr>
+              <td>${n.titulo}</td>
+              <td>${n.categoria || '-'}</td>
+              <td>${new Date(n.data || Date.now()).toLocaleDateString('pt-BR')}</td>
+              <td style="text-align: right;">${(n.views || 0).toLocaleString('pt-BR')}</td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Erro ao carregar dados:', err);
+        document.getElementById('noticias-table').innerHTML =
+          '<tr><td colspan="4" class="empty">Erro ao carregar dados</td></tr>';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('painel-dm:token');
+      localStorage.removeItem('painel-dm:user');
+      window.location.href = '/painel/login/';
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

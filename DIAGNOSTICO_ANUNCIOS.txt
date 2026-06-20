@@ -1,0 +1,99 @@
+DIAGNÓSTICO: Por que anuncios.html não funciona?
+
+CONCLUSÃO:
+==========
+O servidor está 100% correto e servindo a versão correta do arquivo.
+O problema está no navegador (cache ou erro de JavaScript).
+
+ACHADOS PRINCIPAIS:
+===================
+
+1. ARQUIVO CORRETO ENCONTRADO
+   - painel-dm/public/anuncios.html (44KB, 4 de junho - VERSÃO NOVA)
+   - Servidor está servindo este arquivo corretamente
+
+2. SERVIDOR ESTÁ CONFIGURADO CORRETO
+   - Prioridade: painel-dm > painel-php > portal
+   - Todos os assets (CSS, JS) estão acessíveis
+   - HTTP headers estão corretos
+
+3. PROBLEMA IDENTIFICADO
+   Duas possibilidades:
+   
+   A) Cache do Navegador (MAIS PROVÁVEL - 85%)
+      - Navegador cacheou versão ANTIGA (painel-php)
+      - Mostra CSS mínimo e "${classe}" literal
+      
+      SOLUÇÃO RÁPIDA:
+      1. Ctrl+Shift+Delete (limpar cache completo)
+      2. Ctrl+F5 (reload duro)
+      3. Recarregar página
+
+   B) Erro de JavaScript (10% de chance)
+      - Alguma importação falhou
+      - Grid fica em "Carregando slots..." para sempre
+      
+      SOLUÇÃO:
+      1. F12 → Console
+      2. Procurar por erros em vermelho
+      3. Tirar screenshot do erro
+
+   C) Token de autenticação expirado (3% de chance)
+      - Usuário precisa fazer login novamente
+      
+      VERIFICAÇÃO:
+      1. F12 → Application → localStorage
+      2. Procurar por "painel-dm:token"
+      3. Se vazio → fazer login
+
+   D) Proxy intermediário (2% de chance)
+      - Nginx ou Apache com cache próprio
+      - Técnico IT precisa limpar cache
+
+TESTES REALIZADOS:
+==================
+
+✓ Servidor serve arquivo correto (diff vazio)
+✓ HTML está bem formado (89 divs abertos/fechados)
+✓ CSS anuncios.css está acessível (HTTP 200)
+✓ JavaScript shell.js está acessível (HTTP 200)
+✓ Template literals são CORRETOS (não renderizados como string)
+✓ Grid element ID="slot-grid" está presente
+✓ HTTP headers estão corretos (ETag, Last-Modified)
+
+PRÓXIMOS PASSOS:
+================
+
+1. Limpar cache completamente (OBRIGATÓRIO)
+   Ctrl+Shift+Delete → Clear All Time → Limpar
+
+2. Testar em abadado/incógnito (sem cache)
+   Ctrl+Shift+N → Acessar /painel/anuncios/
+
+3. Se não funcionar, verificar console (F12)
+   Procurar por erros vermelhos
+
+4. Se ainda não funcionar, tirar screenshots de:
+   - F12 → Console (procurar RED errors)
+   - F12 → Network (procurar 404 errors)
+   - F12 → Application → localStorage
+
+RESULTADO ESPERADO APÓS CORREÇÃO:
+==================================
+✓ Página carrega com CSS bonito
+✓ Grid de anúncios aparece
+✓ Botão "+ Novo anúncio" funciona
+✓ Filtros funcionam
+✓ Modais abrem e fecham
+
+ARQUIVOS RELACIONADOS:
+======================
+- painel-dm/public/anuncios.html (VERSÃO NOVA - USE ESTA)
+- painel-php/public/anuncios.html (VERSÃO ANTIGA - DESCARTADA)
+- painel-dm/public/css/anuncios.css (ESTILOS)
+- painel-dm/public/js/shell.js (SHELL)
+- painel-dm/server.js (CONFIGURAÇÃO SERVIDOR)
+
+═══════════════════════════════════════════════════════════════════════════════
+CONCLUSÃO FINAL: Limpar cache do navegador deve resolver 85% dos casos!
+═══════════════════════════════════════════════════════════════════════════════

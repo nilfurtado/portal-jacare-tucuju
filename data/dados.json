@@ -1,0 +1,258 @@
+{
+  "categorias": [
+    {
+      "id": 7,
+      "slug": "política",
+      "nome": "Política",
+      "descricao": "",
+      "cor": "#1A237E",
+      "ordem": 1,
+      "criadoEm": "2026-06-09 03:38:25"
+    },
+    {
+      "id": 12,
+      "slug": "policia",
+      "nome": "Polícia",
+      "descricao": "",
+      "cor": "#B71C1C",
+      "ordem": 2,
+      "criadoEm": "2026-06-15 03:13:03"
+    },
+    {
+      "id": 3,
+      "slug": "economia",
+      "nome": "Economia",
+      "descricao": "Notícias econômicas",
+      "cor": "#2E7D32",
+      "ordem": 3,
+      "criadoEm": "2026-06-09 00:51:04"
+    },
+    {
+      "id": 5,
+      "slug": "educação",
+      "nome": "Educação",
+      "descricao": "Notícias de educação",
+      "cor": "#1565C0",
+      "ordem": 4,
+      "criadoEm": "2026-06-09 00:51:04"
+    },
+    {
+      "id": 2,
+      "slug": "esportes",
+      "nome": "Esporte",
+      "descricao": "Notícias de esportes",
+      "cor": "#40E7B5",
+      "ordem": 5,
+      "criadoEm": "2026-06-09 00:51:04"
+    },
+    {
+      "id": 8,
+      "slug": "cultura",
+      "nome": "Cultura",
+      "descricao": "",
+      "cor": "#7B1FA2",
+      "ordem": 6,
+      "criadoEm": "2026-06-09 03:38:25"
+    },
+    {
+      "id": 10,
+      "slug": "segurança",
+      "nome": "Segurança",
+      "descricao": "",
+      "cor": "#34495E",
+      "ordem": 7,
+      "criadoEm": "2026-06-09 03:38:25"
+    },
+    {
+      "id": 4,
+      "slug": "saúde",
+      "nome": "Saúde",
+      "descricao": "Notícias de saúde",
+      "cor": "#EFF0F0",
+      "ordem": 8,
+      "criadoEm": "2026-06-09 00:51:04"
+    },
+    {
+      "id": 6,
+      "slug": "tecnologia",
+      "nome": "Tecnologia",
+      "descricao": "",
+      "cor": "#046F76",
+      "ordem": 9,
+      "criadoEm": "2026-06-09 03:29:50"
+    },
+    {
+      "id": 9,
+      "slug": "meio-ambiente",
+      "nome": "Meio Ambiente",
+      "descricao": "",
+      "cor": "#388E3C",
+      "ordem": 10,
+      "criadoEm": "2026-06-09 03:38:25"
+    },
+    {
+      "id": 11,
+      "slug": "opinião",
+      "nome": "Opinião",
+      "descricao": "",
+      "cor": "#565E2B",
+      "ordem": 11,
+      "criadoEm": "2026-06-09 03:38:25"
+    },
+    {
+      "id": 1,
+      "slug": "geral",
+      "nome": "Geral",
+      "descricao": "Notícias gerais",
+      "cor": "#607D8B",
+      "ordem": 12,
+      "criadoEm": "2026-06-14 15:41:43"
+    }
+  ],
+  "municipios": [
+    {
+      "slug": "amapa",
+      "label": "Amapá",
+      "populacao": 6454,
+      "imagem": "/img/municipios/amapa.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.676Z"
+    },
+    {
+      "slug": "calchoene",
+      "label": "Calçoene",
+      "populacao": 8005,
+      "imagem": "/img/municipios/calchoene.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.676Z"
+    },
+    {
+      "slug": "cutias",
+      "label": "Cutias",
+      "populacao": 5247,
+      "imagem": "/img/municipios/cutias.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.68Z"
+    },
+    {
+      "slug": "ferreira-gomes",
+      "label": "Ferreira Gomes",
+      "populacao": 8626,
+      "imagem": "/img/municipios/ferreira-gomes.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.676Z"
+    },
+    {
+      "slug": "itaubal",
+      "label": "Itaubal",
+      "populacao": 7476,
+      "imagem": "/img/municipios/itaubal.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.681Z"
+    },
+    {
+      "slug": "laranjal-do-jari",
+      "label": "Laranjal do Jari",
+      "populacao": 45955,
+      "imagem": "/img/municipios/laranjal-do-jari.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.674Z"
+    },
+    {
+      "slug": "macapa",
+      "label": "Macapá",
+      "populacao": 223102,
+      "imagem": "/img/municipios/macapa.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.671Z"
+    },
+    {
+      "slug": "mazagao",
+      "label": "Mazagão",
+      "populacao": 5542,
+      "imagem": "/img/municipios/mazagao.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.677Z"
+    },
+    {
+      "slug": "oiapoque",
+      "label": "Oiapoque",
+      "populacao": 28080,
+      "imagem": "/img/municipios/oiapoque.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.675Z"
+    },
+    {
+      "slug": "pedra-branca-do-amapari",
+      "label": "Pedra Branca do Amapari",
+      "populacao": 5408,
+      "imagem": "/img/municipios/pedra-branca-do-amapari.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.677Z"
+    },
+    {
+      "slug": "porto-grande",
+      "label": "Porto Grande",
+      "populacao": 18835,
+      "imagem": "/img/municipios/porto-grande.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.678Z"
+    },
+    {
+      "slug": "pracuuba",
+      "label": "Pracuúba",
+      "populacao": 4844,
+      "imagem": "/img/municipios/pracuuba.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.679Z"
+    },
+    {
+      "slug": "santana",
+      "label": "Santana",
+      "populacao": 120515,
+      "imagem": "/img/municipios/santana.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.674Z"
+    },
+    {
+      "slug": "serra-do-navio",
+      "label": "Serra do Navio",
+      "populacao": 3923,
+      "imagem": "/img/municipios/serra-do-navio.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.677Z"
+    },
+    {
+      "slug": "tartarugalzinho",
+      "label": "Tartarugalzinho",
+      "populacao": 13487,
+      "imagem": "/img/municipios/tartarugalzinho.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.678Z"
+    },
+    {
+      "slug": "vitoria-do-jari",
+      "label": "Vitória do Jari",
+      "populacao": 6876,
+      "imagem": "/img/municipios/vitoria-do-jari.svg",
+      "descricao": "",
+      "estado": "AP",
+      "criadoEm": "2026-06-14T23:12:14.678Z"
+    }
+  ]
+}

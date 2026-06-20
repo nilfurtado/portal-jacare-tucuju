@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Painel DM</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1b5e20, #2e7d32);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo h1 {
+      color: #1b5e20;
+      font-size: 32px;
+      margin-bottom: 5px;
+    }
+
+    .logo p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: border 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #1b5e20;
+      box-shadow: 0 0 5px rgba(27, 94, 32, 0.2);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #1b5e20;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #0d3b1f;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      padding: 12px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 12px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1b5e20;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .footer a {
+      color: #1b5e20;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div class="logo">
+      <h1>🐊 Painel DM</h1>
+      <p>Portal Jacaré Tucujú</p>
+    </div>
+
+    <div class="error" id="error-msg"></div>
+    <div class="success" id="success-msg"></div>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Entrando...</p>
+    </div>
+
+    <form id="login-form" onsubmit="fazerLogin(event)">
+      <div class="form-group">
+        <label for="usuario">Usuário ou E-mail</label>
+        <input type="text" id="usuario" name="usuario" required placeholder="Nildo ou nildo@portaljt.com.br">
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" required placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn" id="submit-btn">Acessar Painel</button>
+    </form>
+
+    <div class="footer">
+      <p>Versão 1.0 - Painel DM</p>
+    </div>
+  </div>
+
+  <script>
+    async function fazerLogin(event) {
+      event.preventDefault();
+
+      const usuario = document.getElementById('usuario').value;
+      const senha = document.getElementById('senha').value;
+      const errorDiv = document.getElementById('error-msg');
+      const successDiv = document.getElementById('success-msg');
+      const loading = document.getElementById('loading');
+      const btn = document.getElementById('submit-btn');
+
+      // Limpar mensagens
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      // Mostrar loading
+      loading.style.display = 'block';
+      btn.disabled = true;
+
+      try {
+        console.log('Tentando login com:', usuario);
+
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            usuario: usuario,
+            senha: senha
+          })
+        });
+
+        console.log('Status da resposta:', response.status);
+
+        // Check if response has content
+        const text = await response.text();
+        console.log('Resposta bruta:', text);
+
+        if (!text) {
+          throw new Error('Servidor não respondeu');
+        }
+
+        const data = JSON.parse(text);
+        console.log('Dados retornados:', data);
+
+        if (response.ok && data.token) {
+          // Salvar token e usuário
+          localStorage.setItem('painel-dm:token', data.token);
+          localStorage.setItem('painel-dm:user', JSON.stringify(data.usuario));
+
+          // Mostrar sucesso
+          successDiv.textContent = '✅ Login realizado! Redirecionando...';
+          successDiv.style.display = 'block';
+
+          // Redirecionar após 1 segundo
+          setTimeout(() => {
+            window.location.replace('/painel/usuarios/');
+          }, 1000);
+        } else {
+          errorDiv.textContent = '❌ ' + (data.erro || 'Erro ao fazer login');
+          errorDiv.style.display = 'block';
+          loading.style.display = 'none';
+          btn.disabled = false;
+        }
+      } catch (err) {
+        console.error('Erro:', err);
+        errorDiv.textContent = '❌ Erro: ' + err.message;
+        errorDiv.style.display = 'block';
+        loading.style.display = 'none';
+        btn.disabled = false;
+      }
+    }
+
+    // Se já tiver token, redirecionar para usuários
+    if (localStorage.getItem('painel-dm:token')) {
+      window.location.replace('/painel/usuarios/');
+    }
+  </script>
+</body>
+</html>

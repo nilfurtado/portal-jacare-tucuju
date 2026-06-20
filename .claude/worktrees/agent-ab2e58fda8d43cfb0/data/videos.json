@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "titulo": "Ponte Binacional: como funciona a travessia para a Guiana Francesa",
+    "thumb": "https://picsum.photos/seed/video-ponte/640/360",
+    "duracao": "5:42",
+    "youtubeId": "dQw4w9WgXcQ",
+    "categoria": "economia"
+  },
+  {
+    "id": 2,
+    "titulo": "Festival do Camarão: melhores momentos da edição 2026",
+    "thumb": "https://picsum.photos/seed/video-camarao/640/360",
+    "duracao": "8:14",
+    "youtubeId": "dQw4w9WgXcQ",
+    "categoria": "cultura"
+  },
+  {
+    "id": 3,
+    "titulo": "Operação Tela Limpa: bastidores da ação em Santana",
+    "thumb": "https://picsum.photos/seed/video-tela-limpa/640/360",
+    "duracao": "3:28",
+    "youtubeId": "dQw4w9WgXcQ",
+    "categoria": "policia"
+  },
+  {
+    "id": 4,
+    "titulo": "Marabaixo é patrimônio: a história contada por mestres do batuque",
+    "thumb": "https://picsum.photos/seed/video-marabaixo/640/360",
+    "duracao": "12:05",
+    "youtubeId": "dQw4w9WgXcQ",
+    "categoria": "cultura"
+  },
+  {
+    "id": 5,
+    "titulo": "Tubarão-touro na foz do Amazonas: o flagrante completo",
+    "thumb": "https://picsum.photos/seed/video-tubarao/640/360",
+    "duracao": "2:51",
+    "youtubeId": "dQw4w9WgXcQ",
+    "categoria": "cultura"
+  },
+  {
+    "id": 6,
+    "titulo": "Clássico Amapá Clube x Trem: análise tática do jogo",
+    "thumb": "https://picsum.photos/seed/video-classico/640/360",
+    "duracao": "7:33",
+    "youtubeId": "dQw4w9WgXcQ",
+    "categoria": "esportes"
+  },
+  {
+    "id": 7,
+    "titulo": "Teste de cria��o via API",
+    "thumb": "https://i.ytimg.com/vi/AbCdEf12345/hqdefault.jpg",
+    "duracao": "6:30",
+    "youtubeId": "AbCdEf12345",
+    "categoria": "cultura"
+  }
+]

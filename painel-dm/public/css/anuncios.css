@@ -1,0 +1,213 @@
+/* ================================================================
+   ANÚNCIOS - Estilos Específicos
+   ================================================================ */
+
+/* Upload de imagem */
+.imagem-ads {
+    background: var(--cor-fundo-2);
+    padding: var(--s-4);
+    border-radius: var(--r-3);
+    margin-top: var(--s-4);
+}
+
+.imagem-ads .tt-secao-form {
+    border-bottom: none;
+}
+
+.tmn-banner {
+    font-size: 0.85rem;
+    color: var(--cor-texto-mute);
+    display: inline-block;
+    margin-left: var(--s-2);
+}
+
+/* Editor HTML */
+.html-ads {
+    background: var(--cor-fundo-2);
+    padding: var(--s-4);
+    border-radius: var(--r-3);
+    margin-top: var(--s-4);
+}
+
+.html-ads textarea {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: var(--s-3);
+}
+
+/* Opções de veiculação */
+#opcoes-veiculacao {
+    background: var(--cor-fundo-2);
+    padding: var(--s-4);
+    border-radius: var(--r-3);
+    margin-top: var(--s-4);
+}
+
+#lista-municipios,
+#lista-blogs {
+    margin-top: var(--s-3);
+}
+
+/* ================================================================
+   STATUS VISUAL DOS CARDS
+   ================================================================ */
+
+.slot-card {
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+/* 🟢 ATIVO */
+.slot-card.status-ativo {
+    border-left-color: #22c55e;
+    background: rgba(34, 197, 94, 0.05);
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
+}
+
+.slot-card.status-ativo:hover {
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.3), 0 0 0 1px rgba(34, 197, 94, 0.3);
+}
+
+/* 🔴 INATIVO */
+.slot-card.status-inativo {
+    border-left-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.2);
+    opacity: 0.8;
+}
+
+.slot-card.status-inativo:hover {
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3), 0 0 0 1px rgba(239, 68, 68, 0.3);
+    opacity: 1;
+}
+
+/* 🟡 PAUSADO (pausa temporária durante veiculação) */
+.slot-card.status-pausado {
+    border-left-color: #eab308;
+    background: rgba(234, 179, 8, 0.05);
+    box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.2);
+}
+
+.slot-card.status-pausado:hover {
+    box-shadow: 0 0 8px rgba(234, 179, 8, 0.3), 0 0 0 1px rgba(234, 179, 8, 0.3);
+}
+
+#lista-municipios select,
+#lista-blogs select {
+    max-height: 150px;
+}
+
+/* Data fim */
+#secao-data {
+    background: var(--cor-fundo-2);
+    padding: var(--s-4);
+    border-radius: var(--r-3);
+    margin-top: var(--s-4);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-4);
+}
+
+/* Avisos */
+.aviso-table {
+    font-size: 0.85rem;
+    color: var(--cor-perigo);
+    margin: var(--s-2) 0;
+}
+
+/* Ações em tabela */
+.acao-editar,
+.acao-deletar,
+.acao-toggle {
+    padding: var(--s-2) var(--s-3);
+    margin: 0 var(--s-1);
+    border: none;
+    border-radius: var(--r-2);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+}
+
+.acao-editar {
+    background: var(--cor-principal);
+    color: white;
+}
+
+.acao-editar:hover {
+    background: #e68a00;
+}
+
+.acao-deletar {
+    background: var(--cor-perigo);
+    color: white;
+}
+
+.acao-deletar:hover {
+    background: #b71c1c;
+}
+
+.acao-toggle {
+    background: var(--cor-sucesso);
+    color: white;
+    font-size: 0.8rem;
+}
+
+.acao-toggle:hover {
+    background: #2e5a2a;
+}
+
+.acao-toggle.inativo {
+    background: var(--cor-texto-mute);
+}
+
+/* Badge de status */
+.badge-status {
+    display: inline-block;
+    padding: var(--s-1) var(--s-3);
+    border-radius: var(--r-2);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.badge-ativo {
+    background: rgba(62, 107, 58, 0.2);
+    color: var(--cor-sucesso);
+}
+
+.badge-inativo {
+    background: rgba(153, 153, 153, 0.2);
+    color: var(--cor-texto-mute);
+}
+
+.badge-finalizado {
+    background: rgba(205, 50, 50, 0.2);
+    color: var(--cor-perigo);
+}
+
+/* Animações de carregamento */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--cor-principal);
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Estados de interação */
+.pos-select-arquivo.drag-over {
+    border-color: var(--cor-principal);
+    background: rgba(255, 147, 0, 0.1);
+    box-shadow: var(--shadow-md);
+}
+
+/* Espaçamento extra */
+.info-secao-form + .item-form {
+    margin-top: var(--s-4);
+}

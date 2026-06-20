@@ -1,0 +1,163 @@
+/* ================================================================
+   RESPONSIVE DESIGN - Mobile First
+   ================================================================ */
+
+/* ================================================================
+   TABLET (768px+)
+   ================================================================ */
+
+@media (min-width: 768px) {
+    .form-triplo {
+        grid-column: span 1;
+    }
+
+    .form-duplo {
+        grid-column: span 1;
+    }
+
+    /* Grid 2 colunas */
+    .secao-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-triplo:nth-child(3n+3) {
+        grid-column: span 1;
+    }
+
+    .botoes-filtros {
+        justify-content: flex-start;
+    }
+}
+
+/* ================================================================
+   DESKTOP (1024px+)
+   ================================================================ */
+
+@media (min-width: 1024px) {
+    /* Grid 3 colunas */
+    .secao-form {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .form-triplo {
+        grid-column: span 1;
+    }
+
+    .form-duplo {
+        grid-column: span 1;
+    }
+
+    /* Full width quando necessário */
+    .item-form[style*="grid-column: 1 / -1"],
+    .imagem-ads,
+    .html-ads {
+        grid-column: 1 / -1;
+    }
+
+    .conteudo-painel {
+        padding: var(--s-8);
+    }
+
+    .pos-secao-form {
+        padding: var(--s-8);
+    }
+}
+
+/* ================================================================
+   MOBILE (<768px)
+   ================================================================ */
+
+@media (max-width: 767px) {
+    .secao-form {
+        grid-template-columns: 1fr;
+    }
+
+    .form-triplo,
+    .form-duplo {
+        grid-column: 1 / -1;
+    }
+
+    .opcao-dupla-form {
+        flex-direction: column;
+        gap: var(--s-2);
+    }
+
+    .botoes-filtros {
+        flex-direction: column;
+    }
+
+    .botoes-filtros button {
+        width: 100%;
+    }
+
+    .table-list {
+        font-size: 0.8rem;
+    }
+
+    .table-list th,
+    .table-list td {
+        padding: var(--s-2);
+    }
+
+    .modal-box {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .pos-filtros-listagem {
+        gap: var(--s-2);
+    }
+}
+
+/* ================================================================
+   SMALL DEVICES (<640px)
+   ================================================================ */
+
+@media (max-width: 639px) {
+    .titulo-interno {
+        padding: var(--s-4);
+    }
+
+    .titulo-interno h1 {
+        font-size: 1.5rem;
+    }
+
+    .conteudo-painel {
+        padding: var(--s-2);
+    }
+
+    .pos-secao-form {
+        padding: var(--s-4);
+        margin-bottom: var(--s-4);
+    }
+
+    .table-list {
+        font-size: 0.75rem;
+    }
+
+    .table-list th {
+        display: none;
+    }
+
+    .table-list td {
+        display: block;
+        width: 100%;
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .table-list td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: var(--s-2);
+        font-weight: 600;
+        width: 40%;
+        text-align: left;
+    }
+
+    .paginacao {
+        flex-wrap: wrap;
+    }
+}

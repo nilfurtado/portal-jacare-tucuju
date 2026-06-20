@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Páginas · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <link rel="stylesheet" href="css/editor.css">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Páginas</span>
+        </nav>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">11</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Conteúdo institucional</p>
+            <h1>As <em style="font-style:italic;color:var(--brand)">colunas fixas</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Página estática</h2>
+            <p>Sobre, privacidade, termos, contato — qualquer conteúdo institucional.</p>
+            <div class="section__body">
+              <form id="form-pag">
+                <input type="hidden" name="id" id="pag-id">
+                <div class="form-grid">
+                  <div class="field"><label class="field__label req">Título</label><input class="input" name="titulo" required></div>
+                  <div class="field"><label class="field__label">Slug</label><input class="input input--mono" name="slug" placeholder="auto-gerado se vazio"></div>
+                </div>
+                <div class="field"><label class="field__label">Conteúdo</label><div id="editor-pag"></div></div>
+                <div class="form-grid">
+                  <div class="field"><label class="field__label">Ordem (menu)</label><input class="input input--mono" type="number" name="ordem" min="1" value="1"></div>
+                  <div class="field" style="display:flex;align-items:flex-end"><label class="switch"><input type="checkbox" name="visivelMenu"><span class="switch__track"></span><span class="switch__label">Mostrar no menu</span></label></div>
+                </div>
+                <div class="form-actions" style="border:none;padding-top:var(--s-3);margin-top:var(--s-3)">
+                  <button class="btn btn--ghost" type="button" id="btn-nova">Nova página</button>
+                  <button class="btn btn--primary" type="submit">Salvar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">02</div>
+          <div class="section__head">
+            <h2>Páginas existentes</h2>
+            <div class="section__body">
+              <table class="table">
+                <thead><tr><th>Título</th><th>Slug</th><th>No menu</th><th>Ordem</th><th></th></tr></thead>
+                <tbody id="lista-pag"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPost, apiPut, apiDelete } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+    await mountShell({ route: 'paginas' });
+
+    const quill = new Quill('#editor-pag', {
+      theme: 'snow',
+      placeholder: 'Conteúdo da página…',
+      modules: { toolbar: [[{header:[2,3,false]}],['bold','italic','link'],[{list:'ordered'},{list:'bullet'}],['blockquote'],['clean']] }
+    });
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    function novaPagina(){
+      document.getElementById('form-pag').reset();
+      document.getElementById('pag-id').value = '';
+      quill.setText('');
+    }
+
+    document.getElementById('btn-nova').onclick = novaPagina;
+
+    async function carregar(){
+      const items = await apiGet('/paginas').catch(()=>[]);
+      document.getElementById('lista-pag').innerHTML = items.map(p => `
+        <tr data-id="${p.id}">
+          <td><strong style="font-family:var(--font-display);font-weight:500;font-size:1rem">${esc(p.titulo)}</strong></td>
+          <td><code style="font-family:var(--font-mono);font-size:0.78rem;color:var(--ink-mute)">${esc(p.slug)}</code></td>
+          <td>${p.visivelMenu ? '<span class="tag tag--ok">sim</span>' : '<span class="tag">não</span>'}</td>
+          <td class="num">${p.ordem || '—'}</td>
+          <td><div class="row-actions">
+            <button data-action="editar" title="Editar">✎</button>
+            <button data-action="remover" class="danger" title="Remover">×</button>
+          </div></td>
+        </tr>
+      `).join('') || '<tr><td colspan="5" style="color:var(--ink-mute)">Nenhuma página criada.</td></tr>';
+    }
+
+    document.getElementById('form-pag').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const id = document.getElementById('pag-id').value;
+      const body = {
+        titulo: fd.get('titulo'),
+        slug: fd.get('slug'),
+        conteudo: quill.root.innerHTML,
+        ordem: Number(fd.get('ordem')) || 1,
+        visivelMenu: !!fd.get('visivelMenu'),
+      };
+      try {
+        if (id) await apiPut(`/paginas/${id}`, body);
+        else    await apiPost('/paginas', body);
+        toast(id ? 'Página atualizada' : 'Página criada', 'success');
+        novaPagina();
+        carregar();
+      } catch (err) { toast(err.message, 'error'); }
+    });
+
+    document.getElementById('lista-pag').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]'); if(!btn) return;
+      const id = btn.closest('tr').dataset.id;
+      const ac = btn.dataset.action;
+      if (ac === 'editar') {
+        const p = await apiGet(`/paginas/${id}`);
+        document.getElementById('pag-id').value = p.id;
+        document.querySelector('[name=titulo]').value = p.titulo || '';
+        document.querySelector('[name=slug]').value = p.slug || '';
+        document.querySelector('[name=ordem]').value = p.ordem || 1;
+        document.querySelector('[name=visivelMenu]').checked = !!p.visivelMenu;
+        quill.root.innerHTML = p.conteudo || '';
+        window.scrollTo({ top: 0, behavior:'smooth' });
+      } else if (ac === 'remover') {
+        const ok = await confirmar({ titulo:'Remover página?', mensagem:'Ação definitiva.', okText:'Remover' });
+        if (!ok) return;
+        try { await apiDelete(`/paginas/${id}`); toast('Removida','success'); carregar(); }
+        catch (err) { toast(err.message,'error'); }
+      }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feeds RSS · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <script src="/painel/js/include.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <link rel="stylesheet" href="/painel/css/tabela.css">
+
+  <style>
+    .feeds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--s-5);
+      margin-top: var(--s-6);
+    }
+
+    .feed-card {
+      background: var(--surface);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-3);
+      padding: var(--s-4);
+      transition: all var(--d-1) var(--ease-out);
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+    }
+
+    .feed-card:hover {
+      border-color: var(--brand);
+      box-shadow: var(--sh-2);
+      transform: translateY(-2px);
+    }
+
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: var(--s-2);
+    }
+
+    .feed-title {
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0;
+      font-size: var(--t-h3);
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .feed-badge {
+      display: inline-block;
+      padding: var(--s-1) var(--s-2);
+      border-radius: var(--r-1);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .feed-badge.ativo {
+      background: rgba(76, 175, 80, 0.15);
+      color: var(--positive);
+    }
+
+    .feed-badge.inativo {
+      background: rgba(220, 53, 69, 0.15);
+      color: var(--danger);
+    }
+
+    .feed-url {
+      font-size: 0.85rem;
+      color: var(--ink-mute);
+      word-break: break-all;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    .feed-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-2);
+      font-size: 0.9rem;
+    }
+
+    .feed-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-1);
+    }
+
+    .feed-meta-label {
+      color: var(--ink-mute);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .feed-meta-value {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .feed-actions {
+      display: flex;
+      gap: var(--s-2);
+      padding-top: var(--s-2);
+      border-top: 1px solid var(--paper-line);
+    }
+
+    .btn-icon {
+      padding: var(--s-2) var(--s-3);
+      font-size: 0.85rem;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s-1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--s-10) var(--s-5);
+      color: var(--ink-mute);
+    }
+
+    @media (max-width: 768px) {
+      .feeds-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/painel/">Painel</a><span class="sep">/</span><a href="/painel/noticias/">Notícias</a><span class="sep">/</span><span>Feeds RSS</span>
+        </nav>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__main">
+            <p class="page-title__sub">Redação · Importação</p>
+            <h1>Feeds <em style="font-style:italic;color:var(--brand)">RSS</em>.</h1>
+          </div>
+        </header>
+
+        <section class="bento stagger">
+          <article class="card card--narrow card--dark">
+            <p class="card__eyebrow">— Total de feeds</p>
+            <h2 class="card__metric" id="totalMetric">0</h2>
+            <p class="card__label">cadastrados</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Feeds ativos</p>
+            <h2 class="card__metric" id="ativosMetric">0</h2>
+            <p class="card__label">sincronizando</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Total importado</p>
+            <h2 class="card__metric" id="importadosMetric">0</h2>
+            <p class="card__label">artigos</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Taxa de sucesso</p>
+            <h2 class="card__metric" id="successMetric">0%</h2>
+            <p class="card__label">funcionando</p>
+          </article>
+        </section>
+
+        <div class="page-toolbar">
+          <div class="page-toolbar__tabs">
+            <input type="text" id="searchInput" class="tab-btn" placeholder="Buscar por nome ou URL..." style="flex: 1; min-width: 300px;">
+            <select id="filterStatus" class="tab-btn">
+              <option value="">Todos os feeds</option>
+              <option value="ativo">Apenas ativos</option>
+              <option value="inativo">Apenas inativos</option>
+            </select>
+          </div>
+          <div class="page-toolbar__spacer"></div>
+          <div class="page-toolbar__actions">
+            <button class="btn btn--ghost" id="btnNovoFeed">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Novo Feed
+            </button>
+          </div>
+        </div>
+
+        <div class="feeds-grid" id="feedsGrid">
+          <div class="empty-state">Carregando feeds...</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from '/painel/js/shell.js';
+    import { apiGet, apiPut, apiDelete } from '/painel/js/api.js';
+
+    let feeds = [];
+
+    async function carregar() {
+      try {
+        const data = await apiGet('/rss-feeds');
+        feeds = Array.isArray(data) ? data : [];
+        atualizarMetricas();
+        renderizar();
+      } catch (err) {
+        console.error('Erro ao carregar feeds:', err);
+      }
+    }
+
+    function atualizarMetricas() {
+      const total = feeds.length;
+      const ativos = feeds.filter(f => f.ativo).length;
+      const totalImportado = feeds.reduce((sum, f) => sum + (f.totalImportado || 0), 0);
+
+      document.getElementById('totalMetric').textContent = total;
+      document.getElementById('ativosMetric').textContent = ativos;
+      document.getElementById('importadosMetric').textContent = totalImportado;
+      document.getElementById('successMetric').textContent = total > 0 ? `${Math.round((ativos / total) * 100)}%` : '0%';
+    }
+
+    function renderizar() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('filterStatus').value;
+
+      let filtrados = feeds.filter(f => {
+        const matchSearch = !search || f.nome.toLowerCase().includes(search) || f.url.toLowerCase().includes(search);
+        const matchStatus = !status || (status === 'ativo' ? f.ativo : !f.ativo);
+        return matchSearch && matchStatus;
+      });
+
+      const grid = document.getElementById('feedsGrid');
+      if (filtrados.length === 0) {
+        grid.innerHTML = '<div class="empty-state">Nenhum feed encontrado</div>';
+        return;
+      }
+
+      grid.innerHTML = filtrados.map(f => {
+        const ultimaImport = f.ultimaImportacao ? new Date(f.ultimaImportacao).toLocaleDateString('pt-BR') : 'Nunca';
+        return `
+          <div class="feed-card">
+            <div class="feed-header">
+              <h3 class="feed-title">${f.nome}</h3>
+              <span class="feed-badge ${f.ativo ? 'ativo' : 'inativo'}">
+                ${f.ativo ? '✓ Ativo' : '✗ Inativo'}
+              </span>
+            </div>
+            <div class="feed-url">${f.url}</div>
+            <div class="feed-meta">
+              <div class="feed-meta-item">
+                <span class="feed-meta-label">Categoria</span>
+                <span class="feed-meta-value">${f.categoria || '-'}</span>
+              </div>
+              <div class="feed-meta-item">
+                <span class="feed-meta-label">Intervalo</span>
+                <span class="feed-meta-value">${f.intervalo}h</span>
+              </div>
+              <div class="feed-meta-item">
+                <span class="feed-meta-label">Última import.</span>
+                <span class="feed-meta-value">${ultimaImport}</span>
+              </div>
+              <div class="feed-meta-item">
+                <span class="feed-meta-label">Total importado</span>
+                <span class="feed-meta-value">${f.totalImportado || 0}</span>
+              </div>
+            </div>
+            <div class="feed-actions">
+              <button class="btn btn--ghost btn-icon" onclick="toggleFeed('${f.id}')">
+                ${f.ativo ? '⊘ Desativar' : '✓ Ativar'}
+              </button>
+              <button class="btn btn--ghost btn-icon" onclick="deletarFeed('${f.id}')">
+                🗑️ Deletar
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.toggleFeed = async (feedId) => {
+      const feed = feeds.find(f => f.id === feedId);
+      if (!feed) return;
+      try {
+        await apiPut(`/rss-feeds/${feedId}`, { ativo: !feed.ativo });
+        carregar();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    window.deletarFeed = async (feedId) => {
+      if (!confirm('Tem certeza que deseja deletar este feed?')) return;
+      try {
+        await apiDelete(`/rss-feeds/${feedId}`);
+        carregar();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    document.getElementById('searchInput').addEventListener('input', renderizar);
+    document.getElementById('filterStatus').addEventListener('change', renderizar);
+    document.getElementById('btnNovoFeed').addEventListener('click', () => {
+      window.location.href = '/painel/noticias/importadas/';
+    });
+
+    (async () => {
+      try {
+        await mountShell({ route: 'feeds-lista' });
+        carregar();
+      } catch (err) {
+        console.error('Erro ao inicializar:', err);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Enquete · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <script src="/painel/js/include.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/painel/">Painel</a><span class="sep">/</span>
+          <a href="/painel/enquetes/">Enquetes</a><span class="sep">/</span>
+          <span>Nova</span>
+        </nav>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__main">
+            <p class="page-title__sub">Engajamento · nova enquete</p>
+            <h1>Criar <em style="font-style:italic;color:var(--brand)">enquete</em>.</h1>
+          </div>
+                <div class="topbar__actions">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+        <form id="form-nova-enquete" style="max-width:600px;">
+          <div class="form-group">
+            <label class="form-label">Pergunta *</label>
+            <input type="text" id="pergunta" name="pergunta" class="form-input" required placeholder="O que você acha de...?">
+          </div>
+
+          <div id="opcoes-container">
+            <div class="form-group">
+              <label class="form-label">Opção 1 *</label>
+              <input type="text" class="form-input opcao-input" required placeholder="Primeira opção">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Opção 2 *</label>
+              <input type="text" class="form-input opcao-input" required placeholder="Segunda opção">
+            </div>
+          </div>
+
+          <button type="button" id="btn-add-opcao" class="btn btn--ghost" style="margin-bottom:var(--s-4);">+ Adicionar opção</button>
+
+          <div class="form-group">
+            <label class="form-label">Ativa?</label>
+            <input type="checkbox" id="ativa" name="ativa" checked> Exibir imediatamente
+          </div>
+
+          <div style="display:flex; gap:var(--s-3); margin-top:var(--s-6);">
+            <button type="submit" class="btn btn--primary">✓ Criar Enquete</button>
+            <button type="button" class="btn btn--ghost" onclick="window.location.href='/painel/enquetes/'">Cancelar</button>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from '/painel/js/shell.js';
+    import { apiPost } from '/painel/js/api.js';
+
+    await mountShell({ route: 'enquete-nova' });
+
+    const btnAddOpcao = document.getElementById('btn-add-opcao');
+    const opcoesContainer = document.getElementById('opcoes-container');
+    let opcaoCount = 2;
+
+    btnAddOpcao.addEventListener('click', () => {
+      opcaoCount++;
+      const div = document.createElement('div');
+      div.className = 'form-group';
+      div.innerHTML = `
+        <label class="form-label">Opção ${opcaoCount}</label>
+        <div style="display:flex; gap:var(--s-2);">
+          <input type="text" class="form-input opcao-input" placeholder="Opção ${opcaoCount}" style="flex:1;">
+          <button type="button" class="btn btn--ghost" onclick="this.parentElement.parentElement.remove();">✕</button>
+        </div>
+      `;
+      opcoesContainer.appendChild(div);
+    });
+
+    const form = document.getElementById('form-nova-enquete');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const opcoes = [...document.querySelectorAll('.opcao-input')]
+        .map(input => input.value.trim())
+        .filter(v => v);
+
+      if (opcoes.length < 2) {
+        alert('❌ Mínimo de 2 opções obrigatório');
+        return;
+      }
+
+      const dados = {
+        pergunta: document.getElementById('pergunta').value,
+        opcoes: opcoes,
+        ativa: document.getElementById('ativa').checked,
+      };
+
+      try {
+        await apiPost('/api/enquetes', dados);
+        alert('✅ Enquete criada com sucesso!');
+        window.location.href = '/painel/enquetes/';
+      } catch (err) {
+        alert('❌ Erro: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

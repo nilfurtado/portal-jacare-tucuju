@@ -1,0 +1,41 @@
+{
+  "name": "Portal Jacaré Tucujú - Notícias do Amapá e Região",
+  "short_name": "Jacaré Tucujú",
+  "description": "Portal Jacaré Tucujú: informação regional do estado do Amapá e da região Norte — política, polícia, cultura, esportes, economia, municípios e classificados.",
+  "lang": "pt-BR",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#c8102e",
+  "categories": ["news", "magazines"],
+  "icons": [
+    {
+      "src": "img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Últimas notícias",
+      "short_name": "Últimas",
+      "url": "/index.html#main",
+      "description": "Veja as notícias mais recentes do Amapá"
+    },
+    {
+      "name": "Buscar notícias",
+      "short_name": "Busca",
+      "url": "/busca.html",
+      "description": "Buscar no portal"
+    },
+    {
+      "name": "Enquetes",
+      "short_name": "Enquetes",
+      "url": "/enquetes.html",
+      "description": "Participe das enquetes"
+    }
+  ]
+}

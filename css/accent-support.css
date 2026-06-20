@@ -1,0 +1,59 @@
+/* Suporte completo para acentos em slugs de categorias */
+/* Mapeia TODOS os acentos para as variáveis CSS corretas */
+
+:root {
+  /* Variáveis com acentos (para maior compatibilidade) */
+  --cat-política: #1A237E;
+  --cat-educação: #1565C0;
+  --cat-segurança: #EF6C00;
+  --cat-saúde: #00897B;
+  --cat-opinião: #455A64;
+}
+
+/* Classes com acentos → cores corretas */
+.card__cat--política,
+.card__cat--politica { color: var(--cat-politica) !important; }
+
+.card__cat--educação,
+.card__cat--educacao { color: var(--cat-educacao) !important; }
+
+.card__cat--segurança,
+.card__cat--seguranca { color: var(--cat-seguranca) !important; }
+
+.card__cat--saúde,
+.card__cat--saude { color: var(--cat-saude) !important; }
+
+.card__cat--opinião,
+.card__cat--opiniao { color: var(--cat-opiniao) !important; }
+
+/* Badges com acentos */
+.badge--política,
+.badge--politica { background: var(--cat-politica) !important; }
+
+.badge--educação,
+.badge--educacao { background: var(--cat-educacao) !important; }
+
+.badge--segurança,
+.badge--seguranca { background: var(--cat-seguranca) !important; }
+
+.badge--saúde,
+.badge--saude { background: var(--cat-saude) !important; }
+
+.badge--opinião,
+.badge--opiniao { background: var(--cat-opiniao) !important; }
+
+/* Ranked items com acentos */
+.ranked-item__cat--política,
+.ranked-item__cat--politica { color: var(--cat-politica) !important; }
+
+.ranked-item__cat--educação,
+.ranked-item__cat--educacao { color: var(--cat-educacao) !important; }
+
+.ranked-item__cat--segurança,
+.ranked-item__cat--seguranca { color: var(--cat-seguranca) !important; }
+
+.ranked-item__cat--saúde,
+.ranked-item__cat--saude { color: var(--cat-saude) !important; }
+
+.ranked-item__cat--opinião,
+.ranked-item__cat--opiniao { color: var(--cat-opiniao) !important; }

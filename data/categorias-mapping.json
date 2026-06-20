@@ -1,0 +1,76 @@
+{
+  "categorias": [
+    {
+      "id": 1,
+      "nome": "Cultura",
+      "slug": "cultura",
+      "cor": "#f39c12",
+      "descricao": "Notícias sobre arte, música, cinema e cultura"
+    },
+    {
+      "id": 2,
+      "nome": "Economia",
+      "slug": "economia",
+      "cor": "#9b59b6",
+      "descricao": "Notícias sobre economia, finanças e mercado"
+    },
+    {
+      "id": 3,
+      "nome": "Educação",
+      "slug": "educacao",
+      "cor": "#3498db",
+      "descricao": "Notícias sobre educação e ensino"
+    },
+    {
+      "id": 4,
+      "nome": "Esporte",
+      "slug": "esporte",
+      "cor": "#e74c3c",
+      "descricao": "Notícias sobre esportes e competições"
+    },
+    {
+      "id": 5,
+      "nome": "Meio Ambiente",
+      "slug": "meio-ambiente",
+      "cor": "#27ae60",
+      "descricao": "Notícias sobre meio ambiente e sustentabilidade"
+    },
+    {
+      "id": 6,
+      "nome": "Opinião",
+      "slug": "opiniao",
+      "cor": "#d35400",
+      "descricao": "Artigos de opinião e análises"
+    },
+    {
+      "id": 7,
+      "nome": "Política",
+      "slug": "politica",
+      "cor": "#c9551d",
+      "descricao": "Notícias sobre política e governo"
+    },
+    {
+      "id": 8,
+      "nome": "Saúde",
+      "slug": "saude",
+      "cor": "#2ecc71",
+      "descricao": "Notícias sobre saúde e bem-estar"
+    },
+    {
+      "id": 9,
+      "nome": "Segurança",
+      "slug": "seguranca",
+      "cor": "#34495e",
+      "descricao": "Notícias sobre segurança pública e crime"
+    },
+    {
+      "id": 10,
+      "nome": "Tecnologia",
+      "slug": "tecnologia",
+      "cor": "#1abc9c",
+      "descricao": "Notícias sobre tecnologia e inovação"
+    }
+  ],
+  "total": 10,
+  "ultimaAtualizacao": "2026-06-09T00:00:00Z"
+}

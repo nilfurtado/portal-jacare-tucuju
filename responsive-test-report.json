@@ -1,0 +1,57 @@
+[
+  {
+    "viewport": "mobile-portrait",
+    "description": "iPhone 12 Portrait",
+    "dimensions": "375x812",
+    "status": "OK",
+    "imagesLoaded": 43,
+    "contentHeight": 13284,
+    "hasHorizontalOverflow": true,
+    "consoleErrors": 0,
+    "screenshot": "screenshots-responsive\\mobile-portrait.png"
+  },
+  {
+    "viewport": "mobile-landscape",
+    "description": "iPhone 12 Landscape",
+    "dimensions": "812x375",
+    "status": "OK",
+    "imagesLoaded": 43,
+    "contentHeight": 9305,
+    "hasHorizontalOverflow": true,
+    "consoleErrors": 0,
+    "screenshot": "screenshots-responsive\\mobile-landscape.png"
+  },
+  {
+    "viewport": "tablet-portrait",
+    "description": "iPad Portrait",
+    "dimensions": "768x1024",
+    "status": "OK",
+    "imagesLoaded": 43,
+    "contentHeight": 9274,
+    "hasHorizontalOverflow": true,
+    "consoleErrors": 0,
+    "screenshot": "screenshots-responsive\\tablet-portrait.png"
+  },
+  {
+    "viewport": "tablet-landscape",
+    "description": "iPad Landscape",
+    "dimensions": "1024x768",
+    "status": "OK",
+    "imagesLoaded": 43,
+    "contentHeight": 6149,
+    "hasHorizontalOverflow": false,
+    "consoleErrors": 0,
+    "screenshot": "screenshots-responsive\\tablet-landscape.png"
+  },
+  {
+    "viewport": "desktop",
+    "description": "Desktop (1440px)",
+    "dimensions": "1440x900",
+    "status": "OK",
+    "imagesLoaded": 43,
+    "contentHeight": 6133,
+    "hasHorizontalOverflow": false,
+    "consoleErrors": 0,
+    "screenshot": "screenshots-responsive\\desktop.png"
+  }
+]

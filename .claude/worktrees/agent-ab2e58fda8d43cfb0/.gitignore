@@ -1,0 +1,94 @@
+# ===========================================================
+# Portal Jacaré Tucujú — .gitignore
+# Repo: público | Stack: HTML/CSS/JS + PHP (Hostinger)
+# ===========================================================
+
+# ---------- Dependências ----------
+node_modules/
+vendor/
+
+# ---------- Variáveis de ambiente (NUNCA commitar) ----------
+.env
+.env.local
+.env.production
+.env.development
+*.env
+!*.env.example
+
+# ---------- Dados sensíveis ----------
+# Usuários reais (com hashes bcrypt) ficam só na produção
+data/usuarios.json
+# Lixeira do painel-dm (pode conter dados removidos)
+data/lixeira-*.json
+# Tema/layout customizado (também pode ter dados específicos)
+data/tema-layout.json
+# Arquivos de instalação travada (PHP)
+painel-php/install.locked
+painel-php/migrate.locked
+
+# ---------- Uploads em runtime ----------
+img/uploads/**/*.jpg
+img/uploads/**/*.jpeg
+img/uploads/**/*.png
+img/uploads/**/*.webp
+img/uploads/**/*.svg
+img/uploads/**/*.gif
+img/uploads/**/*.ico
+!img/uploads/.gitkeep
+
+painel-php/storage/uploads/**/*
+!painel-php/storage/uploads/.gitkeep
+painel-php/storage/logs/**/*
+!painel-php/storage/logs/.gitkeep
+
+# ---------- Logs ----------
+*.log
+logs/
+npm-debug.log*
+yarn-error.log*
+pm2-*.log
+
+# ---------- Sistema operacional ----------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ---------- Editores / IDEs ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# ---------- Cache / temp ----------
+.cache/
+tmp/
+.tmp/
+*.tmp
+
+# ---------- Backups locais ----------
+*.bak
+*.backup
+backup-*.tar.gz
+backup-*.zip
+*.sql.gz
+
+# ---------- Arquivos de teste interno (NÃO devem ir pro repo) ----------
+**/__autologin.html
+**/__taballer.html
+**/test-*.html
+**/dev-*.html
+
+# ---------- Claude / contexto do agente (privado) ----------
+.claude/
+
+# ---------- Pacotes de deploy locais ----------
+dist/
+build/
+*.zip
+**/_login.html

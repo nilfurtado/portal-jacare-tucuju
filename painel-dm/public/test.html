@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>Teste</title></head>
+<body>
+  <h1>TESTE - Sem redirecionamento</h1>
+  <pre id="info"></pre>
+
+  <script>
+    const info = document.getElementById('info');
+    info.textContent = `
+Timestamp: ${new Date().toLocaleTimeString()}
+
+Token: ${localStorage.getItem('painel-dm:token') ? 'SIM' : 'NAO'}
+User: ${localStorage.getItem('painel-dm:user')}
+
+Se vê isso, a página carregou OK!
+    `;
+  </script>
+</body>
+</html>

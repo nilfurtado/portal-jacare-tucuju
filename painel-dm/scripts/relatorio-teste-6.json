@@ -1,0 +1,75 @@
+{
+  "dataInicio": "2026-05-31T22:23:57.057Z",
+  "testes": [
+    {
+      "numero": 1,
+      "categoria": "Política",
+      "titulo": "Teste 01: Novo Projeto Político em Macapá",
+      "slug": "teste-01-novo-projeto-pol-tico-em-macapa",
+      "id": 36,
+      "campos": 17,
+      "status": "Criada",
+      "timestamp": "2026-05-31T22:23:57.094Z"
+    },
+    {
+      "numero": 2,
+      "categoria": "Polícia",
+      "titulo": "Teste 02: Operação Policial em Santana",
+      "slug": "teste-02-operacao-policial-em-santana",
+      "id": 37,
+      "campos": 17,
+      "status": "Criada",
+      "timestamp": "2026-05-31T22:23:57.098Z"
+    },
+    {
+      "numero": 3,
+      "categoria": "Cultura",
+      "titulo": "Teste 03: Festival de Cultura em Oiapoque",
+      "slug": "teste-03-festival-de-cultura-em-oiapoque",
+      "id": 38,
+      "campos": 17,
+      "status": "Criada",
+      "timestamp": "2026-05-31T22:23:57.101Z"
+    },
+    {
+      "numero": 4,
+      "categoria": "Esportes",
+      "titulo": "Teste 04: Campeonato de Futebol em Laranjal",
+      "slug": "teste-04-campeonato-de-futebol-em-laranjal",
+      "id": 39,
+      "campos": 17,
+      "status": "Criada",
+      "timestamp": "2026-05-31T22:23:57.103Z"
+    },
+    {
+      "numero": 5,
+      "categoria": "Economia",
+      "titulo": "Teste 05: Crescimento Econômico em Mazagão",
+      "slug": "teste-05-crescimento-economico-em-mazagao",
+      "id": 40,
+      "campos": 17,
+      "status": "Criada",
+      "timestamp": "2026-05-31T22:23:57.106Z"
+    },
+    {
+      "numero": 6,
+      "categoria": "Municípios",
+      "titulo": "Teste 06: Infraestrutura em Porto Grande",
+      "slug": "teste-06-infraestrutura-em-porto-grande",
+      "id": 41,
+      "campos": 17,
+      "status": "Criada",
+      "timestamp": "2026-05-31T22:23:57.108Z"
+    }
+  ],
+  "resumo": {
+    "total": 6,
+    "criadas": 6,
+    "sincronizadas": 0,
+    "erros": 0
+  },
+  "bancos": {
+    "json": true,
+    "sqlite": true
+  }
+}

@@ -1,0 +1,95 @@
+COMPARAÇÃO ENTRE VERSÕES DO anuncios.html
+═════════════════════════════════════════════════════════════════════
+
+ARQUIVO 1: painel-dm/public/anuncios.html (VERSÃO NOVA - CORRETA)
+├─ Tamanho: 44 KB
+├─ Data: 4 de junho 2026, 14:08
+├─ Versão: COMPLETA com todas as features
+├─ Características:
+│  ├─ Modal de novo anúncio
+│  ├─ Filtros de busca por nome
+│  ├─ Filtro por status (Ativo/Pausado/Expirado)
+│  ├─ Filtro por tipo de anúncio
+│  ├─ Seleção em massa (checkboxes)
+│  ├─ Ações em massa (ativar/desativar)
+│  ├─ Paginação (6 itens por página)
+│  ├─ Preview responsivo (mobile/tablet/desktop)
+│  ├─ Upload de imagem com preview
+│  ├─ Sanitização de HTML customizado
+│  ├─ Google Analytics integration
+│  ├─ Histórico de edições
+│  ├─ Drag-and-drop para reordenar
+│  ├─ DOMPurify.js para segurança
+│  └─ Validação de URLs
+
+ARQUIVO 2: painel-php/public/anuncios.html (VERSÃO ANTIGA - DESATUALIZADA)
+├─ Tamanho: 11 KB
+├─ Data: 29 de maio 2026
+├─ Versão: SIMPLIFICADA
+├─ Características:
+│  ├─ Sem modal de novo anúncio
+│  ├─ Sem filtros
+│  ├─ Sem seleção em massa
+│  ├─ Sem paginação
+│  ├─ Sem preview responsivo
+│  ├─ Sem upload de imagem
+│  ├─ Sem sanitização de HTML
+│  ├─ Sem Google Analytics
+│  ├─ Sem histórico
+│  ├─ Sem drag-drop
+│  └─ Sem validação
+│
+└─ Imports RELATIVOS:
+   └─ import from './js/shell.js' (relativo)
+
+VERSÃO NOVA - painel-dm (MELHORIAS)
+═════════════════════════════════════════════════════════════════════
+Imports ABSOLUTOS:
+  └─ import from '/js/shell.js' (absoluto, mais robusto)
+
+Novo Modal "Novo Anúncio":
+  └─ Campos: Nome, Tipo, Tamanho, Posição, Páginas
+
+Novo Modal "Editar Anúncio":
+  ├─ Info básica (read-only)
+  ├─ Preview responsivo com 3 resoluções
+  ├─ Upload de imagem com drag-drop
+  ├─ Sanitização de HTML com DOMPurify
+  ├─ Google Analytics configuration
+  ├─ Histórico de edições (timeline)
+  ├─ Botão de delete com confirmação
+  ├─ Live preview do URL imagem
+  └─ Validação de URLs
+
+Filtros Avançados:
+  ├─ Busca por nome (search)
+  ├─ Filtro por status (select)
+  ├─ Filtro por tipo (select dinâmico)
+  └─ Botão limpar filtros
+
+Seleção em Massa:
+  ├─ Checkbox select-all
+  ├─ Ativar múltiplos
+  ├─ Desativar múltiplos
+  └─ Barra de ações flutuante
+
+Paginação:
+  ├─ 6 itens por página
+  ├─ Navegação anterior/próximo
+  ├─ Numeração de páginas clicáveis
+  └─ Info: "X-Y de Z anúncios"
+
+Reordenação:
+  └─ Drag-drop com data attribute
+
+═════════════════════════════════════════════════════════════════════
+
+PROBLEMA IDENTIFICADO:
+Se o navegador está cacheado com a versão ANTIGA (painel-php),
+ele mostra CSS mínimo e funcionalidades limitadas.
+
+O servidor está configurado para servir painel-dm PRIMEIRO,
+mas se o cache do navegador tem a painel-php cacheada, 
+o navegador ignora o servidor.
+
+═════════════════════════════════════════════════════════════════════

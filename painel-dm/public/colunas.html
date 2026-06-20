@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colunas · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <script src="/painel/js/include.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <link rel="stylesheet" href="/painel/css/tabela.css">
+
+  <style>
+    .colunas-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-3);
+      margin-top: var(--s-6);
+    }
+
+    .coluna-card {
+      background: var(--surface);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-2);
+      padding: var(--s-4);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--s-4);
+      align-items: start;
+      transition: all var(--d-1) var(--ease-out);
+    }
+
+    .coluna-card:hover {
+      border-color: var(--brand);
+      box-shadow: var(--sh-1);
+    }
+
+    .coluna-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+    }
+
+    .coluna-title {
+      font-weight: 600;
+      font-size: var(--t-body);
+      color: var(--ink);
+    }
+
+    .coluna-meta {
+      font-size: var(--t-small);
+      color: var(--ink-mute);
+      display: flex;
+      gap: var(--s-3);
+    }
+
+    .coluna-colunista {
+      font-weight: 500;
+      color: var(--brand);
+    }
+
+    .coluna-actions {
+      display: flex;
+      gap: var(--s-2);
+    }
+
+    .btn-action {
+      padding: var(--s-1) var(--s-2);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-2);
+      background: transparent;
+      color: var(--ink-mute);
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all var(--d-1) var(--ease-out);
+    }
+
+    .btn-action:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: var(--brand-tint);
+    }
+
+    .btn-action.danger:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: rgba(220, 53, 69, 0.1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--s-8) var(--s-5);
+      color: var(--ink-mute);
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--overlay);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--r-3);
+      padding: var(--s-6);
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--sh-pop);
+      animation: slideIn var(--d-2) var(--ease-out);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-2);
+      margin-bottom: var(--s-4);
+    }
+
+    .form-field label {
+      font-size: var(--t-small);
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+
+    .form-field input,
+    .form-field textarea {
+      padding: var(--s-2) var(--s-3);
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-2);
+      background: var(--paper-warm);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: var(--t-body);
+    }
+
+    .form-field input:focus,
+    .form-field textarea:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: var(--ring);
+    }
+
+    .form-field textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: var(--s-5);
+      right: var(--s-5);
+      padding: var(--s-3) var(--s-4);
+      background: var(--surface);
+      border: 1px solid var(--paper-line);
+      border-left: 4px solid var(--brand);
+      border-radius: var(--r-2);
+      z-index: 2000;
+      animation: slideInRight var(--d-1) var(--ease-out);
+      max-width: 400px;
+      box-shadow: var(--sh-2);
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .toast.success {
+      border-left-color: var(--positive);
+    }
+
+    .toast.error {
+      border-left-color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/painel/">Painel</a><span class="sep">/</span><span>Colunas</span>
+        </nav>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__main">
+            <p class="page-title__sub">Redação · Colunas</p>
+            <h1>Gerenciador de <em style="font-style:italic;color:var(--brand)">colunas e blogs</em>.</h1>
+          </div>
+        </header>
+
+        <!-- KPI CARDS -->
+        <section class="bento stagger">
+          <article class="card card--narrow card--dark">
+            <p class="card__eyebrow">— Total de colunas</p>
+            <h2 class="card__metric" id="totalMetric">0</h2>
+            <p class="card__label">publicadas</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Colunistas</p>
+            <h2 class="card__metric" id="colunistasMetric">0</h2>
+            <p class="card__label">cadastrados</p>
+          </article>
+          <article class="card card--narrow">
+            <p class="card__eyebrow">— Este mês</p>
+            <h2 class="card__metric" id="meshMetric">0</h2>
+            <p class="card__label">publicações</p>
+          </article>
+        </section>
+
+        <!-- PAGE TOOLBAR -->
+        <div class="page-toolbar">
+          <div style="display:flex;align-items:center;gap:var(--s-2);font-family:var(--font-mono);font-size:0.8rem;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em">Filtros:</div>
+          <div class="page-toolbar__tabs">
+            <input type="text" id="searchInput" class="tab-btn" placeholder="Buscar por título ou colunista..." style="flex: 1; min-width: 200px;">
+            <select id="filterColunista" class="tab-btn">
+              <option value="">Todos os colunistas</option>
+            </select>
+          </div>
+          <div class="page-toolbar__spacer"></div>
+          <div class="page-toolbar__actions">
+            <button class="btn btn--ghost" onclick="window.location.href='/painel/categorias-colunas.html'">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              Categorias
+            </button>
+            <button class="btn btn--ghost" data-action="novo" onclick="window.location.href='/painel/noticias.html'">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nova coluna
+            </button>
+          </div>
+        </div>
+
+        <!-- Grid de Colunas -->
+        <div class="colunas-grid" id="colunasGrid"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast" style="display: none;"></div>
+
+  <script src="/painel/js/include.js"></script>
+  <script type="module">
+    import { mountShell, getUser } from '/painel/js/shell.js';
+    import { requireAuth } from '/painel/js/auth.js';
+
+    const user = requireAuth();
+    window.currentUser = user;  // Guardar user globalmente
+
+    await mountShell({ route: 'colunas' });
+
+    // ===== Data Management =====
+    let allColunas = [];
+    let allColunistas = new Set();
+
+    async function loadColunas() {
+      try {
+        const res = await fetch('/data/noticias.json');
+        const noticias = await res.json();
+        allColunas = noticias
+          .filter(n => n.colunista && n.colunista.trim() !== '')
+          .sort((a, b) => new Date(b.data) - new Date(a.data));
+
+        // Coletar colunistas únicos
+        allColunistas = new Set(allColunas.map(c => c.colunista));
+
+        updateMetrics();
+        populateFilterOptions();
+        renderColunas();
+      } catch (err) {
+        console.error('Erro ao carregar colunas:', err);
+        showToast('Erro ao carregar colunas', 'error');
+      }
+    }
+
+    function updateMetrics() {
+      document.getElementById('totalMetric').textContent = allColunas.length;
+      document.getElementById('colunistasMetric').textContent = allColunistas.size;
+
+      const thisMonth = allColunas.filter(c => {
+        const d = new Date(c.data);
+        const now = new Date();
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }).length;
+      document.getElementById('meshMetric').textContent = thisMonth;
+    }
+
+    function populateFilterOptions() {
+      const select = document.getElementById('filterColunista');
+      Array.from(allColunistas).sort().forEach(nome => {
+        const option = document.createElement('option');
+        option.value = nome;
+        option.textContent = nome;
+        select.appendChild(option);
+      });
+    }
+
+    function renderColunas() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const filterColunista = document.getElementById('filterColunista').value;
+
+      // Importar user (do módulo)
+      const user = window.currentUser || {};
+      const isColunista = user.tipo === 'colunista' || user.tipo === 'autor';
+
+      const filtered = allColunas.filter(col => {
+        const matchSearch = search === '' ||
+          col.titulo.toLowerCase().includes(search) ||
+          col.colunista.toLowerCase().includes(search);
+
+        // Se colunista, mostrar apenas suas colunas
+        // Se admin, permitir filtro
+        const matchColunista = isColunista
+          ? col.colunista === user.nome
+          : (filterColunista === '' || col.colunista === filterColunista);
+
+        return matchSearch && matchColunista;
+      });
+
+      const grid = document.getElementById('colunasGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty-state">Nenhuma coluna encontrada</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(col => `
+        <div class="coluna-card">
+          <div class="coluna-info">
+            <div class="coluna-title">${col.titulo}</div>
+            <div class="coluna-meta">
+              <span class="coluna-colunista">📝 ${col.colunista}</span>
+              <span>📅 ${new Date(col.data).toLocaleDateString('pt-BR')}</span>
+              <span>#${col.id}</span>
+            </div>
+          </div>
+          <div class="coluna-actions">
+            <button class="btn-action" onclick="editColuna('${col.id}')">Editar</button>
+            <button class="btn-action danger" onclick="deleteColuna('${col.id}')">Deletar</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function editColuna(id) {
+      window.location.href = `/painel/noticias.html?id=${id}`;
+    }
+
+    async function deleteColuna(id) {
+      if (!confirm('Tem certeza que deseja deletar esta coluna?')) return;
+
+      const token = localStorage.getItem('painel-dm:token');
+      try {
+        const res = await fetch(`/api/noticias/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showToast('Coluna deletada com sucesso', 'success');
+          allColunas = allColunas.filter(c => c.id != id);
+          renderColunas();
+        } else {
+          showToast('Erro ao deletar coluna', 'error');
+        }
+      } catch (err) {
+        console.error('Erro:', err);
+        showToast('Erro ao deletar', 'error');
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', renderColunas);
+    document.getElementById('filterColunista').addEventListener('change', renderColunas);
+
+    // Load on init
+    loadColunas();
+  </script>
+</body>
+</html>

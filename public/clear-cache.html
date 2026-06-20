@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Limpando Cache...</title>
+</head>
+<body>
+  <h1>🧹 Limpando cache do navegador...</h1>
+  
+  <script>
+    // Limpar localStorage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Limpar cache do bootstrap
+    localStorage.removeItem('jt:bootstrap');
+    
+    console.log('✅ Cache limpo');
+    
+    // Redirecionar para home
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 1500);
+  </script>
+  
+  <p>Redirecionando para página inicial...</p>
+</body>
+</html>

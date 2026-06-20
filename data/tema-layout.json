@@ -1,0 +1,122 @@
+{
+  "tema": {
+    "presetAtivo": "tijolo",
+    "presets": [
+      {
+        "id": "tijolo",
+        "nome": "Tijolo",
+        "primaria": "#c9551d",
+        "secundaria": "#14110d",
+        "acento": "#a3441a"
+      },
+      {
+        "id": "oceano",
+        "nome": "Oceano",
+        "primaria": "#2c6e9b",
+        "secundaria": "#0d2433",
+        "acento": "#1d4d70"
+      },
+      {
+        "id": "floresta",
+        "nome": "Floresta",
+        "primaria": "#3e7b3a",
+        "secundaria": "#0e1a0e",
+        "acento": "#2d5c2a"
+      },
+      {
+        "id": "noite",
+        "nome": "Noite",
+        "primaria": "#d4af37",
+        "secundaria": "#0a0a0a",
+        "acento": "#a8881d"
+      },
+      {
+        "id": "amapa",
+        "nome": "Amapá",
+        "primaria": "#f07e13",
+        "secundaria": "#0b3d2e",
+        "acento": "#d36500"
+      }
+    ],
+    "modo": "claro",
+    "fontes": {
+      "display": "Fraunces",
+      "body": "Geist"
+    },
+    "corPrimaria": "#c9551d"
+  },
+  "layout": {
+    "topo": {
+      "cor": "escuro",
+      "tamanhoLogo": "50",
+      "alinhamentoLogo": "esquerda",
+      "dataNoTopo": true,
+      "storiesDesktop": true,
+      "storiesMobile": true
+    },
+    "widgets": {
+      "tempoNoTopo": true,
+      "tempoCompleto": true,
+      "financas": false,
+      "loteria": false,
+      "sidebarSocial": true,
+      "sidebarMaisLidas": true,
+      "sidebarCategorias": true,
+      "sidebarEnquete": true,
+      "sidebarClassificados": true,
+      "sidebarNewsletter": true
+    },
+    "menu": {
+      "corFundo": "branca",
+      "itens": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "exibirMobile": true
+    },
+    "secaoPrincipal": {
+      "layoutHero": "editorial",
+      "mostrarManchete": true,
+      "mostrarCarrossel": true,
+      "mostrarSecundarias": true,
+      "qtdSecundarias": 4
+    },
+    "secoesExtras": {
+      "breakingNews": true,
+      "secaoMunicipios": true,
+      "secaoVideos": true,
+      "secaoEnqueteDestaque": true,
+      "secaoClassificados": true,
+      "secaoColunistas": true,
+      "ordem": [
+        "breakingNews",
+        "heroCarousel",
+        "secaoMunicipios",
+        "secaoVideos",
+        "secaoEnqueteDestaque",
+        "secaoClassificados",
+        "secaoColunistas"
+      ]
+    },
+    "publicidades": {
+      "permitirAds": true,
+      "pausarTodos": false
+    },
+    "outros": {
+      "breakingNewsMs": 65000,
+      "heroCarouselMs": 5500,
+      "mostrarCopyright": true,
+      "mostrarPoweredBy": true,
+      "densidade": "confortavel"
+    }
+  }
+}

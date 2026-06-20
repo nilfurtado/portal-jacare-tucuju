@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Página não encontrada · Portal Jacaré Tucujú</title>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/article.css">
+</head>
+<body style="display:flex;flex-direction:column;min-height:100vh;">
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="header__logo"><img src="img/logo.svg" alt="Portal Jacaré Tucujú"></a>
+    </div>
+  </header>
+
+  <main style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <div class="not-found">
+      <h1 style="font-size:clamp(4rem,15vw,8rem);color:var(--color-primary);line-height:1;">404</h1>
+      <h2 style="font-family:var(--font-serif);font-weight:900;font-size:1.75rem;margin-bottom:1rem;">Página não encontrada</h2>
+      <p>A página que você procura pode ter sido movida, removida ou nunca existiu.</p>
+      <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;">
+        <a href="index.html" class="btn btn--primary">← Voltar à home</a>
+        <a href="javascript:history.back()" class="btn btn--ghost">Página anterior</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">© 2026 Portal Jacaré Tucujú</div>
+    </div>
+  </footer>
+</body>
+</html>

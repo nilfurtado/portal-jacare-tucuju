@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Login</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+    .box { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; }
+    .error { color: red; }
+    .success { color: green; }
+    button { padding: 10px 20px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🔧 Teste de Login do Painel DM</h1>
+
+  <div class="box">
+    <h2>1️⃣ Teste de Conexão</h2>
+    <button onclick="testConnection()">Testar Servidor</button>
+    <p id="conn-result"></p>
+  </div>
+
+  <div class="box">
+    <h2>2️⃣ Teste de API</h2>
+    <button onclick="testAPI()">Testar API de Login</button>
+    <p id="api-result"></p>
+  </div>
+
+  <div class="box">
+    <h2>3️⃣ Teste de Importação de Módulos</h2>
+    <button onclick="testModules()">Testar Modules</button>
+    <p id="modules-result"></p>
+  </div>
+
+  <div class="box">
+    <h2>4️⃣ Login Real</h2>
+    <form id="login-form">
+      <input type="text" id="usuario" placeholder="Usuario: Nildo" value="Nildo">
+      <input type="password" id="senha" placeholder="Senha: admin1234" value="admin1234">
+      <button type="submit">Login</button>
+    </form>
+    <p id="login-result"></p>
+  </div>
+
+  <script>
+    async function testConnection() {
+      const r = document.getElementById('conn-result');
+      try {
+        const res = await fetch('http://localhost:3000/painel/login/');
+        r.innerHTML = res.ok ? '✅ Servidor respondendo' : '❌ Erro: ' + res.status;
+      } catch (e) {
+        r.innerHTML = '❌ Erro: ' + e.message;
+        r.className = 'error';
+      }
+    }
+
+    async function testAPI() {
+      const r = document.getElementById('api-result');
+      try {
+        const res = await fetch('http://localhost:3000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario: 'Nildo', senha: 'admin1234' })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          r.innerHTML = '✅ Login bem-sucedido! Token recebido.';
+          r.className = 'success';
+        } else {
+          r.innerHTML = '❌ Erro: ' + data.erro;
+          r.className = 'error';
+        }
+      } catch (e) {
+        r.innerHTML = '❌ Erro: ' + e.message;
+        r.className = 'error';
+      }
+    }
+
+    async function testModules() {
+      const r = document.getElementById('modules-result');
+      try {
+        // Testa importação de módulo
+        const module = await import('/js/auth.js');
+        if (module.login) {
+          r.innerHTML = '✅ Módulos carregando corretamente';
+          r.className = 'success';
+        } else {
+          r.innerHTML = '❌ Módulo não tem função login';
+          r.className = 'error';
+        }
+      } catch (e) {
+        r.innerHTML = '❌ Erro ao carregar módulo: ' + e.message;
+        r.className = 'error';
+      }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const r = document.getElementById('login-result');
+      try {
+        const { login } = await import('/js/auth.js');
+        const usuario = document.getElementById('usuario').value;
+        const senha = document.getElementById('senha').value;
+        const user = await login(usuario, senha);
+        r.innerHTML = '✅ Login OK! Usuário: ' + user.nome;
+        r.className = 'success';
+      } catch (e) {
+        r.innerHTML = '❌ Erro: ' + e.message;
+        r.className = 'error';
+      }
+    });
+  </script>
+</body>
+</html>

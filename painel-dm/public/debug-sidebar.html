@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Debug Sidebar</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+    .box { border: 1px solid #0f0; padding: 10px; margin: 10px 0; }
+    button { padding: 10px 20px; background: #0f0; color: #000; border: none; cursor: pointer; margin: 5px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🔧 Debug Sidebar</h2>
+    <button onclick="testarFetch()">1. Testar Fetch /partials/shell.html</button>
+    <button onclick="testarInclude()">2. Testar Include Manual</button>
+    <button onclick="limparConsole()">3. Limpar Console</button>
+  </div>
+
+  <div class="box" id="output"></div>
+
+  <div class="box">
+    <h2>Teste de Inclusão:</h2>
+    <div data-include="partials/shell.html" style="border: 1px dashed red; padding: 10px;">
+      [Conteúdo será carregado aqui]
+    </div>
+  </div>
+
+  <script src="/painel/js/include.js"></script>
+
+  <script>
+    function log(msg) {
+      const output = document.getElementById('output');
+      output.innerHTML += msg + '<br>';
+      console.log(msg);
+    }
+
+    function limparConsole() {
+      document.getElementById('output').innerHTML = '';
+    }
+
+    function testarFetch() {
+      document.getElementById('output').innerHTML = '';
+      log('🧪 Testando fetch...');
+
+      fetch('/partials/shell.html')
+        .then(r => {
+          log(`Status: ${r.status} ${r.statusText}`);
+          return r.text();
+        })
+        .then(html => {
+          log(`✅ HTML recebido: ${html.length} bytes`);
+          log(`Primeiros 100 caracteres: ${html.substring(0, 100)}...`);
+        })
+        .catch(e => log(`❌ Erro: ${e.message}`));
+    }
+
+    function testarInclude() {
+      document.getElementById('output').innerHTML = '';
+      log('🧪 Testando include manual...');
+
+      const elem = document.querySelector('[data-include]');
+      if (!elem) {
+        log('❌ Elemento com data-include não encontrado!');
+        return;
+      }
+
+      log(`✅ Elemento encontrado: ${elem.tagName}`);
+      log(`data-include: ${elem.getAttribute('data-include')}`);
+
+      fetch('/partials/shell.html')
+        .then(r => r.text())
+        .then(html => {
+          elem.innerHTML = html;
+          log(`✅ HTML injetado: ${html.length} bytes`);
+        })
+        .catch(e => log(`❌ Erro: ${e.message}`));
+    }
+
+    log('🔍 Página carregada');
+    log('Abra F12 Console para ver logs detalhados');
+  </script>
+</body>
+</html>

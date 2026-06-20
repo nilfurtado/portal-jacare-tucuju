@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel DM — Portal Jacaré Tucujú</title>
+  <meta name="description" content="Acesso restrito à redação do Portal Jacaré Tucujú">
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <link rel="stylesheet" href="/painel/css/login.css">
+</head>
+<body>
+  <main class="login">
+
+    <!-- HERO: editorial masthead -->
+    <section class="login__hero" aria-hidden="false">
+      <header class="login__masthead">
+        <span class="login__masthead-edition">Painel <span>DM</span> · Edição da Redação</span>
+        <time class="login__masthead-edition" id="edicao-data">—</time>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="login__hero-body">
+        <p class="login__hero-eyebrow">Sistema editorial · Jacaré Tucujú</p>
+        <h1 class="login__hero-title">
+          A redação<br>
+          <em>tem nova mesa.</em>
+        </h1>
+        <p class="login__hero-lede">
+          Onde se pauta, escreve, edita e publica a notícia do Amapá.
+          Bem-vindos à mesa de fechamento — agora digital, contínua, e ao vivo.
+        </p>
+      </div>
+
+      <footer class="login__hero-footer">
+        <span>Portal Jacaré Tucujú · Macapá/AP</span>
+        <span>v0.1 · Beta</span>
+      </footer>
+    </section>
+
+    <!-- FORM: refined login -->
+    <section class="login__form-side">
+      <div class="login__form-wrap">
+        <header class="login__welcome">
+          <p class="login__welcome-num">— 01 · Identificação</p>
+          <h2 class="login__welcome-title">Entre <em>na redação.</em></h2>
+                <div class="topbar__actions">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+        <form class="login__form" id="form-login" novalidate>
+          <div class="login__error" id="login-error" role="alert"></div>
+
+          <div class="field">
+            <label class="field__label req" for="usuario">Usuário ou E-mail</label>
+            <input class="input" type="text" id="usuario" name="usuario"
+                   autocomplete="username" required placeholder="nildo ou nildo@portaljt.com.br">
+          </div>
+
+          <div class="field">
+            <label class="field__label req" for="senha">Senha</label>
+            <input class="input" type="password" id="senha" name="senha"
+                   autocomplete="current-password" required placeholder="••••••••">
+          </div>
+
+          <button class="btn btn--primary login__submit" type="submit" id="submit-btn">
+            Acessar painel
+          </button>
+
+          <footer class="login__meta">
+            <a href="#" id="forgot-link">Esqueci a senha</a>
+            <a href="/" target="_blank">Ver portal ↗</a>
+          </footer>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module">
+    import { login } from '/painel/js/auth.js';
+
+    // Edição: data atual formatada
+    const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const d = new Date();
+    document.getElementById('edicao-data').textContent =
+      `${String(d.getDate()).padStart(2,'0')} · ${meses[d.getMonth()]} · ${d.getFullYear()}`;
+
+    // Redireciona se já estiver autenticado
+    if (localStorage.getItem('painel-dm:token')) {
+      location.href = '/painel/';
+    }
+
+    const form = document.getElementById('form-login');
+    const errBox = document.getElementById('login-error');
+    const btn = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errBox.classList.remove('is-visible');
+      btn.classList.add('is-loading');
+      btn.textContent = 'Verificando…';
+      try {
+        const usuario = form.usuario.value.trim();
+        const senha = form.senha.value;
+        await login(usuario, senha);
+        location.href = '/painel/';
+      } catch (err) {
+        errBox.textContent = err.message || 'Falha ao entrar.';
+        errBox.classList.add('is-visible');
+        btn.classList.remove('is-loading');
+        btn.textContent = 'Acessar painel';
+      }
+    });
+
+    document.getElementById('forgot-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      errBox.textContent = 'Para redefinir sua senha, contate o administrador do portal.';
+      errBox.classList.add('is-visible');
+    });
+  </script>
+</body>
+</html>

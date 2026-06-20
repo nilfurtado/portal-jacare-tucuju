@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Upload</title>
+</head>
+<body>
+  <h1>🧪 Teste Upload de Imagem</h1>
+  <input type="file" id="file" accept="image/*">
+  <button onclick="upload()">Upload</button>
+  <div id="result"></div>
+
+  <script>
+    async function upload() {
+      const file = document.getElementById('file').files[0];
+      if (!file) { alert('Selecione uma imagem'); return; }
+
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('noticiId', 999);
+
+      const res = await fetch('http://localhost:3000/api/noticias-capa/upload', {
+        method: 'POST',
+        body: fd,
+        headers: { 'Authorization': 'Bearer seu_token_aqui' }
+      });
+
+      const data = await res.json();
+      console.log('Resposta:', data);
+      
+      if (data.capa) {
+        const html = `
+          <h2>✅ Sucesso!</h2>
+          <p><strong>JPEG:</strong> ${data.capa.principal}</p>
+          <p><strong>WebP:</strong> ${data.capa.principalWebp}</p>
+          <h3>Teste no navegador:</h3>
+          <picture>
+            <source srcset="${data.capa.principalWebp}" type="image/webp">
+            <img src="${data.capa.principal}" alt="Teste" style="max-width:400px">
+          </picture>
+        `;
+        document.getElementById('result').innerHTML = html;
+      } else {
+        document.getElementById('result').innerHTML = '<p style="color:red">❌ Erro: ' + data.erro + '</p>';
+      }
+    }
+  </script>
+</body>
+</html>

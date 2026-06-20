@@ -1,0 +1,29 @@
+{
+  "name": "painel-dm",
+  "version": "0.1.0",
+  "description": "Painel administrativo do Portal Jacaré Tucujú",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node scripts/seed-admin.js",
+    "migrate": "node scripts/migrate-to-sqlite.js"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0",
+    "axios": "^1.17.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^12.10.0",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "rss-feed-emitter": "^3.2.4",
+    "sharp": "^0.33.5",
+    "socket.io": "^4.8.3",
+    "xml2js": "^0.6.2"
+  }
+}

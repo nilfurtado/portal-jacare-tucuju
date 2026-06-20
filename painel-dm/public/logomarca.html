@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logomarca · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <script src="/painel/js/include.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <link rel="stylesheet" href="/painel/css/tabela.css">
+  <style>
+    .logo-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-4);
+      margin-top: var(--s-3);
+    }
+    .logo-panel {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-3);
+      padding: var(--s-5);
+      display: flex; flex-direction: column; align-items: center; gap: var(--s-3);
+    }
+    .logo-panel--dark { background: var(--ink); color: var(--paper); }
+    .logo-panel__label {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+    .logo-panel--dark .logo-panel__label { color: rgba(250,250,247,0.55); }
+    .logo-preview {
+      height: 80px;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      border: 1px dashed var(--rule);
+      border-radius: var(--r-2);
+      padding: var(--s-3);
+    }
+    .logo-panel--dark .logo-preview { border-color: rgba(255,255,255,0.16); }
+    .logo-preview img { max-height: 56px; max-width: 100%; }
+    .logo-drop {
+      position: relative;
+      border: 2px dashed var(--rule-strong);
+      border-radius: var(--r-3);
+      padding: var(--s-6) var(--s-5);
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--d-1), background var(--d-1);
+    }
+    .logo-drop:hover { border-color: var(--brand); background: var(--brand-tint); }
+    .logo-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .logo-drop strong {
+      font-family: var(--font-display);
+      font-variation-settings: 'opsz' 60;
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .logo-drop span {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Logomarca</span>
+        </nav>
+              <div class="topbar__actions">
+          <button class="topbar__btn" id="theme-toggle" title="Alternar tema">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          
+          <div class="page-title__main">
+            <p class="page-title__sub">Identidade visual</p>
+            <h1>O <em style="font-style:italic;color:var(--brand)">cabeçalho</em> impresso.</h1>
+          </div>
+                <div class="topbar__actions">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Logomarcas</h2>
+            <p>Versões para fundo claro e escuro. Recomendado SVG (transparente).</p>
+            <div class="section__body">
+
+              <div class="logo-stage">
+                <div class="logo-panel">
+                  <span class="logo-panel__label">— Versão clara (fundo branco)</span>
+                  <div class="logo-preview" id="prev-clara"></div>
+                  <label class="logo-drop">
+                    <input type="file" accept=".svg,.png,.jpg,.jpeg,.webp" data-target="clara">
+                    <strong>Enviar logo clara</strong>
+                    <span>SVG, PNG ou WebP · 8MB máx</span>
+                  </label>
+                  <button type="button" class="btn btn--ghost" data-delete="clara" style="width: 100%; opacity: 0.6; margin-top: var(--s-2)">Apagar logo clara</button>
+                </div>
+
+                <div class="logo-panel logo-panel--dark">
+                  <span class="logo-panel__label">— Versão escura (fundo preto)</span>
+                  <div class="logo-preview" id="prev-escura"></div>
+                  <label class="logo-drop" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.2)">
+                    <input type="file" accept=".svg,.png,.jpg,.jpeg,.webp" data-target="escura">
+                    <strong style="color:var(--paper)">Enviar logo escura</strong>
+                    <span style="color:rgba(250,250,247,0.5)">SVG, PNG ou WebP · 8MB máx</span>
+                  </label>
+                  <button type="button" class="btn btn--ghost" data-delete="escura" style="width: 100%; opacity: 0.6; margin-top: var(--s-2); color: var(--paper); border-color: rgba(255,255,255,0.2)">Apagar logo escura</button>
+                </div>
+              </div>
+
+              <div class="info-bar" style="margin-top:var(--s-4)">
+                <span><strong>Dica:</strong> as logomarcas são gravadas em <code style="font-family:var(--font-mono)">data/config.json</code> e usadas pelo portal automaticamente.</span>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">02</div>
+          <div class="section__head">
+            <h2>Favicon</h2>
+            <p>Ícone do navegador, 32×32 ou 64×64.</p>
+            <div class="section__body">
+              <div class="logo-panel" style="max-width: 320px">
+                <div class="logo-preview" id="prev-favicon"></div>
+                <label class="logo-drop">
+                  <input type="file" accept=".ico,.svg,.png" data-target="favicon">
+                  <strong>Enviar favicon</strong>
+                  <span>ICO · SVG · PNG · 256KB máx</span>
+                </label>
+                <button type="button" class="btn btn--ghost" data-delete="favicon" style="width: 100%; opacity: 0.6; margin-top: var(--s-2)">Apagar favicon</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">03</div>
+          <div class="section__head">
+            <h2>Mapeamento e Teste</h2>
+            <p>Visualize todos os locais onde logomarcas são usadas e teste se estão acessíveis.</p>
+            <div class="section__body">
+
+              <!-- 03.1 Mapeamento -->
+              <h3 style="font-size:1rem;margin-bottom:var(--s-3);color:var(--ink-mute);font-weight:500">3.1 Mapeamento Centralizado</h3>
+
+              <div id="mapping-container" style="overflow-x:auto;margin-bottom:var(--s-4)">
+                <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+                  <thead>
+                    <tr style="background:var(--surface);border-bottom:2px solid var(--rule)">
+                      <th style="padding:var(--s-2);text-align:left;font-weight:600">Plataforma</th>
+                      <th style="padding:var(--s-2);text-align:left;font-weight:600">Local</th>
+                      <th style="padding:var(--s-2);text-align:left;font-weight:600">Tipo</th>
+                      <th style="padding:var(--s-2);text-align:left;font-weight:600">Formatos</th>
+                      <th style="padding:var(--s-2);text-align:left;font-weight:600">Dimensão</th>
+                      <th style="padding:var(--s-2);text-align:left;font-weight:600">Contexto</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mapping-tbody">
+                    <tr><td colspan="6" style="padding:var(--s-3);text-align:center;color:var(--ink-mute)">Carregando mapeamento...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- 03.2 Teste de Reenvio -->
+              <h3 style="font-size:1rem;margin-bottom:var(--s-3);color:var(--ink-mute);font-weight:500">3.2 Teste de Reenvio</h3>
+
+              <div style="display:flex;gap:var(--s-3);margin-bottom:var(--s-4);flex-wrap:wrap;align-items:center">
+                <button id="test-btn" style="padding:var(--s-2) var(--s-4);background:var(--brand);color:white;border:none;border-radius:var(--r-2);cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px">
+                  🧪 Testar Re-envio
+                </button>
+                <span id="progress-text" style="font-size:0.85rem;color:var(--ink-mute);display:none"></span>
+              </div>
+
+              <div id="progress-container" style="display:none;margin-bottom:var(--s-4)">
+                <div style="background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-2);padding:var(--s-3)">
+                  <div style="font-size:0.85rem;color:var(--ink-mute);margin-bottom:var(--s-2)">Progresso</div>
+                  <div style="background:var(--paper);border-radius:4px;height:24px;overflow:hidden;border:1px solid var(--rule-soft)">
+                    <div id="progress-bar" style="height:100%;background:linear-gradient(90deg, var(--brand), #4CAF50);width:0%;transition:width 0.3s ease"></div>
+                  </div>
+                  <div style="font-size:0.75rem;color:var(--ink-mute);margin-top:var(--s-2)" id="progress-detail"></div>
+                </div>
+              </div>
+
+              <!-- 03.3 Relatório -->
+              <h3 style="font-size:1rem;margin-bottom:var(--s-3);color:var(--ink-mute);font-weight:500">3.3 Relatório de Teste</h3>
+
+              <div id="report-container" style="display:none">
+                <div style="background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-2);padding:var(--s-4);margin-bottom:var(--s-3)">
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--s-3);margin-bottom:var(--s-4)">
+                    <div style="padding:var(--s-3);background:var(--paper);border-radius:var(--r-2);border-left:4px solid #4CAF50">
+                      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-mute);margin-bottom:4px">Passou</div>
+                      <div style="font-size:1.75rem;font-weight:700;color:#4CAF50" id="report-passed">0</div>
+                    </div>
+                    <div style="padding:var(--s-3);background:var(--paper);border-radius:var(--r-2);border-left:4px solid #FF6B6B">
+                      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-mute);margin-bottom:4px">Falhou</div>
+                      <div style="font-size:1.75rem;font-weight:700;color:#FF6B6B" id="report-failed">0</div>
+                    </div>
+                    <div style="padding:var(--s-3);background:var(--paper);border-radius:var(--r-2);border-left:4px solid #FFA500">
+                      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-mute);margin-bottom:4px">Erro</div>
+                      <div style="font-size:1.75rem;font-weight:700;color:#FFA500" id="report-error">0</div>
+                    </div>
+                    <div style="padding:var(--s-3);background:var(--paper);border-radius:var(--r-2);border-left:4px solid var(--ink-mute)">
+                      <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-mute);margin-bottom:4px">Taxa de Sucesso</div>
+                      <div style="font-size:1.75rem;font-weight:700;color:var(--brand)" id="report-rate">0%</div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex;gap:var(--s-2);flex-wrap:wrap">
+                    <button id="download-json-btn" style="padding:var(--s-2) var(--s-3);background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-2);cursor:pointer;font-size:0.85rem">📥 JSON</button>
+                    <button id="download-csv-btn" style="padding:var(--s-2) var(--s-3);background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-2);cursor:pointer;font-size:0.85rem">📥 CSV</button>
+                    <button id="copy-report-btn" style="padding:var(--s-2) var(--s-3);background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-2);cursor:pointer;font-size:0.85rem">📋 Copiar</button>
+                  </div>
+                </div>
+
+                <div style="background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-2);padding:var(--s-3)">
+                  <details style="cursor:pointer">
+                    <summary style="font-weight:600;padding:var(--s-2);user-select:none">📊 Detalhes dos Testes</summary>
+                    <div id="report-details" style="margin-top:var(--s-3);font-family:var(--font-mono);font-size:0.8rem;white-space:pre-wrap;overflow-x:auto;background:var(--paper);padding:var(--s-3);border-radius:var(--r-2);max-height:400px;overflow-y:auto;color:var(--ink-mute)"></div>
+                  </details>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from '/painel/js/shell.js';
+    import { apiGet, apiPut } from '/painel/js/api.js';
+    import { toast } from '/painel/js/ui.js';
+    import { testLogos, formatTestResults, exportCSV, exportJSON } from '/painel/js/logo-tester.js';
+
+    await mountShell({ route: 'logomarca' });
+
+    let cfg = await apiGet('/config').catch(() => ({}));
+    cfg.portal = cfg.portal || {};
+    let mappingData = null;
+    let lastTestResults = null;
+
+    function renderPreviews() {
+      const clara = cfg.portal.logoClara || cfg.portal.logo || '';
+      const escura = cfg.portal.logoEscura || cfg.portal.logo || '';
+      const favicon = cfg.portal.favicon || '';
+      document.getElementById('prev-clara').innerHTML  = clara  ? `<img src="${clara}"  alt="logo clara">`  : '<span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--ink-mute)">SEM LOGO</span>';
+      document.getElementById('prev-escura').innerHTML = escura ? `<img src="${escura}" alt="logo escura">` : '<span style="font-family:var(--font-mono);font-size:0.7rem;color:rgba(250,250,247,0.5)">SEM LOGO</span>';
+      document.getElementById('prev-favicon').innerHTML = favicon ? `<img src="${favicon}" alt="favicon" style="max-height:32px">` : '<span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--ink-mute)">SEM FAVICON</span>';
+    }
+    renderPreviews();
+
+    // Carregar mapeamento
+    async function loadMapping() {
+      try {
+        const response = await fetch('/js/logo-mapping.json');
+        if (!response.ok) throw new Error('Falha ao carregar mapeamento');
+        mappingData = await response.json();
+        renderMapping();
+      } catch (err) {
+        console.error('Erro ao carregar mapeamento:', err);
+        document.getElementById('mapping-tbody').innerHTML = `<tr><td colspan="6" style="padding:var(--s-3);text-align:center;color:red">Erro: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderMapping() {
+      const tbody = document.getElementById('mapping-tbody');
+      tbody.innerHTML = '';
+
+      for (const [platformKey, platform] of Object.entries(mappingData.platforms)) {
+        if (!platform.locations) continue;
+
+        for (const location of platform.locations) {
+          const row = document.createElement('tr');
+          row.style.cssText = 'border-bottom:1px solid var(--rule);';
+
+          const formatStr = Array.isArray(location.formats)
+            ? location.formats.join(', ')
+            : (location.formats || 'N/A');
+
+          row.innerHTML = `
+            <td style="padding:var(--s-2);font-size:0.8rem;color:var(--ink-mute)">${platform.name}</td>
+            <td style="padding:var(--s-2);font-size:0.8rem;max-width:200px;word-break:break-word">${location.local}</td>
+            <td style="padding:var(--s-2);font-size:0.8rem;color:var(--brand)">${location.type}</td>
+            <td style="padding:var(--s-2);font-size:0.75rem;color:var(--ink-mute)">${formatStr}</td>
+            <td style="padding:var(--s-2);font-size:0.8rem">${location.dimension}</td>
+            <td style="padding:var(--s-2);font-size:0.8rem;color:var(--ink-mute)">${location.context}</td>
+          `;
+          tbody.appendChild(row);
+        }
+      }
+    }
+
+    // Executar testes
+    document.getElementById('test-btn').addEventListener('click', async () => {
+      if (!mappingData) {
+        toast('Mapeamento não carregado', 'error');
+        return;
+      }
+
+      const testBtn = document.getElementById('test-btn');
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      const progressDetail = document.getElementById('progress-detail');
+      const reportContainer = document.getElementById('report-container');
+
+      testBtn.disabled = true;
+      progressContainer.style.display = 'block';
+      reportContainer.style.display = 'none';
+
+      try {
+        lastTestResults = await testLogos(mappingData, (progress) => {
+          const percent = Math.round((progress.current / progress.total) * 100);
+          progressBar.style.width = percent + '%';
+          progressDetail.textContent = `${progress.current} de ${progress.total} locais testados (${progress.location})`;
+        });
+
+        displayReport(lastTestResults);
+      } catch (err) {
+        toast('Erro ao executar testes: ' + err.message, 'error');
+        console.error(err);
+      } finally {
+        testBtn.disabled = false;
+        progressContainer.style.display = 'none';
+      }
+    });
+
+    function displayReport(results) {
+      const { summary, tests } = results;
+      document.getElementById('report-passed').textContent = summary.passed;
+      document.getElementById('report-failed').textContent = summary.failed;
+      document.getElementById('report-error').textContent = summary.error;
+      document.getElementById('report-rate').textContent = summary.successRate + '%';
+
+      const reportText = formatTestResults(results);
+      document.getElementById('report-details').textContent = reportText;
+
+      document.getElementById('report-container').style.display = 'block';
+
+      // Download handlers
+      document.getElementById('download-json-btn').onclick = () => {
+        const json = exportJSON(results);
+        downloadFile(json, 'logo-test-results.json', 'application/json');
+      };
+
+      document.getElementById('download-csv-btn').onclick = () => {
+        const csv = exportCSV(results);
+        downloadFile(csv, 'logo-test-results.csv', 'text/csv');
+      };
+
+      document.getElementById('copy-report-btn').onclick = () => {
+        navigator.clipboard.writeText(reportText).then(() => {
+          toast('Relatório copiado para clipboard', 'success');
+        }).catch(() => {
+          toast('Erro ao copiar', 'error');
+        });
+      };
+    }
+
+    function downloadFile(content, filename, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Carregar mapeamento ao iniciar
+    loadMapping();
+
+    document.querySelectorAll('input[type=file]').forEach(input => {
+      input.addEventListener('change', async () => {
+        const file = input.files?.[0]; if (!file) return;
+        const target = input.dataset.target;
+        const fd = new FormData(); fd.append('file', file);
+        try {
+          const r = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${localStorage.getItem('painel-dm:token')}` },
+            body: fd,
+          });
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.erro || 'Falha no upload');
+
+          // Atualiza config
+          const update = { portal: {} };
+          if (target === 'clara')   update.portal.logoClara  = data.url;
+          if (target === 'escura')  update.portal.logoEscura = data.url;
+          if (target === 'favicon') update.portal.favicon    = data.url;
+          cfg = await apiPut('/config', update);
+          toast('Logomarca atualizada', 'success');
+          renderPreviews();
+        } catch (err) { toast(err.message, 'error'); }
+        finally { input.value = ''; }
+      });
+    });
+
+    // Delete buttons
+    document.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const field = e.target.dataset.delete;
+        const labels = { clara: 'Logo Clara', escura: 'Logo Escura', favicon: 'Favicon' };
+
+        if (!confirm(`Apagar ${labels[field]}?`)) return;
+
+        try {
+          const r = await fetch(`/api/config/logo/${field}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${localStorage.getItem('painel-dm:token')}` },
+          });
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.erro || 'Falha ao apagar');
+
+          cfg = await apiGet('/config');
+          toast(`${labels[field]} apagada`, 'success');
+          renderPreviews();
+        } catch (err) { toast(err.message, 'error'); }
+      });
+    });
+  </script>
+</body>
+</html>
+

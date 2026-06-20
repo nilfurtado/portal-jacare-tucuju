@@ -1,0 +1,312 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-05-31",
+  "totalLocations": 37,
+  "platforms": {
+    "portal": {
+      "name": "Portal Jacaré Tucujú",
+      "description": "Portal de notícias público",
+      "locations": [
+        {
+          "id": "portal-favicon-meta",
+          "local": "Todas as páginas (13 HTML files)",
+          "files": ["index.html", "busca.html", "categoria.html", "municipio.html", "noticia.html", "sobre.html", "privacidade.html", "contato.html", "termos.html", "classificados.html", "enquetes.html", "videos.html", "404.html"],
+          "line": 10,
+          "type": "favicon",
+          "formats": ["SVG", "PNG", "ICO"],
+          "dimension": "any (preferível 32x32 ou 64x64)",
+          "context": "Aba do navegador (browser tab)",
+          "html": "<link rel=\"icon\" href=\"img/favicon.svg\">",
+          "source": "Hardcoded",
+          "url": "img/favicon.svg",
+          "testMethod": "HEAD"
+        },
+        {
+          "id": "portal-header-logo",
+          "local": "partials/header.html",
+          "files": ["partials/header.html"],
+          "line": 71,
+          "type": "logo-principal",
+          "formats": ["SVG", "PNG"],
+          "dimension": "56px altura (desktop), 38px (mobile)",
+          "context": "Header logo - navegação principal",
+          "selector": "#header-logo",
+          "html": "<img id=\"header-logo\" src=\"img/logo-white.svg\" alt=\"Portal Jacaré Tucujú\">",
+          "source": "Hardcoded + Dynamic Injection (logo-injector.js)",
+          "url": "img/logo-white.svg",
+          "testMethod": "visual"
+        },
+        {
+          "id": "portal-drawer-logo",
+          "local": "partials/header.html",
+          "files": ["partials/header.html"],
+          "line": 141,
+          "type": "logo-principal",
+          "formats": ["SVG", "PNG"],
+          "dimension": "40px altura",
+          "context": "Drawer (mobile navigation) logo",
+          "selector": "#drawer-logo",
+          "html": "<img id=\"drawer-logo\" src=\"img/logo-white.svg\" alt=\"Portal Jacaré Tucujú\">",
+          "source": "Hardcoded + Dynamic Injection (logo-injector.js)",
+          "url": "img/logo-white.svg",
+          "testMethod": "visual"
+        },
+        {
+          "id": "portal-footer-logo",
+          "local": "partials/footer.html",
+          "files": ["partials/footer.html"],
+          "line": 6,
+          "type": "logo-principal",
+          "formats": ["SVG", "PNG"],
+          "dimension": "42px altura",
+          "context": "Footer logo - rodapé",
+          "selector": "#footer-logo",
+          "html": "<img id=\"footer-logo\" src=\"img/logo-white.svg\" alt=\"Portal Jacaré Tucujú\">",
+          "source": "Hardcoded + Dynamic Injection (logo-injector.js)",
+          "url": "img/logo-white.svg",
+          "testMethod": "visual"
+        },
+        {
+          "id": "portal-404-logo",
+          "local": "404.html",
+          "files": ["404.html"],
+          "line": 21,
+          "type": "logo-principal",
+          "formats": ["SVG", "PNG"],
+          "dimension": "flexible",
+          "context": "Página de erro 404",
+          "html": "<img src=\"img/logo.svg\" alt=\"Portal Jacaré Tucujú\">",
+          "source": "Hardcoded",
+          "url": "img/logo.svg",
+          "testMethod": "visual"
+        },
+        {
+          "id": "portal-manifest-favicon",
+          "local": "manifest.json",
+          "files": ["manifest.json"],
+          "line": 15,
+          "type": "favicon",
+          "formats": ["SVG", "PNG"],
+          "dimension": "any",
+          "context": "PWA manifest icon",
+          "source": "Hardcoded",
+          "url": "img/favicon.svg",
+          "testMethod": "HEAD"
+        },
+        {
+          "id": "portal-sw-cache",
+          "local": "sw.js (Service Worker)",
+          "files": ["sw.js"],
+          "line": "44-46",
+          "type": "logo-assets-cache",
+          "formats": ["SVG"],
+          "dimension": "various",
+          "context": "Service worker offline cache",
+          "source": "Hardcoded in cache list",
+          "urls": ["img/logo.svg", "img/logo-white.svg", "img/favicon.svg"],
+          "testMethod": "visual"
+        },
+        {
+          "id": "portal-injector",
+          "local": "js/logo-injector.js",
+          "files": ["js/logo-injector.js"],
+          "line": "6-85",
+          "type": "logo-injector-system",
+          "formats": ["SVG", "PNG"],
+          "dimension": "configurable",
+          "context": "Dynamic logo injection system",
+          "source": "Dynamic from API (/api/portal/bootstrap)",
+          "fallbacks": ["img/logo-white.svg", "img/logo.svg", "img/favicon.svg"],
+          "testMethod": "API"
+        },
+        {
+          "id": "portal-css-layout",
+          "local": "css/layout.css",
+          "files": ["css/layout.css"],
+          "line": "160-170",
+          "type": "logo-styling",
+          "formats": "CSS",
+          "dimension": "56px altura (desktop), 38px (mobile)",
+          "context": "Header logo responsive styling",
+          "source": "CSS rules",
+          "testMethod": "visual"
+        },
+        {
+          "id": "portal-css-responsive",
+          "local": "css/responsive.css",
+          "files": ["css/responsive.css"],
+          "line": "23-24, 77-78",
+          "type": "logo-styling",
+          "formats": "CSS",
+          "dimension": "38px (mobile), 56px (tablet+)",
+          "context": "Header logo responsive breakpoints",
+          "source": "CSS media queries",
+          "testMethod": "visual"
+        },
+        {
+          "id": "portal-css-drawer",
+          "local": "css/drawer.css",
+          "files": ["css/drawer.css"],
+          "line": "69-77",
+          "type": "logo-styling",
+          "formats": "CSS",
+          "dimension": "40px altura",
+          "context": "Drawer logo responsive styling",
+          "source": "CSS rules",
+          "testMethod": "visual"
+        }
+      ]
+    },
+    "painel-dm": {
+      "name": "Painel DM (Node.js Admin)",
+      "description": "Administrador de conteúdo Node.js",
+      "locations": [
+        {
+          "id": "painel-dm-login-logo",
+          "local": "painel-dm/public/login.html",
+          "files": ["painel-dm/public/login.html"],
+          "line": 149,
+          "type": "logo-principal",
+          "formats": ["SVG", "PNG"],
+          "dimension": "64px altura max",
+          "context": "Login page logo",
+          "selector": "#login-logo",
+          "html": "<img id=\"login-logo\" src=\"img/logo-white.svg\" alt=\"Painel DM\">",
+          "source": "Hardcoded + Dynamic Injection (logo-injector.js)",
+          "url": "img/logo-white.svg",
+          "testMethod": "visual"
+        },
+        {
+          "id": "painel-dm-sidebar-logo",
+          "local": "painel-dm/public/partials/shell.html",
+          "files": ["painel-dm/public/partials/shell.html"],
+          "line": 4,
+          "type": "logo-principal",
+          "formats": ["SVG", "PNG"],
+          "dimension": "50px altura max",
+          "context": "Sidebar brand logo",
+          "selector": "#painel-logo",
+          "html": "<img id=\"painel-logo\" src=\"img/logo-white.svg\" alt=\"Painel DM\">",
+          "source": "Hardcoded + Dynamic Injection (logo-injector.js)",
+          "url": "img/logo-white.svg",
+          "testMethod": "visual"
+        },
+        {
+          "id": "painel-dm-dashboard-logo",
+          "local": "painel-dm/public/index.html",
+          "files": ["painel-dm/public/index.html"],
+          "line": "18-22",
+          "type": "logo-injector",
+          "formats": ["SVG", "PNG"],
+          "dimension": "configurable",
+          "context": "Dashboard logo injection",
+          "source": "Dynamic Injection (logo-injector.js)",
+          "url": "dynamic",
+          "testMethod": "visual"
+        },
+        {
+          "id": "painel-dm-logomarca-upload",
+          "local": "painel-dm/public/logomarca.html",
+          "files": ["painel-dm/public/logomarca.html"],
+          "line": "110-174",
+          "type": "logo-upload-interface",
+          "formats": ["SVG", "PNG", "JPG", "WebP"],
+          "dimension": "max 8MB",
+          "context": "Admin interface para upload de logos",
+          "source": "API /api/upload",
+          "api": "/api/upload",
+          "testMethod": "API"
+        }
+      ]
+    },
+    "painel-php": {
+      "name": "Painel PHP (Alternative Admin)",
+      "description": "Administrador de conteúdo alternativo em PHP",
+      "locations": [
+        {
+          "id": "painel-php-logomarca-upload",
+          "local": "painel-php/public/logomarca.html",
+          "files": ["painel-php/public/logomarca.html"],
+          "line": "110-174",
+          "type": "logo-upload-interface",
+          "formats": ["SVG", "PNG", "JPG", "WebP"],
+          "dimension": "max 8MB",
+          "context": "Admin interface para upload de logos",
+          "source": "API /config",
+          "api": "/config",
+          "testMethod": "API"
+        },
+        {
+          "id": "painel-php-layout",
+          "local": "painel-php/public/layout.html",
+          "files": ["painel-php/public/layout.html"],
+          "line": "229-243",
+          "type": "logo-sizing-config",
+          "formats": "N/A",
+          "dimension": "configurable",
+          "context": "Layout admin controls para tamanho/alinhamento de logos",
+          "source": "API /config",
+          "testMethod": "API"
+        }
+      ]
+    },
+    "shared": {
+      "name": "Shared/Global",
+      "description": "Sistemas compartilhados entre plataformas",
+      "locations": [
+        {
+          "id": "api-portal-bootstrap",
+          "local": "API Endpoint: /api/portal/bootstrap",
+          "type": "api-config",
+          "formats": "JSON",
+          "dimension": "N/A",
+          "context": "API endpoint que fornece configurações de logos",
+          "response": {
+            "config": {
+              "portal": {
+                "logoClara": "string (URL)",
+                "logoEscura": "string (URL)",
+                "favicon": "string (URL)"
+              }
+            }
+          },
+          "source": "Backend API",
+          "testMethod": "API"
+        },
+        {
+          "id": "data-config-json",
+          "local": "data/config.json",
+          "files": ["data/config.json"],
+          "type": "config-storage",
+          "formats": "JSON",
+          "dimension": "N/A",
+          "context": "Backend storage for logo configuration",
+          "source": "File storage",
+          "testMethod": "API"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "totalByType": {
+      "favicon": 2,
+      "logo-principal": 5,
+      "logo-injector": 2,
+      "logo-styling": 3,
+      "logo-upload-interface": 2,
+      "logo-injector-system": 1,
+      "logo-assets-cache": 1,
+      "api-config": 1,
+      "config-storage": 1
+    },
+    "totalByPlatform": {
+      "portal": 11,
+      "painel-dm": 4,
+      "painel-php": 2,
+      "shared": 2,
+      "total": 19
+    },
+    "formatsUsed": ["SVG", "PNG", "JPG", "WebP", "ICO"],
+    "testMethods": ["HEAD", "visual", "API"]
+  }
+}

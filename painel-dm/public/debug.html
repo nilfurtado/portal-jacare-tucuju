@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Painel DM</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #222; color: #0f0; }
+    .box { background: #111; border: 1px solid #0f0; padding: 15px; margin: 10px 0; }
+    h2 { color: #0ff; }
+    .key { color: #ff0; }
+    .value { color: #0f0; }
+    button { background: #0f0; color: #000; padding: 10px 20px; margin: 5px; border: none; cursor: pointer; }
+    .error { color: #f00; }
+    .success { color: #0f0; }
+    pre { background: #000; color: #0f0; padding: 10px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Debug Painel DM</h1>
+
+  <div class="box">
+    <h2>📦 LocalStorage</h2>
+    <pre id="localStorage-content"></pre>
+  </div>
+
+  <div class="box">
+    <h2>📦 SessionStorage</h2>
+    <pre id="sessionStorage-content"></pre>
+  </div>
+
+  <div class="box">
+    <h2>🔐 Verificação de Token</h2>
+    <pre id="token-check"></pre>
+  </div>
+
+  <div class="box">
+    <h2>🧪 Teste da API</h2>
+    <button onclick="testarAPI()">Testar /api/auth/login</button>
+    <pre id="api-test"></pre>
+  </div>
+
+  <div class="box">
+    <h2>⚡ Ações</h2>
+    <button onclick="limparDados()">Limpar LocalStorage + SessionStorage</button>
+    <button onclick="irParaDashboard()">Ir para Dashboard</button>
+    <button onclick="irParaLogin()">Ir para Login</button>
+  </div>
+
+  <script>
+    function atualizarDebug() {
+      // LocalStorage
+      let lsContent = '';
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        lsContent += `${key}: ${value.substring(0, 50)}...\n`;
+      }
+      document.getElementById('localStorage-content').textContent = lsContent || '(vazio)';
+
+      // SessionStorage
+      let ssContent = '';
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        const value = sessionStorage.getItem(key);
+        ssContent += `${key}: ${value}\n`;
+      }
+      document.getElementById('sessionStorage-content').textContent = ssContent || '(vazio)';
+
+      // Verificação de Token
+      const token = localStorage.getItem('painel-dm:token');
+      const userStr = localStorage.getItem('painel-dm:user');
+      let user = {};
+      try {
+        user = userStr ? JSON.parse(userStr) : {};
+      } catch (e) {
+        user = { erro: e.message };
+      }
+
+      let tokenCheck = '';
+      tokenCheck += `Token existe: ${token ? 'SIM' : 'NAO'}\n`;
+      if (token) {
+        tokenCheck += `Token: ${token.substring(0, 30)}...\n`;
+      }
+      tokenCheck += `\nUser string: ${userStr || '(vazio)'}\n`;
+      tokenCheck += `\nUser.id: ${user.id || '(undefined)'}\n`;
+      tokenCheck += `User.nome: ${user.nome || '(undefined)'}`;
+
+      document.getElementById('token-check').textContent = tokenCheck;
+    }
+
+    async function testarAPI() {
+      const output = document.getElementById('api-test');
+      output.textContent = 'Testando...';
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            usuario: 'Nildo',
+            senha: 'admin@123'
+          })
+        });
+
+        output.textContent = `Status: ${response.status}\n\n`;
+
+        const text = await response.text();
+        output.textContent += `Resposta:\n${text}`;
+      } catch (err) {
+        output.textContent = `ERRO: ${err.message}`;
+      }
+    }
+
+    function limparDados() {
+      localStorage.removeItem('painel-dm:token');
+      localStorage.removeItem('painel-dm:user');
+      sessionStorage.clear();
+      atualizarDebug();
+      alert('Dados limpos!');
+    }
+
+    function irParaDashboard() {
+      window.location.replace('/painel/');
+    }
+
+    function irParaLogin() {
+      window.location.replace('/painel/login/');
+    }
+
+    atualizarDebug();
+    setInterval(atualizarDebug, 1000);
+  </script>
+</body>
+</html>

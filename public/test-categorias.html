@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teste de Categorias</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .container { max-width: 600px; }
+    .ok { color: green; }
+    .error { color: red; }
+    .info { background: #f0f0f0; padding: 10px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Teste de Categorias</h1>
+  <div class="container">
+    <div id="log"></div>
+  </div>
+
+  <script>
+    const log = document.getElementById('log');
+
+    function addLog(msg, type = 'info') {
+      const div = document.createElement('div');
+      div.className = type;
+      div.textContent = msg;
+      div.style.marginBottom = '10px';
+      log.appendChild(div);
+      console.log(msg);
+    }
+
+    async function test() {
+      addLog('🚀 Iniciando testes...', 'info');
+
+      try {
+        // Login
+        addLog('1️⃣ Fazendo login...');
+        const loginRes = await fetch('http://localhost:3004/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario: 'admin', senha: 'admin' })
+        });
+
+        if (!loginRes.ok) {
+          throw new Error(`Login falhou: ${loginRes.status}`);
+        }
+
+        const loginData = await loginRes.json();
+        const token = loginData.token;
+        addLog(`✅ Login OK, token: ${token.substring(0, 20)}...`, 'ok');
+
+        // Obter categorias
+        addLog('2️⃣ Obtendo categorias...');
+        const catsRes = await fetch('http://localhost:3004/api/categorias', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!catsRes.ok) {
+          throw new Error(`API falhou: ${catsRes.status}`);
+        }
+
+        const cats = await catsRes.json();
+        addLog(`✅ Categorias obtidas: ${cats.length} total`, 'ok');
+
+        // Listar categorias
+        addLog('📋 Categorias:', 'info');
+        cats.forEach((c, i) => {
+          addLog(`  ${i + 1}. ${c.nome} (${c.slug}) - ${c.cor}`, 'info');
+        });
+
+        // Testar no select
+        addLog('3️⃣ Testando no select...');
+        const select = document.createElement('select');
+        select.innerHTML = cats.map(c => 
+          `<option value="${c.slug}">${c.nome}</option>`
+        ).join('');
+        
+        if (select.options.length > 0) {
+          addLog(`✅ Select carregado com ${select.options.length} opções`, 'ok');
+          log.appendChild(select);
+        } else {
+          addLog('❌ Select vazio!', 'error');
+        }
+
+        addLog('✅ TODOS OS TESTES PASSARAM!', 'ok');
+
+      } catch (err) {
+        addLog(`❌ ERRO: ${err.message}`, 'error');
+      }
+    }
+
+    test();
+  </script>
+</body>
+</html>

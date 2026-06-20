@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Termos de uso — Portal Jacaré Tucujú">
+  <title>Termos de uso — Portal Jacaré Tucujú</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f07e13">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css?v=30">
+  <link rel="stylesheet" href="css/reset.css?v=30">
+  <link rel="stylesheet" href="css/base.css?v=30">
+  <link rel="stylesheet" href="css/layout.css?v=30">
+  <link rel="stylesheet" href="css/components.css?v=38">
+  <link rel="stylesheet" href="css/breaking-news.css?v=34">
+  <link rel="stylesheet" href="css/drawer.css?v=30">
+  <link rel="stylesheet" href="css/carousel.css?v=30">
+  <link rel="stylesheet" href="css/audio-reader.css?v=30">
+  <link rel="stylesheet" href="css/home.css?v=31">
+  <link rel="stylesheet" href="css/article.css?v=38">
+  <link rel="stylesheet" href="css/static-page.css?v=30">
+  <link rel="stylesheet" href="css/responsive.css?v=30">
+  <script>
+    (function(){var t=localStorage.getItem('portal-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <!-- URL base do backend administrativo (Painel DM). Mude para o domínio/sub-path do seu painel-php em produção. -->
+  <meta name="painel-api" content="/painel-php/api">
+</head>
+<body data-page="termos">
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <div class="container" style="padding-top:var(--sp-8);padding-bottom:var(--sp-16);">
+      <div class="cat-page-header">
+        <div>
+          <nav class="simple-breadcrumb">
+            <a href="index.html">Início</a> <span>›</span> <span>Termos de uso</span>
+          </nav>
+          <h1 class="cat-page-title">Termos de uso</h1>
+        </div>
+      </div>
+      <div class="page-grid">
+        <article class="static-article">
+          <span class="updated">Última atualização: 1º de maio de 2026</span>
+          <h2>1. Aceitação</h2>
+          <p>Ao acessar ou usar o Portal Jacaré Tucujú, você aceita integralmente os termos descritos abaixo.</p>
+          <h2>2. Propósito do portal</h2>
+          <p>O portal é um veículo de jornalismo regional voltado ao estado do Amapá. Publicamos notícias, análises, opiniões, vídeos, classificados e enquetes.</p>
+          <h2>3. Propriedade intelectual</h2>
+          <p>Todo conteúdo produzido pela redação é protegido por direitos autorais. Você pode compartilhar links e citar trechos curtos com atribuição, mas é vedada a reprodução integral sem autorização prévia.</p>
+          <h2>4. Comentários dos leitores</h2>
+          <p>Comentários são moderados antes da exibição. Reservamo-nos o direito de não publicar comentários com ofensas, acusações sem provas ou conteúdo comercial.</p>
+          <h2>5. Classificados</h2>
+          <p>O portal não se responsabiliza pela veracidade das informações dos anúncios e pode remover anúncios que violem leis ou estes termos sem aviso prévio.</p>
+          <h2>6. Publicidade</h2>
+          <p>Anúncios são claramente identificados como tal e não influenciam o conteúdo editorial.</p>
+          <h2>7. Limitação de responsabilidade</h2>
+          <p>Não nos responsabilizamos por conteúdo de sites externos linkados, decisões tomadas com base no conteúdo do portal ou indisponibilidade temporária por motivos técnicos.</p>
+          <h2>8. Foro</h2>
+          <p>Fica eleito o foro da Comarca de Macapá/AP para dirimir eventuais conflitos relativos a estes termos.</p>
+          <h2>9. Contato</h2>
+          <p>Dúvidas: <strong>juridico@portaljacaretucuju.com.br</strong></p>
+        </article>
+        <aside class="sidebar" data-include="partials/sidebar.html"></aside>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+  <script type="module" src="js/static-page.js?v=24"></script>
+  <script defer src="js/ads-loader.js?v=1"></script>
+  <script defer src="js/plugins-loader.js?v=1"></script>
+</body>
+</html>

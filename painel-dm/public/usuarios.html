@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+  <script src="/painel/js/include.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/painel/css/tokens.css">
+  <link rel="stylesheet" href="/painel/css/motion.css">
+  <link rel="stylesheet" href="/painel/css/painel.css">
+  <link rel="stylesheet" href="/painel/css/forms.css">
+  <link rel="stylesheet" href="/painel/css/dark-mode.css">
+  <link rel="stylesheet" href="/painel/css/tabela.css">
+  <style>
+    /* Avatar */
+    .user-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--brand);
+      display: grid; place-items: center;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #fff;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
+    .user-avatar--img { background: var(--surface); display: flex; align-items: center; justify-content: center; }
+    .user-avatar--img img { width: 100%; height: 100%; object-fit: cover; }
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+    .user-cell__name { font-weight: 500; font-size: 0.88rem; color: var(--ink); }
+    .user-cell__city { font-size: 0.73rem; color: var(--ink-mute); margin-top: 2px; font-family: var(--font-mono); }
+
+    /* Permissions grid no modal */
+    .perm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: var(--s-2);
+    }
+    .perm-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--paper-line);
+      border-radius: var(--r-2);
+      cursor: pointer;
+      transition: all var(--d-1) var(--ease-out);
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+    }
+    .perm-item:has(input:checked) {
+      border-color: var(--brand);
+      background: rgba(218,125,27,0.08);
+      color: var(--ink);
+    }
+    .perm-item input { width: 14px; height: 14px; accent-color: var(--brand); }
+
+    /* Senha requisitos */
+    .req-senha {
+      list-style: none;
+      padding: 0;
+      margin: var(--s-2) 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .req-senha li {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--paper-line);
+      color: var(--ink-mute);
+      transition: all var(--d-1) var(--ease-out);
+    }
+    .req-senha li.ok { color: var(--positive); border-color: rgba(63,185,80,0.35); background: rgba(63,185,80,0.08); }
+
+    /* Modal maior */
+    .modal__box--lg { max-width: 680px !important; max-height: calc(100vh - 48px); overflow-y: auto; }
+
+    /* Checkbox para bulk select */
+    .table-checkbox { width: 18px; height: 18px; accent-color: var(--brand); cursor: pointer; }
+    .table thead th:first-child { width: 40px; }
+
+    /* Ordenação */
+    .sortable-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: color var(--d-1) var(--ease-out);
+    }
+    .sortable-header:hover { color: var(--brand); }
+    .sort-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      opacity: 0.4;
+      font-size: 0.7rem;
+      transition: opacity var(--d-1) var(--ease-out);
+    }
+    .sortable-header:hover .sort-indicator { opacity: 0.6; }
+    .sort-indicator.active { opacity: 1; color: var(--brand); }
+
+    /* Paginação */
+    .pagination-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--s-4);
+      padding: var(--s-3) 0;
+      border-top: 1px solid var(--paper-line);
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .pagination-info {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--ink-mute);
+    }
+    .pagination-nav {
+      display: flex;
+      gap: 6px;
+    }
+    .pagination-nav button {
+      padding: 6px 12px;
+      border: 1px solid var(--paper-line);
+      background: var(--surface-2);
+      border-radius: var(--r-2);
+      color: var(--ink);
+      cursor: pointer;
+      transition: all var(--d-1) var(--ease-out);
+      font-size: 0.8rem;
+    }
+    .pagination-nav button:hover:not([disabled]) {
+      border-color: var(--brand);
+      background: rgba(218, 125, 27, 0.08);
+      color: var(--brand);
+    }
+    .pagination-nav button[disabled] {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Bulk actions bar */
+    .bulk-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      margin-bottom: var(--s-3);
+      padding: var(--s-3) var(--s-4);
+      background: rgba(88, 166, 255, 0.08);
+      border: 1px solid rgba(88, 166, 255, 0.2);
+      border-radius: var(--r-2);
+      font-size: 0.85rem;
+    }
+    .bulk-actions.hidden { display: none; }
+    .bulk-actions__info {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .bulk-actions__actions {
+      display: flex;
+      gap: var(--s-2);
+    }
+
+    /* Avatar upload preview */
+    .avatar-preview {
+      display: grid;
+      place-items: center;
+      gap: var(--s-3);
+    }
+    .avatar-preview__img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .avatar-preview__img img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-preview__input {
+      padding: var(--s-3);
+      border: 2px dashed var(--paper-line);
+      border-radius: var(--r-2);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--d-1) var(--ease-out);
+    }
+    .avatar-preview__input:hover {
+      border-color: var(--brand);
+      background: rgba(218, 125, 27, 0.05);
+    }
+    .avatar-preview__input.has-file {
+      border-color: var(--positive);
+      background: rgba(63, 185, 80, 0.08);
+    }
+    .avatar-preview__text { font-size: 0.8rem; color: var(--ink-soft); }
+    .avatar-preview__hint { font-size: 0.7rem; color: var(--ink-mute); margin-top: var(--s-2); }
+
+    /* History tooltip */
+    .history-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--r-pill);
+      background: rgba(88, 166, 255, 0.1);
+      color: var(--info);
+      font-size: 0.7rem;
+      cursor: help;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(88, 166, 255, 0.2);
+    }
+    .history-badge:hover { background: rgba(88, 166, 255, 0.15); }
+
+    @media (max-width: 768px) {
+      .page-toolbar { flex-direction: column; }
+      .page-toolbar__search { width: 100%; }
+      .pagination-container { flex-direction: column; gap: var(--s-2); align-items: flex-start; }
+      .bulk-actions { flex-direction: column; align-items: flex-start; }
+      .bulk-actions__actions { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Usuários</span>
+        </nav>
+        <div class="topbar__actions">
+          <button class="btn btn--primary" id="btn-novo">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Novo
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          <div class="page-title__index">12</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Sistema · equipe e permissões</p>
+            <h1>A <em style="font-style:italic;color:var(--brand)">redação</em>.</h1>
+          </div>
+        </header>
+
+        <!-- STATS -->
+        <div class="stats-bar">
+          <div class="stat-card">
+            <div class="stat-card__icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-total">—</div>
+              <div class="stat-card__label">Total</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(63,185,80,0.12);color:var(--positive)">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-ativos">—</div>
+              <div class="stat-card__label">Ativos</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(88,166,255,0.12);color:var(--info)">
+              <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+            </div>
+            <div>
+              <div class="stat-card__val" id="st-admins">—</div>
+              <div class="stat-card__label">Admins</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE TOOLBAR -->
+        <div class="page-toolbar">
+          <div class="page-toolbar__search">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="input" type="text" id="search-users" placeholder="Buscar usuários…" autocomplete="off">
+          </div>
+          <div class="page-toolbar__tabs" id="status-tabs">
+            <button class="tab-btn is-active" data-type="">Todos</button>
+            <button class="tab-btn" data-type="admin">Admins</button>
+            <button class="tab-btn" data-type="ativo">Ativos</button>
+            <button class="tab-btn" data-type="inativo">Inativos</button>
+          </div>
+          <div class="page-toolbar__spacer"></div>
+          <div class="page-toolbar__actions">
+            <button class="btn btn--ghost" id="btn-export" title="Exportar usuários">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Exportar
+            </button>
+          </div>
+        </div>
+
+        <!-- BULK ACTIONS BAR -->
+        <div class="bulk-actions hidden" id="bulk-actions">
+          <div class="bulk-actions__info">
+            <span id="bulk-count">0</span> usuário(s) selecionado(s)
+          </div>
+          <div class="bulk-actions__actions">
+            <button class="btn btn--ghost" id="bulk-delete" title="Deletar selecionados">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              Deletar
+            </button>
+          </div>
+        </div>
+
+        <!-- TABELA -->
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="select-all" class="table-checkbox" title="Selecionar todos"></th>
+                <th><span class="sortable-header" data-sort="nome">Usuário <span class="sort-indicator">↕</span></span></th>
+                <th><span class="sortable-header" data-sort="email">E-mail <span class="sort-indicator">↕</span></span></th>
+                <th><span class="sortable-header" data-sort="tipo">Tipo <span class="sort-indicator">↕</span></span></th>
+                <th style="text-align:center"><span class="sortable-header" data-sort="status">Status <span class="sort-indicator">↕</span></span></th>
+                <th style="width:80px"></th>
+              </tr>
+            </thead>
+            <tbody id="lista-users">
+              <tr><td colspan="6" style="color:var(--ink-mute);text-align:center;padding:var(--s-6)">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PAGINAÇÃO -->
+        <div class="pagination-container">
+          <div class="pagination-info">
+            Mostrando <span id="pagination-start">0</span>-<span id="pagination-end">0</span> de <span id="pagination-total">0</span> usuários
+          </div>
+          <div class="pagination-nav">
+            <button id="pagination-prev" title="Página anterior">← Anterior</button>
+            <span id="pagination-page" style="padding: 0 var(--s-2); font-family: var(--font-mono); font-size: 0.75rem;">Página <span id="pagination-current">1</span> de <span id="pagination-pages">1</span></span>
+            <button id="pagination-next" title="Próxima página">Próximo →</button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from '/painel/js/shell.js';
+    import { apiGet, apiPost, apiPut, apiPatch, apiDelete } from '/painel/js/api.js';
+    import { toast, confirmar } from '/painel/js/ui.js';
+    await mountShell({ route: 'usuarios' });
+
+    function esc(s) { return String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    function avatarColor(nome) {
+      const cores = ['#da7d1b','#3fb950','#58a6ff','#d29922','#a371f7','#f78166'];
+      const i = (nome || '').charCodeAt(0) % cores.length;
+      return cores[i];
+    }
+
+    const MODULES = [
+      { key: 'noticias', label: 'Notícias' },
+      { key: 'categorias', label: 'Categorias' },
+      { key: 'anuncios', label: 'Anúncios' },
+      { key: 'videos', label: 'Vídeos' },
+      { key: 'enquetes', label: 'Enquetes' },
+      { key: 'classificados', label: 'Classificados' },
+      { key: 'municipios', label: 'Municípios' },
+      { key: 'colunas', label: 'Colunas' },
+      { key: 'comentarios', label: 'Comentários' },
+      { key: 'paginas', label: 'Páginas' },
+      { key: 'usuarios', label: 'Usuários' },
+      { key: 'configuracoes', label: 'Configurações' },
+    ];
+
+    const ITEMS_PER_PAGE = 10;
+    let allUsers = [];
+    let filteredUsers = [];
+    let currentPage = 1;
+    let sortField = null;
+    let sortDir = 'asc';
+    let selectedIds = new Set();
+
+    // ========== 1. ORDENAÇÃO ==========
+    function getSortField(field) {
+      if (sortField === field) {
+        sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortField = field;
+        sortDir = 'asc';
+      }
+      currentPage = 1;
+      filtrar();
+    }
+
+    function renderSortIndicators() {
+      document.querySelectorAll('.sortable-header').forEach(h => {
+        const field = h.dataset.sort;
+        const indicator = h.querySelector('.sort-indicator');
+        if (field === sortField) {
+          indicator.classList.add('active');
+          indicator.textContent = sortDir === 'asc' ? '↑' : '↓';
+        } else {
+          indicator.classList.remove('active');
+          indicator.textContent = '↕';
+        }
+      });
+    }
+
+    function aplicarOrdenacao(users) {
+      if (!sortField) return users;
+      const cmp = (a, b) => {
+        let vA = a[sortField];
+        let vB = b[sortField];
+        if (typeof vA === 'string') vA = vA.toLowerCase();
+        if (typeof vB === 'string') vB = vB.toLowerCase();
+        if (vA < vB) return sortDir === 'asc' ? -1 : 1;
+        if (vA > vB) return sortDir === 'asc' ? 1 : -1;
+        return 0;
+      };
+      return [...users].sort(cmp);
+    }
+
+    // ========== 2. PAGINAÇÃO ==========
+    function atualizarPaginacao() {
+      const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+      if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+      const start = (currentPage - 1) * ITEMS_PER_PAGE;
+      const end = Math.min(start + ITEMS_PER_PAGE, filteredUsers.length);
+      const paginados = filteredUsers.slice(start, end);
+
+      document.getElementById('pagination-start').textContent = filteredUsers.length > 0 ? start + 1 : 0;
+      document.getElementById('pagination-end').textContent = end;
+      document.getElementById('pagination-total').textContent = filteredUsers.length;
+      document.getElementById('pagination-current').textContent = totalPages > 0 ? currentPage : 1;
+      document.getElementById('pagination-pages').textContent = totalPages;
+      document.getElementById('pagination-prev').disabled = currentPage === 1;
+      document.getElementById('pagination-next').disabled = currentPage >= totalPages;
+
+      return paginados;
+    }
+
+    // ========== 3. BULK ACTIONS ==========
+    function atualizarBulkActions() {
+      const bar = document.getElementById('bulk-actions');
+      if (selectedIds.size > 0) {
+        bar.classList.remove('hidden');
+        document.getElementById('bulk-count').textContent = selectedIds.size;
+      } else {
+        bar.classList.add('hidden');
+        selectedIds.clear();
+      }
+    }
+
+    async function deletarSelecionados() {
+      if (selectedIds.size === 0) return;
+      const ok = await confirmar({
+        titulo: 'Deletar usuários?',
+        mensagem: `Você está prestes a remover ${selectedIds.size} usuário(s). Esta ação é definitiva.`,
+        okText: 'Deletar'
+      });
+      if (!ok) return;
+      try {
+        for (const id of selectedIds) {
+          await apiDelete(`/usuarios/${id}`);
+        }
+        toast(`${selectedIds.size} usuário(s) removido(s)`, 'success');
+        selectedIds.clear();
+        carregar();
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    }
+
+    // ========== 4. EXPORTAR CSV/JSON ==========
+    async function exportarUsuarios(format) {
+      const users = filteredUsers.map(u => ({
+        id: u.id,
+        nome: u.nome,
+        email: u.email,
+        tipo: u.tipo,
+        status: u.status === 'S' ? 'Ativo' : 'Inativo',
+        telefone: u.telefone,
+        cidade: u.cidade,
+        estado: u.estado,
+        criadoEm: u.criadoEm,
+        atualizadoEm: u.atualizadoEm,
+      }));
+
+      let content, filename, type;
+      if (format === 'json') {
+        content = JSON.stringify(users, null, 2);
+        filename = `usuarios-${new Date().toISOString().split('T')[0]}.json`;
+        type = 'application/json';
+      } else {
+        const headers = ['ID', 'Nome', 'E-mail', 'Tipo', 'Status', 'Telefone', 'Cidade', 'Estado', 'Criado em', 'Atualizado em'];
+        const rows = users.map(u => [
+          u.id, u.nome, u.email, u.tipo, u.status, u.telefone, u.cidade, u.estado,
+          new Date(u.criadoEm).toLocaleString('pt-BR'),
+          u.atualizadoEm ? new Date(u.atualizadoEm).toLocaleString('pt-BR') : ''
+        ]);
+        content = [headers, ...rows].map(row => row.map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',')).join('\n');
+        filename = `usuarios-${new Date().toISOString().split('T')[0]}.csv`;
+        type = 'text/csv;charset=utf-8';
+      }
+
+      const blob = new Blob([content], { type });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      toast(`Exportado ${users.length} usuários em ${format.toUpperCase()}`, 'success');
+    }
+
+    // ========== 5. HISTÓRICO ==========
+    async function mostrarHistorico(user) {
+      try {
+        const hist = await apiGet(`/usuarios/${user.id}/historico`).catch(() => []);
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+          <div class="modal__backdrop"></div>
+          <div class="modal__box">
+            <h3 class="modal__title">Histórico — ${esc(user.nome)}</h3>
+            <div style="max-height: 400px; overflow-y: auto; margin-top: var(--s-4);">
+              ${hist.length > 0 ? hist.map(h => `
+                <div style="padding: var(--s-3); border-bottom: 1px solid var(--paper-line); font-size: 0.85rem;">
+                  <strong style="color: var(--brand);">${esc(h.campo)}</strong>: ${esc(h.oldValue)} → ${esc(h.newValue)}
+                  <div style="color: var(--ink-mute); font-size: 0.75rem; margin-top: 4px;">
+                    ${esc(h.autor)} • ${new Date(h.data).toLocaleString('pt-BR')}
+                  </div>
+                </div>
+              `).join('') : '<div style="text-align: center; color: var(--ink-mute); padding: var(--s-6);">Nenhuma alteração registrada</div>'}
+            </div>
+            <div class="modal__actions" style="margin-top: var(--s-4);">
+              <button class="btn btn--ghost" data-close>Fechar</button>
+            </div>
+          </div>`;
+        document.body.appendChild(modal);
+        modal.querySelector('[data-close]').onclick = () => modal.remove();
+        modal.querySelector('.modal__backdrop').onclick = () => modal.remove();
+      } catch (err) {
+        toast('Erro ao carregar histórico', 'error');
+      }
+    }
+
+    // ========== 6. AVATAR UPLOAD ==========
+    function abrirAvatarUpload(user) {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      let previewSrc = user.foto || null;
+
+      modal.innerHTML = `
+        <div class="modal__backdrop"></div>
+        <div class="modal__box">
+          <h3 class="modal__title">Foto do perfil</h3>
+          <div class="avatar-preview" style="margin-top: var(--s-4);">
+            <div class="avatar-preview__img" id="avatar-preview-img">
+              ${previewSrc ? `<img src="${previewSrc}" alt="Avatar">` : '<span style="font-size: 2.5rem;">👤</span>'}
+            </div>
+            <label class="avatar-preview__input" id="avatar-upload-area">
+              <input type="file" id="avatar-file" accept="image/*" style="display: none;">
+              <div class="avatar-preview__text">Clique para selecionar ou arraste uma imagem</div>
+              <div class="avatar-preview__hint">JPG, PNG ou WebP • Máx. 2MB</div>
+            </label>
+          </div>
+          <div class="modal__actions" style="margin-top: var(--s-5);">
+            <button class="btn btn--ghost" data-cancel>Cancelar</button>
+            <button class="btn btn--primary" id="btn-save-avatar" ${!previewSrc ? 'disabled' : ''}>Salvar</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+
+      const fileInput = modal.querySelector('#avatar-file');
+      const uploadArea = modal.querySelector('#avatar-upload-area');
+      const previewImg = modal.querySelector('#avatar-preview-img');
+      const saveBtn = modal.querySelector('#btn-save-avatar');
+      let selectedFile = null;
+
+      uploadArea.addEventListener('click', () => fileInput.click());
+      uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+      uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+      uploadArea.addEventListener('drop', e => {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+      });
+      fileInput.addEventListener('change', e => {
+        if (e.target.files[0]) handleFile(e.target.files[0]);
+      });
+
+      function handleFile(file) {
+        if (file.size > 2 * 1024 * 1024) {
+          toast('Arquivo maior que 2MB', 'error');
+          return;
+        }
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+          toast('Formato inválido. Use JPG, PNG ou WebP', 'error');
+          return;
+        }
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = e => {
+          previewSrc = e.target.result;
+          previewImg.innerHTML = `<img src="${previewSrc}" alt="Preview">`;
+          uploadArea.classList.add('has-file');
+          saveBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      const close = () => modal.remove();
+      modal.querySelector('[data-cancel]').onclick = close;
+      modal.querySelector('.modal__backdrop').onclick = close;
+
+      saveBtn.onclick = async () => {
+        if (!selectedFile) return;
+        try {
+          const fd = new FormData();
+          fd.append('foto', selectedFile);
+          await apiPost(`/usuarios/${user.id}/avatar`, fd);
+          toast('Avatar atualizado', 'success');
+          close();
+          carregar();
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+      };
+    }
+
+    // ========== RENDER ==========
+    function renderizarTabela(users) {
+      const tbody = document.getElementById('lista-users');
+      const paginados = atualizarPaginacao();
+
+      if (paginados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="color:var(--ink-mute);text-align:center;padding:var(--s-6)">Nenhum usuário encontrado.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = paginados.map(u => {
+        const inicial = (u.nome || '?')[0].toUpperCase();
+        const cor = avatarColor(u.nome);
+        const isSelected = selectedIds.has(u.id);
+        return `
+        <tr data-id="${u.id}" ${isSelected ? 'style="background: rgba(88, 166, 255, 0.05)"' : ''}>
+          <td><input type="checkbox" class="table-checkbox user-checkbox" ${isSelected ? 'checked' : ''} data-id="${u.id}"></td>
+          <td>
+            <div class="user-cell">
+              ${u.foto ?
+                `<div class="user-avatar user-avatar--img"><img src="${esc(u.foto)}" alt="${esc(u.nome)}"></div>` :
+                `<div class="user-avatar" style="background:${cor}">${inicial}</div>`}
+              <div>
+                <div class="user-cell__name">${esc(u.nome)}</div>
+                ${u.cidade ? `<div class="user-cell__city">${esc(u.cidade)}${u.estado ? ', ' + esc(u.estado) : ''}</div>` : ''}
+              </div>
+            </div>
+          </td>
+          <td class="num">${esc(u.email)}</td>
+          <td><span class="tag ${u.tipo === 'admin' ? 'tag--info' : u.tipo === 'autor' ? 'tag--warning' : u.tipo === 'colunista' ? 'tag--success' : 'tag--mute'}">${u.tipo === 'admin' ? 'Admin' : u.tipo === 'autor' ? 'Autor' : u.tipo === 'colunista' ? 'Colunista' : 'Colaborador'}</span></td>
+          <td style="text-align:center">
+            <button class="toggle-status ${u.status === 'S' ? 'ativo' : 'inativo'}" data-action="status" title="Alternar status">
+              <span class="dot"></span>
+              ${u.status === 'S' ? 'Ativo' : 'Inativo'}
+            </button>
+          </td>
+          <td style="text-align:right">
+            <div class="row-actions">
+              <button data-action="avatar" title="Foto do perfil">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+              </button>
+              <button data-action="historico" title="Ver histórico">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </button>
+              <button data-action="editar" title="Editar usuário">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16.5 3.5l4 4L7 21H3v-4z"/></svg>
+              </button>
+              <button data-action="remover" class="danger" title="Remover usuário">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function filtrar() {
+      const search = document.getElementById('search-users').value.toLowerCase();
+      const filterType = document.querySelector('.tab-btn.is-active')?.dataset.type || '';
+
+      let filtered = allUsers;
+      if (filterType === 'admin') {
+        filtered = filtered.filter(u => u.tipo === 'admin');
+      } else if (filterType === 'ativo') {
+        filtered = filtered.filter(u => u.status === 'S');
+      } else if (filterType === 'inativo') {
+        filtered = filtered.filter(u => u.status === 'N');
+      }
+
+      if (search) {
+        filtered = filtered.filter(u =>
+          u.nome?.toLowerCase().includes(search) ||
+          u.email?.toLowerCase().includes(search) ||
+          u.cidade?.toLowerCase().includes(search)
+        );
+      }
+
+      filteredUsers = aplicarOrdenacao(filtered);
+      renderSortIndicators();
+      renderizarTabela(filteredUsers);
+    }
+
+    async function carregar() {
+      allUsers = await apiGet('/usuarios').catch(() => []);
+      document.getElementById('st-total').textContent = allUsers.length;
+      document.getElementById('st-ativos').textContent = allUsers.filter(u => u.status === 'S').length;
+      document.getElementById('st-admins').textContent = allUsers.filter(u => u.tipo === 'admin').length;
+      currentPage = 1;
+      selectedIds.clear();
+      filtrar();
+    }
+
+    function abrirEditor(user) {
+      const isNovo = !user;
+      user = user || { nome:'', email:'', tipo:'colaborador', status:'S', telefone:'', cidade:'', estado:'AP', sobre:'', permissoes:{ paginas:[] } };
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal__backdrop"></div>
+        <div class="modal__box modal__box--lg">
+          <h3 class="modal__title">${isNovo ? 'Novo usuário' : 'Editar — ' + esc(user.nome)}</h3>
+          <form id="user-form" style="display:flex;flex-direction:column;gap:var(--s-4);margin-top:var(--s-4)">
+
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label req">Nome completo</label>
+                <input class="input" name="nome" required value="${esc(user.nome)}" placeholder="Nome do colaborador">
+              </div>
+              <div class="field">
+                <label class="field__label">Telefone</label>
+                <input class="input input--mono" name="telefone" value="${esc(user.telefone)}" placeholder="(96) 9 0000-0000">
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label req">E-mail</label>
+                <input class="input input--mono" type="email" name="email" required value="${esc(user.email)}" placeholder="usuario@portaljt.com.br">
+              </div>
+              <div class="field">
+                <label class="field__label ${isNovo ? 'req' : ''}">
+                  Senha ${!isNovo ? '<span style="font-weight:400;color:var(--ink-mute)">(deixe em branco para manter)</span>' : ''}
+                </label>
+                <input class="input input--mono" type="password" name="senha" id="senha-inp" ${isNovo ? 'required' : ''} placeholder="••••••••">
+                <ul class="req-senha" id="req-senha">
+                  <li data-rule="len">8+ chars</li>
+                  <li data-rule="upper">Maiúsculo</li>
+                  <li data-rule="lower">Minúsculo</li>
+                  <li data-rule="num">Número</li>
+                  <li data-rule="esp">Especial</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label">Cidade</label>
+                <input class="input" name="cidade" value="${esc(user.cidade)}" placeholder="Macapá">
+              </div>
+              <div class="field">
+                <label class="field__label">UF</label>
+                <input class="input input--mono" name="estado" maxlength="2" value="${esc(user.estado)}" placeholder="AP" style="text-transform:uppercase">
+              </div>
+            </div>
+
+            <div>
+              <p class="field__label" style="margin-bottom:var(--s-2)">Tipo de acesso</p>
+              <div class="radio-group">
+                <div class="radio-card">
+                  <input type="radio" id="tipo-admin" name="tipo" value="admin" ${user.tipo === 'admin' ? 'checked' : ''}>
+                  <label for="tipo-admin"><strong>Administrador</strong><span>Acesso total ao sistema</span></label>
+                </div>
+                <div class="radio-card">
+                  <input type="radio" id="tipo-autor" name="tipo" value="autor" ${user.tipo === 'autor' ? 'checked' : ''}>
+                  <label for="tipo-autor"><strong>Autor</strong><span>Escrever artigos</span></label>
+                </div>
+                <div class="radio-card">
+                  <input type="radio" id="tipo-colunista" name="tipo" value="colunista" ${user.tipo === 'colunista' ? 'checked' : ''}>
+                  <label for="tipo-colunista"><strong>Colunista</strong><span>Coluna fixa semanal/mensal</span></label>
+                </div>
+                <div class="radio-card">
+                  <input type="radio" id="tipo-col" name="tipo" value="colaborador" ${user.tipo === 'colaborador' ? 'checked' : ''}>
+                  <label for="tipo-col"><strong>Colaborador</strong><span>Acesso restrito por módulo</span></label>
+                </div>
+              </div>
+            </div>
+
+            <div id="perm-fs" style="${user.tipo === 'admin' || user.tipo === 'autor' || user.tipo === 'colunista' ? 'display:none' : ''}">
+              <p class="field__label" style="margin-bottom:var(--s-2)">Módulos permitidos</p>
+              <div class="perm-grid">
+                ${MODULES.map(m => `
+                  <label class="perm-item">
+                    <input type="checkbox" name="perm" value="${m.key}" ${(user.permissoes?.paginas || []).includes(m.key) ? 'checked' : ''}>
+                    ${m.label}
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+
+          </form>
+          <div class="modal__actions" style="margin-top:var(--s-5)">
+            <button class="btn btn--ghost" data-cancel>Cancelar</button>
+            <button class="btn btn--primary" data-save>${isNovo ? 'Criar usuário' : 'Salvar alterações'}</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+
+      const close = () => modal.remove();
+      modal.querySelector('[data-cancel]').onclick = close;
+      modal.querySelector('.modal__backdrop').onclick = close;
+
+      modal.querySelectorAll('[name=tipo]').forEach(r => {
+        r.addEventListener('change', e => {
+          modal.querySelector('#perm-fs').style.display = (e.target.value === 'admin' || e.target.value === 'autor' || e.target.value === 'colunista') ? 'none' : '';
+        });
+      });
+
+      const senhaInp = modal.querySelector('#senha-inp');
+      const reqUl = modal.querySelector('#req-senha');
+      senhaInp.addEventListener('input', () => {
+        const v = senhaInp.value;
+        reqUl.querySelector('[data-rule=len]').classList.toggle('ok', v.length >= 8);
+        reqUl.querySelector('[data-rule=upper]').classList.toggle('ok', /[A-Z]/.test(v));
+        reqUl.querySelector('[data-rule=lower]').classList.toggle('ok', /[a-z]/.test(v));
+        reqUl.querySelector('[data-rule=num]').classList.toggle('ok', /[0-9]/.test(v));
+        reqUl.querySelector('[data-rule=esp]').classList.toggle('ok', /[^A-Za-z0-9]/.test(v));
+      });
+
+      modal.querySelector('[data-save]').onclick = async () => {
+        const fd = new FormData(modal.querySelector('#user-form'));
+        const perms = [...modal.querySelectorAll('[name=perm]:checked')].map(c => c.value);
+        const tipo = fd.get('tipo');
+        const body = {
+          nome: fd.get('nome'),
+          email: fd.get('email'),
+          telefone: fd.get('telefone'),
+          cidade: fd.get('cidade'),
+          estado: fd.get('estado'),
+          tipo: tipo,
+          permissoes: (tipo === 'autor' || tipo === 'colunista') ? {} : { ...(user.permissoes || {}), paginas: perms },
+        };
+        const senha = fd.get('senha');
+        if (senha) body.senha = senha;
+        try {
+          if (isNovo) await apiPost('/usuarios', body);
+          else await apiPut(`/usuarios/${user.id}`, body);
+          toast(isNovo ? 'Usuário criado' : 'Usuário atualizado', 'success');
+          close(); carregar();
+        } catch (err) { toast(err.message, 'error'); }
+      };
+    }
+
+    // ========== EVENT LISTENERS ==========
+    document.getElementById('btn-novo').onclick = () => abrirEditor(null);
+    document.getElementById('search-users').addEventListener('input', filtrar);
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('is-active'));
+        e.target.classList.add('is-active');
+        currentPage = 1;
+        filtrar();
+      });
+    });
+    document.querySelectorAll('.sortable-header').forEach(h => {
+      h.addEventListener('click', () => getSortField(h.dataset.sort));
+    });
+    document.getElementById('pagination-prev').addEventListener('click', () => {
+      if (currentPage > 1) { currentPage--; renderizarTabela(filteredUsers); }
+    });
+    document.getElementById('pagination-next').addEventListener('click', () => {
+      const maxPage = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+      if (currentPage < maxPage) { currentPage++; renderizarTabela(filteredUsers); }
+    });
+    document.getElementById('select-all').addEventListener('change', e => {
+      const paginados = atualizarPaginacao();
+      if (e.target.checked) {
+        paginados.forEach(u => selectedIds.add(u.id));
+        document.querySelectorAll('.user-checkbox').forEach(c => c.checked = true);
+      } else {
+        selectedIds.clear();
+        document.querySelectorAll('.user-checkbox').forEach(c => c.checked = false);
+      }
+      atualizarBulkActions();
+    });
+    document.getElementById('btn-export').addEventListener('click', async () => {
+      const choice = await confirmar({
+        titulo: 'Formato de exportação',
+        mensagem: 'Escolha o formato para exportar os usuários.',
+        okText: 'JSON'
+      });
+      await exportarUsuarios(choice ? 'json' : 'csv');
+    });
+    document.getElementById('bulk-delete').addEventListener('click', deletarSelecionados);
+
+    document.getElementById('lista-users').addEventListener('change', e => {
+      if (e.target.classList.contains('user-checkbox')) {
+        const id = Number(e.target.dataset.id);
+        if (e.target.checked) {
+          selectedIds.add(id);
+        } else {
+          selectedIds.delete(id);
+          document.getElementById('select-all').checked = false;
+        }
+        atualizarBulkActions();
+      }
+    });
+
+    document.getElementById('lista-users').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.closest('tr').dataset.id;
+      const ac = btn.dataset.action;
+      if (ac === 'editar') {
+        const u = await apiGet(`/usuarios/${id}`);
+        abrirEditor(u);
+      } else if (ac === 'status') {
+        try { await apiPatch(`/usuarios/${id}/status`); carregar(); }
+        catch (err) { toast(err.message, 'error'); }
+      } else if (ac === 'remover') {
+        const ok = await confirmar({
+          titulo: 'Remover usuário?',
+          mensagem: 'Esta ação é definitiva e não pode ser desfeita.',
+          okText: 'Remover'
+        });
+        if (!ok) return;
+        try { await apiDelete(`/usuarios/${id}`); toast('Usuário removido', 'success'); carregar(); }
+        catch (err) { toast(err.message, 'error'); }
+      } else if (ac === 'avatar') {
+        const u = await apiGet(`/usuarios/${id}`);
+        abrirAvatarUpload(u);
+      } else if (ac === 'historico') {
+        const u = await apiGet(`/usuarios/${id}`);
+        await mostrarHistorico(u);
+      }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

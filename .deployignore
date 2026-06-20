@@ -1,0 +1,30 @@
+# Itens excluídos do pacote enviado à Hostinger.
+# Lido por scripts/prepare-deploy.ps1.
+
+# Pastas de desenvolvimento
+node_modules
+.git
+.github
+.vscode
+.idea
+
+# Logs e temporários
+*.log
+logs
+tmp
+.tmp
+.cache
+
+# Variáveis sensíveis (regerar na VPS via .env.example)
+.env
+
+# Scripts internos do Claude
+.claude
+
+# Arquivos auxiliares só do dev
+painel-dm/public/__autologin.html
+painel-dm/public/__taballer.html
+
+# Backup local
+backup-*.tar.gz
+*.bak

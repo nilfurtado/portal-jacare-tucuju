@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Municípios · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+
+  <style>
+    .municipios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--s-4);
+    }
+    .mun-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-3);
+      overflow: hidden;
+      transition: border-color var(--d-2) var(--ease-out), transform var(--d-2) var(--ease-out);
+      cursor: pointer;
+    }
+    .mun-card:hover { border-color: var(--rule-strong); transform: translateY(-2px); }
+    .mun-card__img {
+      aspect-ratio: 16 / 7;
+      background: var(--surface-3);
+      overflow: hidden;
+      position: relative;
+    }
+    .mun-card__img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform var(--d-4) var(--ease-out); }
+    .mun-card:hover .mun-card__img img { transform: scale(1.03); }
+    .mun-card__body { padding: var(--s-4) var(--s-5); }
+    .mun-card__name {
+      font-family: var(--font-display);
+      font-variation-settings: 'opsz' 80, 'SOFT' 30;
+      font-weight: 500;
+      font-size: 1.2rem;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    .mun-card__pop {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-top: 4px;
+    }
+    .mun-card__desc {
+      font-size: 0.86rem;
+      color: var(--ink-soft);
+      margin-top: var(--s-2);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mun-card__actions {
+      display: flex; gap: 4px;
+      padding: 0 var(--s-5) var(--s-3);
+      justify-content: flex-end;
+    }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Municípios</span>
+        </nav>
+        <div class="topbar__actions">
+          <button class="btn btn--primary" id="btn-novo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            Novo município
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <header class="page-title">
+          <div class="page-title__index">04</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Geografia · cobertura editorial</p>
+            <h1>As <em style="font-style:italic;color:var(--brand)">cidades</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Municípios cadastrados</h2>
+            <p>Cidades cobertas pelo portal. Aparecem como abas na seção “Por município” da home.</p>
+            <div class="section__body">
+              <div class="municipios-grid stagger" id="lista-muns">
+                <div style="grid-column:1/-1;color:var(--ink-mute);font-family:var(--font-mono);font-size:0.78rem;text-align:center;padding:var(--s-6)">Carregando…</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPost, apiPut, apiDelete } from './js/api.js';
+    import { toast, confirmar, staggerChildren } from './js/ui.js';
+    await mountShell({ route: 'municipios' });
+
+    const grid = document.getElementById('lista-muns');
+
+    async function carregar() {
+      const muns = await apiGet('/municipios').catch(() => []);
+      if (muns.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;color:var(--ink-mute);text-align:center;padding:var(--s-6)">Nenhum município cadastrado.</div>`;
+        return;
+      }
+      grid.innerHTML = muns.map(m => `
+        <article class="mun-card" data-slug="${esc(m.slug)}">
+          <div class="mun-card__img">
+            ${m.imagem ? `<img src="${esc(m.imagem)}" alt="${esc(m.label)}">` : ''}
+          </div>
+          <div class="mun-card__body">
+            <h3 class="mun-card__name">${esc(m.label)}</h3>
+            <p class="mun-card__pop">${(m.populacao || 0).toLocaleString('pt-BR')} habitantes</p>
+            <p class="mun-card__desc">${esc(m.descricao || '')}</p>
+          </div>
+          <div class="mun-card__actions">
+            <div class="row-actions">
+              <button data-action="editar" title="Editar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M16.5 3.5l4 4L7 21H3v-4z"/></svg></button>
+              <button data-action="remover" class="danger" title="Remover"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+      staggerChildren(grid);
+    }
+
+    function esc(s) { return String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c])); }
+
+    function abrirEditor(mun) {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      const isNovo = !mun;
+      mun = mun || { slug: '', label: '', populacao: '', descricao: '', imagem: '' };
+      modal.innerHTML = `
+        <div class="modal__backdrop"></div>
+        <div class="modal__box modal__box--lg">
+          <h3 class="modal__title" style="font-family:var(--font-display);font-style:italic">${isNovo ? 'Novo município' : 'Editar — ' + esc(mun.label)}</h3>
+          <form id="mun-form" style="display:flex;flex-direction:column;gap:var(--s-3);margin-top:var(--s-3)">
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label req">Nome</label>
+                <input class="input" name="label" value="${esc(mun.label)}" required placeholder="Ex.: Macapá">
+              </div>
+              <div class="field">
+                <label class="field__label">População</label>
+                <input class="input input--mono" name="populacao" type="number" min="0" value="${mun.populacao || ''}">
+              </div>
+            </div>
+            <div class="field">
+              <label class="field__label">URL da imagem (16:7)</label>
+              <input class="input input--mono" name="imagem" value="${esc(mun.imagem)}" placeholder="https://…">
+            </div>
+            <div class="field">
+              <label class="field__label">Descrição curta</label>
+              <textarea class="textarea" name="descricao" rows="2" placeholder="Texto que aparece no card da home">${esc(mun.descricao)}</textarea>
+            </div>
+          </form>
+          <div class="modal__actions" style="margin-top:var(--s-4)">
+            <button class="btn btn--ghost" data-cancel>Cancelar</button>
+            <button class="btn btn--primary" data-save>${isNovo ? 'Criar' : 'Salvar'}</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+
+      const close = () => modal.remove();
+      modal.querySelector('[data-cancel]').onclick = close;
+      modal.querySelector('.modal__backdrop').onclick = close;
+      modal.querySelector('[data-save]').onclick = async () => {
+        const fd = new FormData(modal.querySelector('#mun-form'));
+        const body = {
+          label:     fd.get('label')?.trim(),
+          populacao: fd.get('populacao') ? Number(fd.get('populacao')) : 0,
+          imagem:    fd.get('imagem')?.trim(),
+          descricao: fd.get('descricao')?.trim(),
+        };
+        if (!body.label) { toast('Nome obrigatório', 'error'); return; }
+        try {
+          if (isNovo) await apiPost('/municipios', body);
+          else await apiPut(`/municipios/${mun.slug}`, body);
+          toast(isNovo ? 'Município criado' : 'Município atualizado', 'success');
+          close(); carregar();
+        } catch (err) { toast(err.message, 'error'); }
+      };
+    }
+
+    grid.addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const slug = btn.closest('.mun-card').dataset.slug;
+      if (btn.dataset.action === 'editar') {
+        const m = await apiGet(`/municipios/${slug}`);
+        abrirEditor(m);
+      } else if (btn.dataset.action === 'remover') {
+        const ok = await confirmar({ titulo: 'Remover município?', mensagem: `Slug: ${slug}`, okText: 'Remover' });
+        if (!ok) return;
+        try { await apiDelete(`/municipios/${slug}`); toast('Município removido', 'success'); carregar(); }
+        catch (err) { toast(err.message, 'error'); }
+      }
+    });
+
+    document.getElementById('btn-novo').addEventListener('click', () => abrirEditor(null));
+
+    carregar();
+  </script>
+</body>
+</html>

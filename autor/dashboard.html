@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard · Área de Autores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #1D3FC9;
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface-2: #252525;
+      --text: #f4f5f7;
+      --text-mute: #9aa0a8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: Inter, sans-serif; background: var(--bg); color: var(--text); }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 100vh;
+    }
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .sidebar-brand {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--brand);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sidebar-link {
+      padding: 10px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 200ms;
+      cursor: pointer;
+      border: none;
+      background: none;
+      text-align: left;
+    }
+    .sidebar-link:hover {
+      background: rgba(29, 63, 201, 0.1);
+      color: var(--brand);
+    }
+    .sidebar-link.active {
+      background: var(--brand);
+      color: white;
+    }
+    .sidebar-footer {
+      margin-top: auto;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+    }
+    .main-content {
+      padding: 40px;
+      overflow-y: auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .btn {
+      padding: 10px 20px;
+      border-radius: 4px;
+      border: none;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 200ms;
+    }
+    .btn--primary {
+      background: var(--brand);
+      color: white;
+    }
+    .btn--primary:hover {
+      opacity: 0.9;
+    }
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-mute);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn--ghost:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .article-card {
+      background: var(--surface-2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 20px;
+      transition: all 200ms;
+    }
+    .article-card:hover {
+      border-color: rgba(29, 63, 201, 0.5);
+    }
+    .article-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .article-status {
+      font-size: 12px;
+      color: var(--text-mute);
+      margin-bottom: 12px;
+    }
+    .article-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .article-actions button {
+      flex: 1;
+      padding: 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 200ms;
+    }
+    .article-actions button:hover {
+      background: rgba(29, 63, 201, 0.1);
+      border-color: rgba(29, 63, 201, 0.3);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-mute);
+    }
+    .empty-state p {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="sidebar-brand">Autor</div>
+      <nav class="sidebar-nav">
+        <a class="sidebar-link active" data-page="articles">Meus artigos</a>
+        <a class="sidebar-link" data-page="novo">Novo artigo</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="sidebar-link" id="logoutBtn">Sair</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div id="articles-page">
+        <div class="header">
+          <h1>Meus artigos</h1>
+          <button class="btn btn--primary" data-page="novo">+ Novo artigo</button>
+        </div>
+        <div id="articles-list"></div>
+      </div>
+
+      <div id="novo-page" style="display: none;">
+        <div class="header">
+          <h1>Novo artigo</h1>
+        </div>
+        <form id="articleForm" style="max-width: 800px;">
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 12px; color: var(--text-mute); margin-bottom: 8px; font-weight: 600;">Título</label>
+            <input type="text" id="titulo" required style="width: 100%; padding: 12px; background: var(--surface-2); border: 1px solid rgba(255,255,255,0.1); color: var(--text); border-radius: 4px;">
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 12px; color: var(--text-mute); margin-bottom: 8px; font-weight: 600;">Categoria</label>
+            <select id="categoria" required style="width: 100%; padding: 12px; background: var(--surface-2); border: 1px solid rgba(255,255,255,0.1); color: var(--text); border-radius: 4px;">
+              <option value="">Selecione uma categoria</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 12px; color: var(--text-mute); margin-bottom: 8px; font-weight: 600;">Conteúdo</label>
+            <textarea id="conteudo" required style="width: 100%; min-height: 400px; padding: 12px; background: var(--surface-2); border: 1px solid rgba(255,255,255,0.1); color: var(--text); border-radius: 4px; font-family: Inter, sans-serif; resize: vertical;"></textarea>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn btn--primary">Publicar</button>
+            <button type="button" class="btn btn--ghost" data-page="articles">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Verificar autenticação
+    const token = localStorage.getItem('painel-dm:token');
+    const user = JSON.parse(localStorage.getItem('painel-dm:user') || 'null');
+
+    if (!token || !user) {
+      window.location.href = 'http://localhost:3000/painel/login.html';
+    }
+
+    // Navegação
+    document.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const page = e.target.dataset.page;
+        document.getElementById('articles-page').style.display = page === 'articles' ? 'block' : 'none';
+        document.getElementById('novo-page').style.display = page === 'novo' ? 'block' : 'none';
+        document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+        document.querySelector(`[data-page="${page}"]`).classList.add('active');
+      });
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('painel-dm:token');
+      localStorage.removeItem('painel-dm:user');
+      window.location.href = 'http://localhost:3000/painel/login.html';
+    });
+
+    // Carregar categorias
+    async function carregarCategorias() {
+      try {
+        const res = await fetch('/data/categorias.json');
+        const categorias = await res.json();
+        const select = document.getElementById('categoria');
+        categorias.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.slug;
+          option.textContent = cat.nome;
+          select.appendChild(option);
+        });
+      } catch (err) {
+        console.error('Erro ao carregar categorias:', err);
+      }
+    }
+
+    // Carregar artigos
+    async function carregarArtigos() {
+      try {
+        const res = await fetch('/data/noticias.json');
+        const artigos = await res.json();
+        const meus = artigos.filter(a => a.autor === user.nome);
+        const lista = document.getElementById('articles-list');
+
+        if (meus.length === 0) {
+          lista.innerHTML = '<div class="empty-state"><p>Você ainda não publicou nenhum artigo.</p></div>';
+          return;
+        }
+
+        lista.innerHTML = '<div class="articles-grid">' + meus.map(a => `
+          <div class="article-card">
+            <div class="article-title">${a.titulo}</div>
+            <div class="article-status">${new Date(a.data).toLocaleDateString('pt-BR')}</div>
+            <div class="article-actions">
+              <button onclick="editarArtigo('${a.id}')">Editar</button>
+              <button onclick="deletarArtigo('${a.id}')">Deletar</button>
+            </div>
+          </div>
+        `).join('') + '</div>';
+      } catch (err) {
+        console.error('Erro ao carregar artigos:', err);
+      }
+    }
+
+    // Publicar artigo
+    document.getElementById('articleForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const artigo = {
+        id: Date.now().toString(),
+        slug: document.getElementById('titulo').value.toLowerCase().replace(/\s+/g, '-'),
+        titulo: document.getElementById('titulo').value,
+        conteudo: document.getElementById('conteudo').value,
+        categoria: document.getElementById('categoria').value,
+        autor: user.nome,
+        data: new Date().toISOString(),
+        destaque: false,
+        views: 0,
+        tags: [],
+      };
+
+      try {
+        const res = await fetch('/api/noticias', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(artigo)
+        });
+
+        if (res.ok) {
+          alert('Artigo publicado com sucesso!');
+          document.getElementById('articleForm').reset();
+          carregarArtigos();
+          document.querySelector('[data-page="articles"]').click();
+        } else {
+          alert('Erro ao publicar artigo');
+        }
+      } catch (err) {
+        alert('Erro: ' + err.message);
+      }
+    });
+
+    function editarArtigo(id) {
+      alert('Edição em desenvolvimento');
+    }
+
+    function deletarArtigo(id) {
+      if (confirm('Tem certeza que deseja deletar este artigo?')) {
+        alert('Deleção em desenvolvimento');
+      }
+    }
+
+    // Inicializar
+    carregarCategorias();
+    carregarArtigos();
+  </script>
+</body>
+</html>

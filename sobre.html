@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sobre o Portal Jacaré Tucujú — quem somos, missão e equipe.">
+  <title>Sobre — Portal Jacaré Tucujú</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f07e13">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css?v=30">
+  <link rel="stylesheet" href="css/reset.css?v=30">
+  <link rel="stylesheet" href="css/base.css?v=30">
+  <link rel="stylesheet" href="css/layout.css?v=30">
+  <link rel="stylesheet" href="css/components.css?v=38">
+  <link rel="stylesheet" href="css/breaking-news.css?v=34">
+  <link rel="stylesheet" href="css/drawer.css?v=30">
+  <link rel="stylesheet" href="css/carousel.css?v=30">
+  <link rel="stylesheet" href="css/audio-reader.css?v=30">
+  <link rel="stylesheet" href="css/home.css?v=31">
+  <link rel="stylesheet" href="css/article.css?v=38">
+  <link rel="stylesheet" href="css/static-page.css?v=30">
+  <link rel="stylesheet" href="css/responsive.css?v=30">
+  <script>
+    (function(){var t=localStorage.getItem('portal-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <!-- URL base do backend administrativo (Painel DM). Mude para o domínio/sub-path do seu painel-php em produção. -->
+  <meta name="painel-api" content="http://localhost:3000/api">
+</head>
+<body data-page="sobre">
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+  <div data-include="partials/header.html"></div>
+
+  <main id="main">
+    <div class="container" style="padding-top:var(--sp-8);padding-bottom:var(--sp-16);">
+      <div class="cat-page-header">
+        <div>
+          <nav class="simple-breadcrumb">
+            <a href="index.html">Início</a> <span>›</span> <span>Sobre</span>
+          </nav>
+          <h1 class="cat-page-title">Sobre o portal</h1>
+        </div>
+      </div>
+      <div class="page-grid">
+        <article class="static-article">
+          <span class="updated">Última atualização: maio de 2026</span>
+          <h2>Nossa missão</h2>
+          <p>O <strong>Portal Jacaré Tucujú</strong> nasceu com a proposta de levar informação regional de qualidade ao leitor amapaense — com foco em política, polícia, cultura, esportes, economia e nos municípios do estado.</p>
+          <p>Acreditamos que o jornalismo regional é essencial para o fortalecimento da democracia local. Nosso compromisso é informar com seriedade, ouvir os dois lados, e dar voz a quem normalmente não aparece nas grandes manchetes nacionais.</p>
+          <h2>O que cobrimos</h2>
+          <ul>
+            <li><strong>Política e poder público</strong> — Assembleia Legislativa, prefeituras, decisões que afetam o dia a dia do amapaense.</li>
+            <li><strong>Polícia e segurança</strong> — ocorrências, operações, e o trabalho das forças de segurança no estado.</li>
+            <li><strong>Economia regional</strong> — comércio, indústria, agronegócio, comércio fronteiriço com a Guiana Francesa.</li>
+            <li><strong>Cultura amapaense</strong> — marabaixo, festas tradicionais, patrimônio imaterial, produção artística.</li>
+            <li><strong>Esportes</strong> — futebol estadual, atletismo, jiu-jitsu e outras modalidades de destaque.</li>
+            <li><strong>Municípios</strong> — cobertura específica de Macapá, Santana, Oiapoque, Laranjal do Jari, Mazagão, Porto Grande e outras cidades.</li>
+          </ul>
+          <h2>Princípios editoriais</h2>
+          <ul>
+            <li><strong>Verdade factual</strong> — toda informação publicada passa por verificação antes de ir ao ar.</li>
+            <li><strong>Contraditório</strong> — sempre que houver acusação ou denúncia, ouvimos o lado citado.</li>
+            <li><strong>Distinção entre fato e opinião</strong> — notícias são apuração; análises e colunas são claramente identificadas como tal.</li>
+            <li><strong>Correção transparente</strong> — quando erramos, corrigimos publicamente e mantemos o registro do erro.</li>
+          </ul>
+          <h2>Equipe</h2>
+          <p>Nossa redação reúne jornalistas com experiência em cobertura regional, distribuídos entre Macapá, Santana e correspondentes em outros municípios do interior.</p>
+          <h2>Fale com a redação</h2>
+          <p>Sugestões de pauta, denúncias, correções e elogios são bem-vindos. Use a página de <a href="contato.html">contato</a> ou nosso WhatsApp <strong>(96) 99999-0000</strong>.</p>
+        </article>
+        <aside class="sidebar" data-include="partials/sidebar.html"></aside>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+  <script type="module" src="js/static-page.js?v=24"></script>
+  <script defer src="js/ads-loader.js?v=1"></script>
+  <script defer src="js/plugins-loader.js?v=1"></script>
+</body>
+</html>

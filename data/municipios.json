@@ -1,0 +1,114 @@
+[
+  {
+    "id": 5,
+    "slug": "amapa",
+    "nome": "Amapá",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.676Z"
+  },
+  {
+    "id": 7,
+    "slug": "calchoene",
+    "nome": "Calçoene",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.676Z"
+  },
+  {
+    "id": 16,
+    "slug": "cutias",
+    "nome": "Cutias",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.680Z"
+  },
+  {
+    "id": 8,
+    "slug": "ferreira-gomes",
+    "nome": "Ferreira Gomes",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.676Z"
+  },
+  {
+    "id": 17,
+    "slug": "itaubal",
+    "nome": "Itaubal",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.681Z"
+  },
+  {
+    "id": 6,
+    "slug": "laranjal-do-jari",
+    "nome": "Laranjal do Jari",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.674Z"
+  },
+  {
+    "id": 1,
+    "slug": "macapa",
+    "nome": "Macapá",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.671Z"
+  },
+  {
+    "id": 11,
+    "slug": "mazagao",
+    "nome": "Mazagão",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.677Z"
+  },
+  {
+    "id": 3,
+    "slug": "oiapoque",
+    "nome": "Oiapoque",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.675Z"
+  },
+  {
+    "id": 9,
+    "slug": "pedra-branca-do-amapari",
+    "nome": "Pedra Branca do Amapari",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.677Z"
+  },
+  {
+    "id": 13,
+    "slug": "porto-grande",
+    "nome": "Porto Grande",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.678Z"
+  },
+  {
+    "id": 15,
+    "slug": "pracuuba",
+    "nome": "Pracuúba",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.679Z"
+  },
+  {
+    "id": 2,
+    "slug": "santana",
+    "nome": "Santana",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.674Z"
+  },
+  {
+    "id": 10,
+    "slug": "serra-do-navio",
+    "nome": "Serra do Navio",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.677Z"
+  },
+  {
+    "id": 14,
+    "slug": "tartarugalzinho",
+    "nome": "Tartarugalzinho",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.678Z"
+  },
+  {
+    "id": 12,
+    "slug": "vitoria-do-jari",
+    "nome": "Vitória do Jari",
+    "estado": "AP",
+    "criadoEm": "2026-06-14T23:12:14.678Z"
+  }
+]

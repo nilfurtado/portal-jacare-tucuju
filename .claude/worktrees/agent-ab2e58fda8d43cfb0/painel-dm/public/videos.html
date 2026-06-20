@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vídeos · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <script>!function(){var t=localStorage.getItem("painel-dm:theme")||"dark";document.documentElement.dataset.theme=t}()</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    .video-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s-4); }
+    .video-card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r-3); overflow: hidden; transition: border-color var(--d-2) var(--ease-out), transform var(--d-2) var(--ease-out); }
+    .video-card:hover { border-color: var(--rule-strong); transform: translateY(-2px); }
+    .video-card__thumb { position: relative; aspect-ratio: 16/9; background: var(--surface-3); }
+    .video-card__thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .video-card__play { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:54px; height:54px; border-radius:50%; background: rgba(0,0,0,0.65); display:grid; place-items:center; color: #fff; }
+    .video-card__dur { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.75); color:#fff; font-family:var(--font-mono); font-size:0.7rem; padding:2px 8px; border-radius:var(--r-pill); }
+    .video-card__body { padding: var(--s-3) var(--s-4); }
+    .video-card__title { font-family: var(--font-display); font-variation-settings: 'opsz' 60, 'SOFT' 30; font-weight: 500; font-size: 0.96rem; line-height: 1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .video-card__meta { display:flex; justify-content:space-between; margin-top: var(--s-2); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing:0.14em; text-transform:uppercase; color: var(--ink-mute); }
+    .video-card__actions { padding: 0 var(--s-4) var(--s-3); display:flex; justify-content:flex-end; }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a>
+          <span class="sep">/</span>
+          <span>Vídeos</span>
+        </nav>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">06</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Conteúdo audiovisual</p>
+            <h1>O <em style="font-style:italic;color:var(--brand)">arquivo</em> em movimento.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Cadastrar vídeo</h2>
+            <p>Cole o link do YouTube ou só o ID. A thumb é gerada automaticamente.</p>
+            <div class="section__body">
+              <form id="form-video">
+                <div class="field">
+                  <label class="field__label req">Título</label>
+                  <input class="input" type="text" name="titulo" required placeholder="Ex.: Ponte Binacional: como funciona a travessia">
+                </div>
+                <div class="form-grid">
+                  <div class="field">
+                    <label class="field__label req">YouTube (URL ou ID)</label>
+                    <input class="input input--mono" name="youtubeId" required placeholder="https://youtu.be/... ou dQw4w9WgXcQ">
+                  </div>
+                  <div class="field">
+                    <label class="field__label">Duração</label>
+                    <input class="input input--mono" name="duracao" placeholder="5:42">
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <div class="field">
+                    <label class="field__label">Editoria</label>
+                    <select class="select" name="categoria" id="cat-sel"></select>
+                  </div>
+                  <div class="field">
+                    <label class="field__label">Thumb (opcional, padrão YouTube)</label>
+                    <input class="input input--mono" name="thumb" placeholder="URL imagem">
+                  </div>
+                </div>
+                <div class="form-actions" style="border:none;padding-top:var(--s-3);margin-top:var(--s-3)">
+                  <button class="btn btn--ghost" type="reset">Limpar</button>
+                  <button class="btn btn--primary" type="submit">Adicionar vídeo</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section__num">02</div>
+          <div class="section__head">
+            <h2>Catálogo</h2>
+            <p>Vídeos publicados no portal.</p>
+            <div class="section__body">
+              <div class="video-grid stagger" id="lista-videos">
+                <div style="grid-column:1/-1;color:var(--ink-mute);text-align:center;padding:var(--s-6);font-family:var(--font-mono);font-size:0.78rem">Carregando…</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPost, apiDelete } from './js/api.js';
+    import { toast, confirmar, staggerChildren } from './js/ui.js';
+    await mountShell({ route: 'video-novo' });
+
+    const cats = await apiGet('/categorias').catch(() => []);
+    document.getElementById('cat-sel').innerHTML =
+      cats.map(c => `<option value="${c.slug}">${c.label}</option>`).join('') ||
+      '<option value="geral">Geral</option>';
+
+    const grid = document.getElementById('lista-videos');
+    async function carregar() {
+      const r = await apiGet('/videos?perPage=100').catch(() => ({ items: [] }));
+      if (!r.items.length) { grid.innerHTML = `<div style="grid-column:1/-1;color:var(--ink-mute);text-align:center;padding:var(--s-6)">Nenhum vídeo cadastrado.</div>`; return; }
+      grid.innerHTML = r.items.map(v => `
+        <article class="video-card" data-id="${v.id}">
+          <div class="video-card__thumb">
+            <img src="${esc(v.thumb)}" alt="${esc(v.titulo)}" loading="lazy">
+            <div class="video-card__play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+            ${v.duracao ? `<span class="video-card__dur">${esc(v.duracao)}</span>` : ''}
+          </div>
+          <div class="video-card__body">
+            <h3 class="video-card__title">${esc(v.titulo)}</h3>
+            <div class="video-card__meta">
+              <span>${esc(v.categoria || '—')}</span>
+              <span>${esc(v.youtubeId)}</span>
+            </div>
+          </div>
+          <div class="video-card__actions">
+            <div class="row-actions">
+              <a class="btn-ico" target="_blank" title="Abrir no YouTube" href="https://www.youtube.com/watch?v=${esc(v.youtubeId)}" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--rule);color:var(--ink-mute)">↗</a>
+              <button data-action="remover" class="danger" title="Remover">×</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+      staggerChildren(grid);
+    }
+    function esc(s) { return String(s||'').replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    document.getElementById('form-video').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      try {
+        await apiPost('/videos', Object.fromEntries(fd));
+        toast('Vídeo cadastrado', 'success');
+        e.target.reset();
+        carregar();
+      } catch (err) { toast(err.message, 'error'); }
+    });
+
+    grid.addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action="remover"]'); if (!btn) return;
+      const id = btn.closest('.video-card').dataset.id;
+      const ok = await confirmar({ titulo: 'Remover vídeo?', mensagem: 'Esta ação é definitiva.', okText: 'Remover' });
+      if (!ok) return;
+      try { await apiDelete(`/videos/${id}`); toast('Vídeo removido', 'success'); carregar(); }
+      catch (err) { toast(err.message, 'error'); }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

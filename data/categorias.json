@@ -1,0 +1,110 @@
+[
+  {
+    "id": 7,
+    "slug": "politica",
+    "nome": "Política",
+    "descricao": "",
+    "cor": "#1A237E",
+    "ordem": 1,
+    "criadoEm": "2026-06-09 03:38:25"
+  },
+  {
+    "id": 12,
+    "slug": "policia",
+    "nome": "Polícia",
+    "descricao": "",
+    "cor": "#B71C1C",
+    "ordem": 2,
+    "criadoEm": "2026-06-15 03:13:03"
+  },
+  {
+    "id": 3,
+    "slug": "economia",
+    "nome": "Economia",
+    "descricao": "Notícias econômicas",
+    "cor": "#2E7D32",
+    "ordem": 3,
+    "criadoEm": "2026-06-09 00:51:04"
+  },
+  {
+    "id": 5,
+    "slug": "educacao",
+    "nome": "Educação",
+    "descricao": "Notícias de educação",
+    "cor": "#1565C0",
+    "ordem": 4,
+    "criadoEm": "2026-06-09 00:51:04"
+  },
+  {
+    "id": 2,
+    "slug": "esportes",
+    "nome": "Esporte",
+    "descricao": "Notícias de esportes",
+    "cor": "#00875A",
+    "ordem": 5,
+    "criadoEm": "2026-06-09 00:51:04"
+  },
+  {
+    "id": 8,
+    "slug": "cultura",
+    "nome": "Cultura",
+    "descricao": "",
+    "cor": "#7B1FA2",
+    "ordem": 6,
+    "criadoEm": "2026-06-09 03:38:25"
+  },
+  {
+    "id": 10,
+    "slug": "seguranca",
+    "nome": "Segurança",
+    "descricao": "",
+    "cor": "#EF6C00",
+    "ordem": 7,
+    "criadoEm": "2026-06-09 03:38:25"
+  },
+  {
+    "id": 4,
+    "slug": "saude",
+    "nome": "Saúde",
+    "descricao": "Notícias de saúde",
+    "cor": "#00897B",
+    "ordem": 8,
+    "criadoEm": "2026-06-09 00:51:04"
+  },
+  {
+    "id": 6,
+    "slug": "tecnologia",
+    "nome": "Tecnologia",
+    "descricao": "",
+    "cor": "#0277BD",
+    "ordem": 9,
+    "criadoEm": "2026-06-09 03:29:50"
+  },
+  {
+    "id": 9,
+    "slug": "meio-ambiente",
+    "nome": "Meio Ambiente",
+    "descricao": "",
+    "cor": "#388E3C",
+    "ordem": 10,
+    "criadoEm": "2026-06-09 03:38:25"
+  },
+  {
+    "id": 11,
+    "slug": "opiniao",
+    "nome": "Opinião",
+    "descricao": "",
+    "cor": "#455A64",
+    "ordem": 11,
+    "criadoEm": "2026-06-09 03:38:25"
+  },
+  {
+    "id": 1,
+    "slug": "geral",
+    "nome": "Geral",
+    "descricao": "Notícias gerais",
+    "cor": "#607D8B",
+    "ordem": 12,
+    "criadoEm": "2026-06-14 15:41:43"
+  }
+]

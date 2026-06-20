@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comentários · Painel DM</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,200..900,0..100,0..1;1,9..144,200..900,0..100,0..1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=geist@400,500,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/motion.css">
+  <link rel="stylesheet" href="css/painel.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tabela.css">
+  <style>
+    .filter-tabs { display:flex; gap: 2px; background:var(--surface-2); padding:4px; border-radius:var(--r-pill); width:fit-content; margin-bottom: var(--s-4); }
+    .filter-tabs button { background:transparent; border:none; padding:8px 16px; border-radius:var(--r-pill); font-family:var(--font-mono); font-size:0.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); cursor:pointer; transition:all var(--d-1); }
+    .filter-tabs button.is-active { background:var(--ink); color:var(--paper); }
+    .filter-tabs button .count { display:inline-block; margin-left:6px; opacity:.6; font-size:0.66rem; }
+
+    .comm { background:var(--surface); border:1px solid var(--rule); border-radius:var(--r-3); padding:var(--s-4) var(--s-5); margin-bottom:var(--s-3); }
+    .comm__head { display:flex; align-items:flex-start; justify-content:space-between; gap:var(--s-3); margin-bottom:var(--s-2); }
+    .comm__autor { font-family:var(--font-display); font-variation-settings:'opsz' 60,'SOFT' 30; font-weight:500; font-size:0.96rem; }
+    .comm__meta { font-family:var(--font-mono); font-size:0.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-mute); margin-top:2px; }
+    .comm__texto { font-size:0.92rem; line-height:1.55; color:var(--ink-soft); margin-top:var(--s-2); }
+    .comm__noticia { display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:0.7rem; color:var(--ink-mute); margin-top:var(--s-3); }
+    .comm__noticia a { color:var(--brand); }
+
+    .status-badge { display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:0.66rem; letter-spacing:.14em; text-transform:uppercase; padding:3px 10px; border-radius:var(--r-pill); border:1px solid var(--rule); }
+    .status-badge--pendente { color: var(--warning); border-color: rgba(184,128,30,0.3); background: rgba(184,128,30,0.06); }
+    .status-badge--aprovado { color: var(--positive); border-color: rgba(62,107,58,0.3); background: rgba(62,107,58,0.06); }
+    .status-badge--rejeitado { color: var(--danger); border-color: rgba(138,42,42,0.3); background: rgba(138,42,42,0.06); }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div data-include="partials/shell.html"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar__btn" data-sidebar-toggle>Menu</button>
+        <nav class="topbar__crumbs">
+          <a href="/index.html">Painel</a><span class="sep">/</span><span>Comentários</span>
+        </nav>
+      </header>
+
+      <main class="content">
+        <header class="page-title">
+          <div class="page-title__index">10</div>
+          <div class="page-title__main">
+            <p class="page-title__sub">Moderação</p>
+            <h1>O que <em style="font-style:italic;color:var(--brand)">disseram</em>.</h1>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__num">01</div>
+          <div class="section__head">
+            <h2>Fila de moderação</h2>
+            <p>Aprove, rejeite ou remova comentários enviados pelos leitores.</p>
+            <div class="section__body">
+
+              <div class="filter-tabs" id="tabs">
+                <button class="is-active" data-filter="">Todos <span class="count" data-count-all></span></button>
+                <button data-filter="pendente">Pendentes <span class="count" data-count-pendente></span></button>
+                <button data-filter="aprovado">Aprovados <span class="count" data-count-aprovado></span></button>
+                <button data-filter="rejeitado">Rejeitados <span class="count" data-count-rejeitado></span></button>
+              </div>
+
+              <div id="lista-comm">
+                <div style="color:var(--ink-mute);text-align:center;padding:var(--s-6);font-family:var(--font-mono);font-size:0.78rem">Carregando…</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountShell } from './js/shell.js';
+    import { apiGet, apiPatch, apiDelete } from './js/api.js';
+    import { toast, confirmar } from './js/ui.js';
+    await mountShell({ route: 'comentarios' });
+
+    function esc(s){ return String(s||'').replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    let allComments = [];
+    let currentFilter = '';
+
+    async function carregar(){
+      allComments = await apiGet('/comentarios').catch(()=>[]);
+      atualizarContadores();
+      render();
+    }
+
+    function atualizarContadores(){
+      const c = (s) => allComments.filter(x => !s || x.status === s).length;
+      document.querySelector('[data-count-all]').textContent = c('');
+      document.querySelector('[data-count-pendente]').textContent = c('pendente');
+      document.querySelector('[data-count-aprovado]').textContent = c('aprovado');
+      document.querySelector('[data-count-rejeitado]').textContent = c('rejeitado');
+    }
+
+    function render(){
+      const items = currentFilter ? allComments.filter(c => c.status === currentFilter) : allComments;
+      const cont = document.getElementById('lista-comm');
+      if(!items.length){
+        cont.innerHTML = `<div style="color:var(--ink-mute);text-align:center;padding:var(--s-7);font-family:var(--font-display);font-style:italic;font-size:1.1rem">Nada a moderar por aqui.</div>`;
+        return;
+      }
+      cont.innerHTML = items.map(c => `
+        <article class="comm" data-id="${c.id}" data-status="${c.status}">
+          <div class="comm__head">
+            <div>
+              <div class="comm__autor">${esc(c.autor)}</div>
+              <div class="comm__meta">${new Date(c.criadoEm).toLocaleString('pt-BR')} ${c.email ? '· '+esc(c.email) : ''}</div>
+            </div>
+            <span class="status-badge status-badge--${c.status}">${c.status}</span>
+          </div>
+          <p class="comm__texto">${esc(c.texto)}</p>
+          <div class="comm__noticia">
+            ↳ em
+            <a href="../noticia.html?slug=${encodeURIComponent(c.noticiaSlug)}" target="_blank">${esc(c.noticiaSlug)}</a>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:var(--s-3)">
+            ${c.status !== 'aprovado' ? '<button class="btn btn--ghost" data-action="aprovar" style="padding:6px 14px;font-size:0.78rem">Aprovar</button>' : ''}
+            ${c.status !== 'rejeitado' ? '<button class="btn btn--ghost" data-action="rejeitar" style="padding:6px 14px;font-size:0.78rem">Rejeitar</button>' : ''}
+            <button class="btn btn--danger" data-action="remover" style="padding:6px 14px;font-size:0.78rem">Remover</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    document.getElementById('tabs').addEventListener('click', e => {
+      const btn = e.target.closest('button'); if(!btn) return;
+      document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('is-active', b === btn));
+      currentFilter = btn.dataset.filter;
+      render();
+    });
+
+    document.getElementById('lista-comm').addEventListener('click', async e => {
+      const btn = e.target.closest('button[data-action]'); if(!btn) return;
+      const id = btn.closest('.comm').dataset.id;
+      const ac = btn.dataset.action;
+      try {
+        if(ac === 'aprovar'){ await apiPatch(`/comentarios/${id}/aprovar`); toast('Aprovado','success'); }
+        else if(ac === 'rejeitar'){ await apiPatch(`/comentarios/${id}/rejeitar`); toast('Rejeitado','success'); }
+        else if(ac === 'remover'){
+          const ok = await confirmar({ titulo:'Remover comentário?', mensagem:'Ação definitiva.', okText:'Remover' });
+          if(!ok) return;
+          await apiDelete(`/comentarios/${id}`); toast('Removido','success');
+        }
+        carregar();
+      } catch(err){ toast(err.message,'error'); }
+    });
+
+    carregar();
+  </script>
+</body>
+</html>

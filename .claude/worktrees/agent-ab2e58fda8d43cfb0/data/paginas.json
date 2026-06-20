@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "slug": "sobre-o-portal",
+    "titulo": "Sobre o Portal",
+    "conteudo": "<h2>Sobre n�s</h2><p>Jornal regional desde 2026.</p>",
+    "visivelMenu": true,
+    "ordem": 1,
+    "atualizadoEm": "2026-05-29T04:43:51.927Z"
+  }
+]
